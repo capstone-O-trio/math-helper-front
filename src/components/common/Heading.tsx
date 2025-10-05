@@ -9,7 +9,7 @@ export const Heading: React.FC<HeadingProps> = ({
   ...rest
 }) => {
   const headingStyle =
-    "flex items-center justify-center w-full text-black text-opacity-50 text-3xl font-light";
+    "flex items-center justify-center w-full h-full text-black text-opacity-50 text-3xl font-light";
   return (
     <p className={`${headingStyle} ${className}`} {...rest}>
       {children}
