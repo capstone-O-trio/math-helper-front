@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 
-function App() {
+const App: React.FC = () => {
   return (
     <>
       <div className="text-3xl font-bold">
@@ -11,6 +11,6 @@ function App() {
       </div>
     </>
   );
-}
+};
 
 export default App;
