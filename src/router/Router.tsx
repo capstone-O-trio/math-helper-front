@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "../App";
-import { OnboardingPage } from "../pages/Onboarding";
+import { OnboardingPage } from "../pages/OnboardingPage";
+import { HandTrackingPage } from "../pages/HandTrackingPage";
 
 const router = createBrowserRouter([
   {
@@ -10,6 +11,10 @@ const router = createBrowserRouter([
       {
         path: "/onboarding",
         element: <OnboardingPage />,
+      },
+      {
+        path: "/hands-tracker",
+        element: <HandTrackingPage />,
       },
     ],
   },
