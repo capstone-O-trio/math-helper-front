@@ -1,8 +1,15 @@
+import { Outlet } from "react-router-dom";
+
 function App() {
   return (
-    <div>
-      <header>이야호</header>
-    </div>
+    <>
+      <div className="text-3xl font-bold underline">
+        <main className="Outlet-style">
+          <header>header</header>
+          <Outlet />
+        </main>
+      </div>
+    </>
   );
 }
 

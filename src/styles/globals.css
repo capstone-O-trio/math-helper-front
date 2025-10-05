@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Pretendard Standard";
+  src: "url('/font/subset-PretendardVariable.woff2') format('woff2'), url('/font/subset-PretendardVariable.woff') format('woff')";
+  font-style: "normal";
+  font-display: "swap";
+}
+
+body {
+  @apply font-pretendard;
+}
