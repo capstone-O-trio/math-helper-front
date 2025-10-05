@@ -10,7 +10,14 @@ export const LoginPage: React.FC = () => {
   return (
     <div className="w-full h-full flex flex-col items-center">
       <div className="absolute top-4 w-full">
-        <button className="absolute left-8 top-1">이전</button>
+        <button
+          className="absolute left-8 top-1"
+          onClick={() => {
+            naviagate(-1);
+          }}
+        >
+          이전
+        </button>
         <Heading>로그인</Heading>
       </div>
       <div className="w-[50%] h-full flex flex-col justify-center">
@@ -19,7 +26,7 @@ export const LoginPage: React.FC = () => {
         <Text className="mt-4">비밀번호</Text>
         <Input />
       </div>
-      <div className="absolute bottom-8 right-10 flex flex-col gap-1 w-[12rem]">
+      <div className="absolute bottom-8 right-10 flex flex-col gap-1 w-48">
         <Button
           onClick={() => {
             naviagate("/login");
