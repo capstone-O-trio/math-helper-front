@@ -1,16 +1,7 @@
 ---
 name: feature issue
 about: 새 기능에 대한 이슈입니다!
-title: ''
-labels: ''
-assignees: ''
-
----
-
----
-name: Feature request
-about: 구현하려는 기능을 설명해주세요!
-title: "[feature] 이슈 이름"
+title: "[feat] 이슈 이름"
 labels: ''
 assignees: ''
 
