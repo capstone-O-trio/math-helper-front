@@ -9,6 +9,10 @@
   font-display: "swap";
 }
 
+html, body, #root {
+  @apply w-full h-full;
+}
+
 body {
   @apply font-pretendard;
 }
