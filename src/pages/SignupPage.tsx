@@ -28,7 +28,7 @@ export const SignupPage: React.FC = () => {
         <Input />
       </div>
       <Button
-        className="absolute bottom-16 right-10 w-48"
+        className="absolute bottom-16 right-10 w-[208px]"
         onClick={() => {
           naviagate("/login");
         }}

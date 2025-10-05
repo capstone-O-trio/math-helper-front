@@ -8,7 +8,7 @@ module.exports = {
       },
       colors: {
         "green-d": "#31C48D",
-        "green-u": "#C1EDDD",
+        "green-u": "#84E1BC",
         "green-f": "#057A55",
       },
     },

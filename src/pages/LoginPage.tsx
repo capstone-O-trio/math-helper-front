@@ -26,10 +26,10 @@ export const LoginPage: React.FC = () => {
         <Text className="mt-4">비밀번호</Text>
         <Input />
       </div>
-      <div className="absolute bottom-8 right-10 flex flex-col gap-1 w-48">
+      <div className="absolute bottom-8 right-10 flex flex-col gap-1 w-[208px]">
         <Button
           onClick={() => {
-            naviagate("/login");
+            naviagate("/upload");
           }}
         >
           로그인완료
