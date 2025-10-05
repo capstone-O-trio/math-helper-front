@@ -11,7 +11,7 @@ export const Button: React.FC<ButtonProps> = ({
   ...rest
 }) => {
   const buttonStyle =
-    "flex items-center justify-center rounded-3xl bg-green-100 hover:bg-green-300 text-green-900 border border-green-600 py-5 w-full transition-colors duration-300";
+    "flex items-center justify-center rounded-2xl bg-green-d hover:bg-green-f text-white py-4 w-full duration-300 disabled:opacity-30 disabled:cursor-not-allowed";
   return (
     <button className={`${buttonStyle} ${className}`} {...rest}>
       <text>{children}</text>
