@@ -39,7 +39,7 @@ export default function HandTracker() {
             drawLandmarks(ctx, lm as any);
 
             const state = getHandState(lm); // 손 상태
-            console.log(state);
+            console.log(state, x, y); // 손 상태, 위치 출력
         });
         setImagePositions(positions); // 손마다 이미지 하나씩 띄우기 위해 배열로 저장
         } else {
