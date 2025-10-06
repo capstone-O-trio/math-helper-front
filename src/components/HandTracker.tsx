@@ -36,18 +36,31 @@ export default function HandTracker() {
         hands.forEach((lm) => {
             // 손 중앙(예: 9번 랜드마크) 좌표 계산
             const handCenter = lm[9];
-            const x = handCenter.x * dispW;
-            const y = handCenter.y * dispH;
-            positions.push({ x, y });
+            const hand_x = handCenter.x * dispW;
+            const hand_y = handCenter.y * dispH;
             
             // 모든 손에 대해 랜드마크/연결선 그리기
             drawConnectors(ctx, lm as any, HAND_CONNECTIONS);
             drawLandmarks(ctx, lm as any);
 
             const state = getHandState(lm); // 손 상태
-            console.log(state, x, y); // 손 상태, 위치 출력
-        });
-        
+            console.log(state, hand_x, hand_y); // 손 상태, 위치 출력
+
+            // 해당 객체와 손이 동일한 위치에 있고, 주먹 쥔 상태라면 이동
+            setObjects(prev =>
+              prev.map(({ id, x, y, src }) => {
+                // 손과 객체가 근접하고, 주먹 쥔 상태라면 이동
+                if (
+                  hand_x < x + 50 && hand_x > x - 50 &&
+                  hand_y < y + 50 && hand_y > y - 50 &&
+                  state === 'fist'
+                ) {
+                  return { id, x: hand_x, y: hand_y, src }; // 위치 갱신
+                }
+                return { id, x, y, src }; // 그대로 유지
+              })
+            );
+          });
         } else {
             
         }
