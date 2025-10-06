@@ -5,10 +5,16 @@ import { Camera } from '@mediapipe/camera_utils';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 import { getHandState } from '../utils/handState';
 
+// 객체 타입
+type Obj = { id: string; x: number; y: number; src: string };
+
 export default function HandTracker() {
   const webcamRef = useRef<Webcam | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [imagePositions, setImagePositions] = useState<{ x: number; y: number }[]>(); // [{x,y}, ...]
+  
+  const [objects, setObjects] = useState<Obj[]>([
+    { id: 'apple-1', x: 200, y: 150, src: '/사과.png' }, // 초기 예시 1개
+  ]);
 
   // Mediapipe 결과 처리
   function onResults(results: any) {
@@ -41,9 +47,9 @@ export default function HandTracker() {
             const state = getHandState(lm); // 손 상태
             console.log(state, x, y); // 손 상태, 위치 출력
         });
-        setImagePositions(positions); // 손마다 이미지 하나씩 띄우기 위해 배열로 저장
+        
         } else {
-            setImagePositions([]); // 손 없으면 모두 숨김
+            
         }
 
     ctx.restore();
@@ -141,25 +147,25 @@ export default function HandTracker() {
           }}
         />
 
-        {/* 손이 있을 때만 PNG 이미지 표시.
-            좌표는 onResults에서 계산한 '그대로' 사용하면 시각상 정확히 겹침. */}
-        {Array.isArray(imagePositions) && imagePositions.map(({ x, y }, i) => (
-            <img
-            key={i}
-            src="/사과.png"
-            alt={`hand-${i}`}
+        {/* 객체를 화면에 표시 */}
+        {objects.map(({ id, x, y, src }) => (
+          <img
+            key={id}
+            src={src}
+            alt={id}
             style={{
-                position: 'absolute',
-                left: x,
-                top: y,
-                width: 48,
-                height: 48,
-                transform: 'translate(-50%, -50%)',
-                pointerEvents: 'none',
-                zIndex: 3,
+              position: 'absolute',
+              left: x,
+              top: y,
+              width: 48,
+              height: 48,
+              transform: 'translate(-50%, -50%)',
+              pointerEvents: 'none',
+              zIndex: 3,
             }}
-            />
+          />
         ))}
+
       </div>
     </div>
   );
