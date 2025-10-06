@@ -3,6 +3,7 @@ import Webcam from 'react-webcam';
 import { Hands, HAND_CONNECTIONS } from '@mediapipe/hands';
 import { Camera } from '@mediapipe/camera_utils';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
+import { getHandState } from '../utils/handState';
 
 export default function HandTracker() {
   const webcamRef = useRef<Webcam | null>(null);
@@ -36,6 +37,9 @@ export default function HandTracker() {
             // 모든 손에 대해 랜드마크/연결선 그리기
             drawConnectors(ctx, lm as any, HAND_CONNECTIONS);
             drawLandmarks(ctx, lm as any);
+
+            const state = getHandState(lm); // 손 상태
+            console.log(state, x, y); // 손 상태, 위치 출력
         });
         setImagePositions(positions); // 손마다 이미지 하나씩 띄우기 위해 배열로 저장
         } else {
