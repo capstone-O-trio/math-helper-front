@@ -15,9 +15,56 @@ export function getObjectsInfo(
     if (entity == 'apple') // 현재는 사과 이미지만 가능
         objImage = '/사과.png';
 
+    // 배치 기준 (화면 크기 가정)
+    const baseY = 200; // 세로 중앙
+    const startX = 150; // 첫 번째 그룹 시작 X
+    const gapX = 70; // 객체 간 간격
+    const groupGap = 250; // 왼쪽/오른쪽 그룹 사이 거리
+    
+    // + 기호
+    const opX = startX + count1 * gapX + 40
     objectsInfo.push(
-        { id: 'apple-1', x: 200, y: 150, src: objImage }
+        {
+            id: 'plus', 
+            x: opX, 
+            y: baseY, 
+            src: '/plus.png' 
+        }
     );
+
+    // = 기호
+    objectsInfo.push(
+        { 
+            id: 'equal', 
+            x: opX + groupGap + count2 * gapX + 40, 
+            y: baseY, 
+            src: '/equal.png' 
+        }
+    );
+
+    // 왼쪽 객체들
+    for (let i = 0; i < count1; i++) {
+        objectsInfo.push(
+            { 
+                id: `left-${i+1}`,
+                x: startX + i * gapX,
+                y: baseY,
+                src: objImage 
+            }
+        );
+    }
+
+    // 오른쪽 객체들
+    for (let i = 0; i < count2; i++) {
+        objectsInfo.push(
+            { 
+                id: `right-${i+1}`, 
+                x: opX + groupGap + i * gapX,
+                y: baseY,
+                src: objImage 
+            }
+        );
+    }
 
     return objectsInfo
 }
