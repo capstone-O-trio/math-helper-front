@@ -5,16 +5,15 @@ import { Camera } from '@mediapipe/camera_utils';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 import { getHandState } from '../utils/handState';
 
-// 객체 타입
-type Obj = { id: string; x: number; y: number; src: string };
+import { getObjectsInfo, Obj } from '../data/objectData';
 
 export default function HandTracker() {
   const webcamRef = useRef<Webcam | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   
-  const [objects, setObjects] = useState<Obj[]>([
-    { id: 'apple-1', x: 200, y: 150, src: '/사과.png' }, // 초기 예시 1개
-  ]);
+  const [objects, setObjects] = useState<Obj[]>(
+    getObjectsInfo('addition', 'apple', 3, 5)
+  );
 
   // Mediapipe 결과 처리
   function onResults(results: any) {
