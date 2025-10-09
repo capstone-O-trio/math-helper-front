@@ -4,7 +4,7 @@ import { Input } from "../components/common/Input";
 import { Text } from "../components/common/Text";
 import { Button } from "../components/common/Button";
 import { useCallback, useState } from "react";
-import { UserInfo } from "../api/type/type";
+import { UserInfo } from "../api/type";
 import { postSignup } from "../api/signup";
 
 export const SignupPage: React.FC = () => {
@@ -21,12 +21,11 @@ export const SignupPage: React.FC = () => {
       ...prevData,
       [name]: value,
     }));
-    
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (formData.password !== formData.passwordConfirm) {
       alert("비밀번호가 일치하지 않습니다.");
       return;
@@ -39,12 +38,10 @@ export const SignupPage: React.FC = () => {
 
     try {
       // 회원가입 API 호출
-      const response = await postSignup(signupDataForApi);
-      console.log(response);
+      await postSignup(signupDataForApi);
       alert("회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.");
       naviagate("/login");
     } catch (error) {
-      console.error(error);
       alert("회원가입에 실패했습니다. 다시 시도해주세요.");
     }
 
