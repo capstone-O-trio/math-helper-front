@@ -11,6 +11,7 @@ export const TextButton: React.FC<TextButtonProps> = ({
 }) => {
   return (
     <button
+      type="button"
       className="flex items-center justify-center w-full text-green-f underline hover:text-green-d  duration-300 "
       {...rest}
     >
