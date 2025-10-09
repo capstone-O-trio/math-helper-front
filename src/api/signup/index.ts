@@ -1,3 +1,7 @@
-import { UserInfo } from "../types/type";
+import { instance } from "../instance";
+import { UserInfo } from "../type/type";
 
-export const signup = async (formData: UserInfo) => {};
+export const postSignup = async (formData: UserInfo) => {
+    const response = await instance.post<UserInfo>("/users/signup", formData);
+    return response.data;
+};
