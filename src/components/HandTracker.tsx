@@ -5,10 +5,16 @@ import { Camera } from '@mediapipe/camera_utils';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 import { getHandState } from '../utils/handState';
 
+// 객체 타입
+type Obj = { id: string; x: number; y: number; src: string };
+
 export default function HandTracker() {
   const webcamRef = useRef<Webcam | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [imagePositions, setImagePositions] = useState<{ x: number; y: number }[]>(); // [{x,y}, ...]
+  
+  const [objects, setObjects] = useState<Obj[]>([
+    { id: 'apple-1', x: 200, y: 150, src: '/사과.png' }, // 초기 예시 1개
+  ]);
 
   // Mediapipe 결과 처리
   function onResults(results: any) {
@@ -30,20 +36,33 @@ export default function HandTracker() {
         hands.forEach((lm) => {
             // 손 중앙(예: 9번 랜드마크) 좌표 계산
             const handCenter = lm[9];
-            const x = handCenter.x * dispW;
-            const y = handCenter.y * dispH;
-            positions.push({ x, y });
+            const hand_x = handCenter.x * dispW;
+            const hand_y = handCenter.y * dispH;
             
             // 모든 손에 대해 랜드마크/연결선 그리기
             drawConnectors(ctx, lm as any, HAND_CONNECTIONS);
             drawLandmarks(ctx, lm as any);
 
             const state = getHandState(lm); // 손 상태
-            console.log(state, x, y); // 손 상태, 위치 출력
-        });
-        setImagePositions(positions); // 손마다 이미지 하나씩 띄우기 위해 배열로 저장
+            console.log(state, hand_x, hand_y); // 손 상태, 위치 출력
+
+            // 해당 객체와 손이 동일한 위치에 있고, 주먹 쥔 상태라면 이동
+            setObjects(prev =>
+              prev.map(({ id, x, y, src }) => {
+                // 손과 객체가 근접하고, 주먹 쥔 상태라면 이동
+                if (
+                  hand_x < x + 50 && hand_x > x - 50 &&
+                  hand_y < y + 50 && hand_y > y - 50 &&
+                  state === 'fist'
+                ) {
+                  return { id, x: hand_x, y: hand_y, src }; // 위치 갱신
+                }
+                return { id, x, y, src }; // 그대로 유지
+              })
+            );
+          });
         } else {
-            setImagePositions([]); // 손 없으면 모두 숨김
+            
         }
 
     ctx.restore();
@@ -141,25 +160,25 @@ export default function HandTracker() {
           }}
         />
 
-        {/* 손이 있을 때만 PNG 이미지 표시.
-            좌표는 onResults에서 계산한 '그대로' 사용하면 시각상 정확히 겹침. */}
-        {Array.isArray(imagePositions) && imagePositions.map(({ x, y }, i) => (
-            <img
-            key={i}
-            src="/사과.png"
-            alt={`hand-${i}`}
+        {/* 객체를 화면에 표시 */}
+        {objects.map(({ id, x, y, src }) => (
+          <img
+            key={id}
+            src={src}
+            alt={id}
             style={{
-                position: 'absolute',
-                left: x,
-                top: y,
-                width: 48,
-                height: 48,
-                transform: 'translate(-50%, -50%)',
-                pointerEvents: 'none',
-                zIndex: 3,
+              position: 'absolute',
+              left: x,
+              top: y,
+              width: 48,
+              height: 48,
+              transform: 'translate(-50%, -50%)',
+              pointerEvents: 'none',
+              zIndex: 3,
             }}
-            />
+          />
         ))}
+
       </div>
     </div>
   );
