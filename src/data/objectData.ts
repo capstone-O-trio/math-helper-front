@@ -163,7 +163,7 @@ export function getAnswerInfo(
     // 선택지 2
     answerInfo.push(
         {
-            id: 'choice1', 
+            id: 'choice2', 
             x: 800, 
             y: 600, 
             src: `/asset/${choices[1]}.png`,
@@ -175,7 +175,7 @@ export function getAnswerInfo(
     // 선택지 3
     answerInfo.push(
         {
-            id: 'choice1', 
+            id: 'choice3', 
             x: 1100, 
             y: 600, 
             src: `/asset/${choices[2]}.png`,
