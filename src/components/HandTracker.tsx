@@ -5,7 +5,7 @@ import { Camera } from '@mediapipe/camera_utils';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 import { getHandState } from '../utils/handState';
 
-import { getObjectsInfo, Obj } from '../data/objectData';
+import { getObjectsInfo, getAnswerInfo, Obj } from '../data/objectData';
 
 let movingObjId: string | null = null; // 현재 손으로 이동중인 객체의 id
 
@@ -14,8 +14,11 @@ export default function HandTracker() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   
   const [objects, setObjects] = useState<Obj[]>(
-    getObjectsInfo('addition', 'apple', 3, 5)
+    // getObjectsInfo('addition', 'apple', 3, 5)
+    getAnswerInfo('3+5', 3, 5, 8, [6,9])
   );
+
+  const [camRatio, setCamRatio] = useState(1);
 
   // Mediapipe 결과 처리
   function onResults(results: any) {
@@ -23,6 +26,8 @@ export default function HandTracker() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D | null;
     if (!ctx) return;
+
+    setCamRatio(canvas.clientWidth / 1600); // 화면 비율 조정
 
     const dispW = canvas.clientWidth;   // = CSS로 보이는 가로
     const dispH = canvas.clientHeight;  // = CSS로 보이는 세로
@@ -100,6 +105,8 @@ export default function HandTracker() {
       canvas.width = video.videoWidth || 1280;
       canvas.height = video.videoHeight || 720;
 
+      setCamRatio(canvas.clientWidth / 1600); // 화면 비율 조정
+
       // Camera 유틸 시작:
       // 매 프레임마다 onFrame이 호출되고, hands.send({image: video})로 추론 수행
       camera = new Camera(video, {
@@ -175,8 +182,8 @@ export default function HandTracker() {
             alt={id}
             style={{
               position: 'absolute',
-              left: x,
-              top: y,
+              left: x*camRatio,
+              top: y*camRatio,
               width: 48,
               height: 48,
               transform: 'translate(-50%, -50%)',
