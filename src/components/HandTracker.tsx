@@ -5,16 +5,17 @@ import { Camera } from '@mediapipe/camera_utils';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 import { getHandState } from '../utils/handState';
 
-// 객체 타입
-type Obj = { id: string; x: number; y: number; src: string };
+import { getObjectsInfo, Obj } from '../data/objectData';
+
+let movingObjId: string | null = null; // 현재 손으로 이동중인 객체의 id
 
 export default function HandTracker() {
   const webcamRef = useRef<Webcam | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   
-  const [objects, setObjects] = useState<Obj[]>([
-    { id: 'apple-1', x: 200, y: 150, src: '/사과.png' }, // 초기 예시 1개
-  ]);
+  const [objects, setObjects] = useState<Obj[]>(
+    getObjectsInfo('addition', 'apple', 3, 5)
+  );
 
   // Mediapipe 결과 처리
   function onResults(results: any) {
@@ -32,7 +33,6 @@ export default function HandTracker() {
 
     const hands = (results.multiHandLandmarks || []) as Array<Array<{ x: number; y: number; z: number }>>;
     if (hands.length > 0) { // 손이 보이면
-        const positions: { x: number; y: number }[] = [];
         hands.forEach((lm) => {
             // 손 중앙(예: 9번 랜드마크) 좌표 계산
             const handCenter = lm[9];
@@ -48,16 +48,22 @@ export default function HandTracker() {
 
             // 해당 객체와 손이 동일한 위치에 있고, 주먹 쥔 상태라면 이동
             setObjects(prev =>
-              prev.map(({ id, x, y, src }) => {
-                // 손과 객체가 근접하고, 주먹 쥔 상태라면 이동
-                if (
-                  hand_x < x + 50 && hand_x > x - 50 &&
-                  hand_y < y + 50 && hand_y > y - 50 &&
-                  state === 'fist'
-                ) {
-                  return { id, x: hand_x, y: hand_y, src }; // 위치 갱신
+              prev.map(({ id, x, y, src, isObj }) => {
+                if (state == 'fist') { // 손을 쥔 상태
+                  if ( // 손과 객체가 근접하면 이동
+                    isObj == true && // 객체만 이동 가능
+                    hand_x < x + 50 && hand_x > x - 50 &&
+                    hand_y < y + 50 && hand_y > y - 50 &&
+                    (movingObjId == null || movingObjId == id) // 객체를 쥐고 있지 않거나, 쥐고 있던 객체였다면
+                  ) {
+                    movingObjId = id; // 해당 객체를 이동
+                    return { id, x: hand_x, y: hand_y, src, isObj }; // 위치 갱신
+                  }
                 }
-                return { id, x, y, src }; // 그대로 유지
+                else {// 손을 쥐지 않은 상태
+                  movingObjId = null; // 객체를 내려놓음
+                }
+                return { id, x, y, src, isObj }; // 그대로 유지
               })
             );
           });
@@ -80,7 +86,7 @@ export default function HandTracker() {
       modelComplexity: 1, // 0(빠름)~1(기본)~2(정확) — 정확도/속도 트레이드오프
       minDetectionConfidence: 0.5,
       minTrackingConfidence: 0.5,
-      selfieMode: false, // 셀피 모드 기준
+      selfieMode: true, // 셀피 모드 기준
     });
 
     hands.onResults(onResults);
@@ -129,7 +135,7 @@ export default function HandTracker() {
         style={{
           position: 'relative',
           paddingTop: '56.25%', // 16:9 비율 유지
-          transform: 'scaleX(-1)',   // 화면을 반전. 거울 효과
+          transform: 'scaleX(1)',   // 화면을 반전. 거울 효과
           transformOrigin: 'center',
         }}
       >
@@ -143,6 +149,7 @@ export default function HandTracker() {
             width: '100%',
             height: '100%',
             objectFit: 'cover',
+            transform: 'scaleX(-1)',
           }}
           videoConstraints={{ width: 1280, height: 720, facingMode: 'user' }}
         />
