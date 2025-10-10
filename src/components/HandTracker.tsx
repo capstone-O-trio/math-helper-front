@@ -33,7 +33,6 @@ export default function HandTracker() {
 
     const hands = (results.multiHandLandmarks || []) as Array<Array<{ x: number; y: number; z: number }>>;
     if (hands.length > 0) { // 손이 보이면
-        const positions: { x: number; y: number }[] = [];
         hands.forEach((lm) => {
             // 손 중앙(예: 9번 랜드마크) 좌표 계산
             const handCenter = lm[9];
