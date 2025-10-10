@@ -92,6 +92,39 @@ export function getAnswerInfo(
         answer, wrongAnswer[0], wrongAnswer[1]
     ];
     choices.sort(); // 오름차순으로 정렬
+
+    // 선택지 1
+    answerInfo.push(
+        {
+            id: 'choice1', 
+            x: 180, 
+            y: 150, 
+            src: `${choices[0]}.png`,
+            isObj: false, // 객체 아님
+        }
+    );
+
+    // 선택지 2
+    answerInfo.push(
+        {
+            id: 'choice1', 
+            x: 200, 
+            y: 150, 
+            src: `${choices[1]}.png`,
+            isObj: false, // 객체 아님
+        }
+    );
+
+    // 선택지 3
+    answerInfo.push(
+        {
+            id: 'choice1', 
+            x: 220, 
+            y: 150, 
+            src: `${choices[2]}.png`,
+            isObj: false, // 객체 아님
+        }
+    );
     
     return answerInfo
 }
