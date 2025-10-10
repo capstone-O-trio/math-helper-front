@@ -50,6 +50,7 @@ export default function HandTracker() {
               prev.map(({ id, x, y, src, isObj }) => {
                 // 손과 객체가 근접하고, 주먹 쥔 상태라면 이동
                 if (
+                  isObj == true && // 객체만 이동 가능
                   hand_x < x + 50 && hand_x > x - 50 &&
                   hand_y < y + 50 && hand_y > y - 50 &&
                   state === 'fist'
