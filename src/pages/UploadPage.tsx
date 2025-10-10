@@ -1,13 +1,45 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "../components/common/Button";
 import { Heading } from "../components/common/Heading";
 import { Text } from "../components/common/Text";
-import { postUpload } from "../api/upload";
+import { getNewMaths, postUpload } from "../api/upload";
+import { probInfoType } from "../type/type";
+import { useNavigate } from "react-router-dom";
 
 export const UploadPage: React.FC = () => {
+  const navigate = useNavigate();
+
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
   const [isUpload, setIsUpload] = useState(false);
+
+  const [uploadedProbInfo, setUploadedProbInfo] = useState<probInfoType | null>(
+    null
+  );
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      //새로운 문제 확인 api
+      const response = await getNewMaths();
+
+      if (response.result !== null && selectedFile == null) {
+        setIsUpload(true);
+        setPreviewUrl(response.result.image);
+
+        //new 문제 정보 저장
+        setUploadedProbInfo({
+          id: response.result.mathId,
+          probType: response.result.mathProblemDto.problem,
+          entity: response.result.mathProblemDto.entity,
+          count1: response.result.mathProblemDto.count1,
+          count2: response.result.mathProblemDto.count2,
+        });
+      }
+    }, 3000); // 3초마다 요청
+
+    return () => clearInterval(interval);
+  }, [selectedFile]);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -16,6 +48,7 @@ export const UploadPage: React.FC = () => {
 
       setPreviewUrl(imageUrl);
       setSelectedFile(file);
+      setIsUpload(false);
     }
   }, []);
 
@@ -31,19 +64,9 @@ export const UploadPage: React.FC = () => {
     }
 
     try {
-      const response = await postUpload(formdata);
-      console.log("Upload successful:", response);
+      await postUpload(formdata);
       setIsUpload(true);
-
-      // 새로 받아온 이미지 URL로 previewUrl 업데이트
-      //setPreviewUrl(response.result.image);
-      //console.log(response.result.image);
-      //만약 계속인터발로 받아오면 previewUrl 자동으로 바뀌니까 이거 안해도될듯
-
-      //여기서 response에서 문제 관련 넘겨줄 값들 저장해놓고 -> handsTracking 인자로 넘기기
-      //아냐 여기서 받는게 아니라 위에서 그냥 계속 받아야함
     } catch (error) {
-      console.error("Upload failed:", error);
       alert("문제 업로드에 실패했습니다. 다시 시도해주세요.");
       return;
     }
@@ -91,7 +114,17 @@ export const UploadPage: React.FC = () => {
           )}
         </div>
       </div>
-      <Button className="fixed bottom-16 right-10" disabled={!isUpload}>
+      <Button
+        className="fixed bottom-16 right-10"
+        disabled={!isUpload}
+        onClick={() => {
+          if (uploadedProbInfo) {
+            navigate("/hands-tracker", {
+              state: { probInfo: uploadedProbInfo },
+            });
+          }
+        }}
+      >
         문제 풀러 가기
       </Button>
     </div>
