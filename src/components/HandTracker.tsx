@@ -6,6 +6,7 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 import { getHandState } from '../utils/handState';
 
 import { getObjectsInfo, getAnswerInfo, Obj } from '../data/objectData';
+import { Button } from './common/Button';
 
 let movingObjId: string | null = null; // 현재 손으로 이동중인 객체의 id
 
@@ -44,8 +45,8 @@ export default function HandTracker() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // 전체 캔버스 클리어
 
     // 드롭존 픽셀 좌표
-    const dx = 850 * ratio; // 오른쪽 위 x좌표
-    const dy = 150 * ratio; // 오른쪽 위 y좌표
+    const dx = 850 * ratio; // 왼쪽 위 x좌표
+    const dy = 150 * ratio; // 왼쪽 위 y좌표
     const dw = 400 * ratio; // 가로 길이
     const dh = 400 * ratio; // 세로 길이
 
@@ -61,7 +62,7 @@ export default function HandTracker() {
       const ox = x * ratio;
       const oy = y * ratio;
       if (
-        isObj === true &&
+        isObj == true &&
         ox >= dx && ox <= dx + dw &&
         oy >= dy && oy <= dy + dh
       ) {
