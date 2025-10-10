@@ -65,7 +65,7 @@ export default function HandTracker() {
 
             // 해당 객체와 손이 동일한 위치에 있고, 주먹 쥔 상태라면 이동
             setObjects(prev =>
-              prev.map(({ id, x, y, src, isObj }) => {
+              prev.map(({ id, x, y, src, isObj, value }) => {
                 if (state == 'fist') { // 손을 쥔 상태
                   if ( // 손과 객체가 근접하면 이동
                     isObj == true && // 객체만 이동 가능
@@ -74,13 +74,13 @@ export default function HandTracker() {
                     (movingObjId == null || movingObjId == id) // 객체를 쥐고 있지 않거나, 쥐고 있던 객체였다면
                   ) {
                     movingObjId = id; // 해당 객체를 이동
-                    return { id, x: hand_x, y: hand_y, src, isObj }; // 위치 갱신
+                    return { id, x: hand_x, y: hand_y, src, isObj, value }; // 위치 갱신
                   }
                 }
                 else {// 손을 쥐지 않은 상태
                   movingObjId = null; // 객체를 내려놓음
                 }
-                return { id, x, y, src, isObj }; // 그대로 유지
+                return { id, x, y, src, isObj, value }; // 그대로 유지
               })
             );
           });

@@ -2,6 +2,7 @@
 export type Obj = { 
     id: string; x: number; y: number; src: string, 
     isObj: boolean, // 객체인지
+    value: null | number, // 숫자라면 값이 있음
     };
 
 /* 1600 x 900을 기준으로 배치 */
@@ -34,6 +35,7 @@ export function getObjectsInfo(
             y: baseY, 
             src: '/asset/plus.png',
             isObj: false, // 객체 아님. 기호임
+            value: null,
         }
     );
 
@@ -45,6 +47,7 @@ export function getObjectsInfo(
             y: baseY, 
             src: '/asset/equal.png',
             isObj: false, // 객체 아님. 기호임
+            value: null,
         }
     );
 
@@ -57,6 +60,7 @@ export function getObjectsInfo(
                 y: baseY,
                 src: objImage,
                 isObj: true, // 객체임
+                value: null,
             }
         );
     }
@@ -70,6 +74,7 @@ export function getObjectsInfo(
                 y: baseY,
                 src: objImage,
                 isObj: true, // 객체임
+                value: null,
             }
         );
     }
@@ -98,6 +103,7 @@ export function getAnswerInfo(
             y: 300, 
             src: `/asset/${count1}.png`,
             isObj: false, // 객체 아님
+            value: count1,
         }
     );
 
@@ -109,6 +115,7 @@ export function getAnswerInfo(
             y: 300, 
             src: `/asset/${count2}.png`,
             isObj: false, // 객체 아님
+            value: count2,
         }
     );
 
@@ -120,6 +127,7 @@ export function getAnswerInfo(
             y: 300, 
             src: '/asset/plus.png',
             isObj: false, // 객체 아님. 기호임
+            value: null,
         }
     );
 
@@ -131,6 +139,7 @@ export function getAnswerInfo(
             y: 300, 
             src: '/asset/equal.png',
             isObj: false, // 객체 아님. 기호임
+            value: null,
         }
     );
 
@@ -147,6 +156,7 @@ export function getAnswerInfo(
             y: 600, 
             src: `/asset/${choices[0]}.png`,
             isObj: true, // 객체임
+            value: choices[0],
         }
     );
 
@@ -158,6 +168,7 @@ export function getAnswerInfo(
             y: 600, 
             src: `/asset/${choices[1]}.png`,
             isObj: true, // 객체임
+            value: choices[1],
         }
     );
 
@@ -169,6 +180,7 @@ export function getAnswerInfo(
             y: 600, 
             src: `/asset/${choices[2]}.png`,
             isObj: true, // 객체임
+            value: choices[2],
         }
     );
     
