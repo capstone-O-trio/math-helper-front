@@ -75,3 +75,13 @@ export function getObjectsInfo(
 
     return objectsInfo
 }
+
+export function getAnswerInfo(
+) : Obj[] {
+
+    const answerInfo: Obj[] = [ // 정답 맞추기 위한 객체
+    // 처음엔 아무것도 없음
+    ];
+    
+    return answerInfo
+}
