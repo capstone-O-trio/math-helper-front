@@ -48,6 +48,18 @@ export default function HandTracker() {
     ctx.strokeStyle = 'rgba(20,160,60,0.95)';
     ctx.strokeRect(dx, dy, dw, dh);
 
+    // 드롭존 안에 선택지가 있는지 확인
+    let select: null | number = null; // 고른 정답
+    objects.forEach(({ id, x, y, src, isObj, value }) => {
+      if (
+        isObj == true &&
+        x >= dx && x <= dx + dw &&
+        y >= dy && y <= dy + dh
+      )
+      select = value
+    });
+    if (select !== null) console.log(select);
+
     const hands = (results.multiHandLandmarks || []) as Array<Array<{ x: number; y: number; z: number }>>;
     if (hands.length > 0) { // 손이 보이면
         hands.forEach((lm) => {
