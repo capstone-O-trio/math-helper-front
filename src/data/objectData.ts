@@ -87,7 +87,7 @@ export function getObjectsInfo(
             y: 800, 
             src: `/asset/button-1.png`,
             isObj: false, // 객체 아님
-            value: null,
+            value: 1,
         }
     );
 
@@ -204,7 +204,7 @@ export function getAnswerInfo(
             y: 800, 
             src: `/asset/button-2.png`,
             isObj: false, // 객체 아님
-            value: null,
+            value: 1,
         }
     );
 
@@ -216,7 +216,7 @@ export function getAnswerInfo(
             y: 800, 
             src: `/asset/button-3.png`,
             isObj: false, // 객체 아님
-            value: null,
+            value: 1,
         }
     );
     
