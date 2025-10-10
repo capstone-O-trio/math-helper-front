@@ -36,6 +36,18 @@ export default function HandTracker() {
     ctx.save(); // 현재 컨텍스트 상태 스택에 저장
     ctx.clearRect(0, 0, canvas.width, canvas.height); // 전체 캔버스 클리어
 
+    // 드롭존 픽셀 좌표
+    const dx = 850; // 오른쪽 위 x좌표
+    const dy = 150; // 오른쪽 위 y좌표
+    const dw = 200; // 가로 길이
+    const dh = 200; // 세로 길이
+
+    // 드롭존 그리기
+    ctx.lineWidth = 4;
+    ctx.setLineDash([10, 6]);
+    ctx.strokeStyle = 'rgba(20,160,60,0.95)';
+    ctx.strokeRect(dx, dy, dw, dh);
+
     const hands = (results.multiHandLandmarks || []) as Array<Array<{ x: number; y: number; z: number }>>;
     if (hands.length > 0) { // 손이 보이면
         hands.forEach((lm) => {
