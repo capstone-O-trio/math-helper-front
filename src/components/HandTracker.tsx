@@ -79,7 +79,7 @@ export default function HandTracker() {
       modelComplexity: 1, // 0(빠름)~1(기본)~2(정확) — 정확도/속도 트레이드오프
       minDetectionConfidence: 0.5,
       minTrackingConfidence: 0.5,
-      selfieMode: false, // 셀피 모드 기준
+      selfieMode: true, // 셀피 모드 기준
     });
 
     hands.onResults(onResults);
@@ -128,7 +128,7 @@ export default function HandTracker() {
         style={{
           position: 'relative',
           paddingTop: '56.25%', // 16:9 비율 유지
-          transform: 'scaleX(-1)',   // 화면을 반전. 거울 효과
+          transform: 'scaleX(1)',   // 화면을 반전. 거울 효과
           transformOrigin: 'center',
         }}
       >
@@ -142,6 +142,7 @@ export default function HandTracker() {
             width: '100%',
             height: '100%',
             objectFit: 'cover',
+            transform: 'scaleX(-1)',
           }}
           videoConstraints={{ width: 1280, height: 720, facingMode: 'user' }}
         />
