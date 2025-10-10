@@ -47,16 +47,16 @@ export default function HandTracker() {
 
             // 해당 객체와 손이 동일한 위치에 있고, 주먹 쥔 상태라면 이동
             setObjects(prev =>
-              prev.map(({ id, x, y, src }) => {
+              prev.map(({ id, x, y, src, isObj, isMoved }) => {
                 // 손과 객체가 근접하고, 주먹 쥔 상태라면 이동
                 if (
                   hand_x < x + 50 && hand_x > x - 50 &&
                   hand_y < y + 50 && hand_y > y - 50 &&
                   state === 'fist'
                 ) {
-                  return { id, x: hand_x, y: hand_y, src }; // 위치 갱신
+                  return { id, x: hand_x, y: hand_y, src, isObj, isMoved }; // 위치 갱신
                 }
-                return { id, x, y, src }; // 그대로 유지
+                return { id, x, y, src, isObj, isMoved }; // 그대로 유지
               })
             );
           });

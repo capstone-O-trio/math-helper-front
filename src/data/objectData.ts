@@ -1,5 +1,8 @@
 // 객체 타입
-export type Obj = { id: string; x: number; y: number; src: string };
+export type Obj = { 
+    id: string; x: number; y: number; src: string, 
+    isObj: boolean, // 객체인지
+    };
 
 export function getObjectsInfo(
     probType="addition", 
@@ -28,7 +31,8 @@ export function getObjectsInfo(
             id: 'plus', 
             x: opX, 
             y: baseY, 
-            src: '/plus.png' 
+            src: '/plus.png',
+            isObj: false, // 객체 아님. 기호임
         }
     );
 
@@ -38,7 +42,8 @@ export function getObjectsInfo(
             id: 'equal', 
             x: opX + groupGap + count2 * gapX + 40, 
             y: baseY, 
-            src: '/equal.png' 
+            src: '/equal.png',
+            isObj: false, // 객체 아님. 기호임
         }
     );
 
@@ -49,7 +54,8 @@ export function getObjectsInfo(
                 id: `left-${i+1}`,
                 x: startX + i * gapX,
                 y: baseY,
-                src: objImage 
+                src: objImage,
+                isObj: true, // 객체임
             }
         );
     }
@@ -61,7 +67,8 @@ export function getObjectsInfo(
                 id: `right-${i+1}`, 
                 x: opX + groupGap + i * gapX,
                 y: baseY,
-                src: objImage 
+                src: objImage,
+                isObj: true, // 객체임
             }
         );
     }
