@@ -15,9 +15,9 @@ export function getObjectsInfo(
         // 처음엔 아무것도 없음
     ];
 
-    let objImage = '/사과.png'; // 객체로 넣을 이미지
+    let objImage = '/asset/사과.png'; // 객체로 넣을 이미지
     if (entity == 'apple') // 현재는 사과 이미지만 가능
-        objImage = '/사과.png';
+        objImage = '/asset/사과.png';
 
     // 배치 기준 (화면 크기 가정)
     const baseY = 200; // 세로 중앙
@@ -32,7 +32,7 @@ export function getObjectsInfo(
             id: 'plus', 
             x: opX, 
             y: baseY, 
-            src: '/plus.png',
+            src: '/asset/plus.png',
             isObj: false, // 객체 아님. 기호임
         }
     );
@@ -43,7 +43,7 @@ export function getObjectsInfo(
             id: 'equal', 
             x: opX + groupGap + count2 * gapX + 40, 
             y: baseY, 
-            src: '/equal.png',
+            src: '/asset/equal.png',
             isObj: false, // 객체 아님. 기호임
         }
     );
@@ -96,7 +96,7 @@ export function getAnswerInfo(
             id: 'count1', 
             x: 500, 
             y: 300, 
-            src: `${count1}.png`,
+            src: `/asset/${count1}.png`,
             isObj: false, // 객체 아님
         }
     );
@@ -107,7 +107,7 @@ export function getAnswerInfo(
             id: 'count2', 
             x: 800, 
             y: 300, 
-            src: `${count2}.png`,
+            src: `/asset/${count2}.png`,
             isObj: false, // 객체 아님
         }
     );
@@ -118,7 +118,7 @@ export function getAnswerInfo(
             id: 'plus', 
             x: 650, 
             y: 300, 
-            src: '/plus.png',
+            src: '/asset/plus.png',
             isObj: false, // 객체 아님. 기호임
         }
     );
@@ -129,7 +129,7 @@ export function getAnswerInfo(
             id: 'equal', 
             x: 950, 
             y: 300, 
-            src: '/equal.png',
+            src: '/asset/equal.png',
             isObj: false, // 객체 아님. 기호임
         }
     );
@@ -145,7 +145,7 @@ export function getAnswerInfo(
             id: 'choice1', 
             x: 500, 
             y: 600, 
-            src: `${choices[0]}.png`,
+            src: `/asset/${choices[0]}.png`,
             isObj: false, // 객체 아님
         }
     );
@@ -156,7 +156,7 @@ export function getAnswerInfo(
             id: 'choice1', 
             x: 800, 
             y: 600, 
-            src: `${choices[1]}.png`,
+            src: `/asset/${choices[1]}.png`,
             isObj: false, // 객체 아님
         }
     );
@@ -167,7 +167,7 @@ export function getAnswerInfo(
             id: 'choice1', 
             x: 1100, 
             y: 600, 
-            src: `${choices[2]}.png`,
+            src: `/asset/${choices[2]}.png`,
             isObj: false, // 객체 아님
         }
     );
