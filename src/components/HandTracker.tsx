@@ -5,7 +5,7 @@ import { Camera } from '@mediapipe/camera_utils';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 import { getHandState } from '../utils/handState';
 
-import { getObjectsInfo, Obj } from '../data/objectData';
+import { getObjectsInfo, getAnswerInfo, Obj } from '../data/objectData';
 
 let movingObjId: string | null = null; // 현재 손으로 이동중인 객체의 id
 
@@ -14,7 +14,8 @@ export default function HandTracker() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   
   const [objects, setObjects] = useState<Obj[]>(
-    getObjectsInfo('addition', 'apple', 3, 5)
+    // getObjectsInfo('addition', 'apple', 3, 5)
+    getAnswerInfo('3+5', 3, 5, 8, [6,9])
   );
 
   const [camRatio, setCamRatio] = useState(1);
