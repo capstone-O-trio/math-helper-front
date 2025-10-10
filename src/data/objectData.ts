@@ -77,11 +77,21 @@ export function getObjectsInfo(
 }
 
 export function getAnswerInfo(
+    problem: string,
+    count1: number, 
+    count2: number,
+    answer: number,
+    wrongAnswer: number[]
 ) : Obj[] {
-
+    
     const answerInfo: Obj[] = [ // 정답 맞추기 위한 객체
     // 처음엔 아무것도 없음
     ];
+
+    const choices: number[] = [
+        answer, wrongAnswer[0], wrongAnswer[1]
+    ];
+    choices.sort(); // 오름차순으로 정렬
     
     return answerInfo
 }
