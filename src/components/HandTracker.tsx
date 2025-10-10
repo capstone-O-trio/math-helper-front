@@ -7,6 +7,8 @@ import { getHandState } from '../utils/handState';
 
 import { getObjectsInfo, Obj } from '../data/objectData';
 
+let movingObjId: string | null = null; // 현재 손으로 이동중인 객체의 id
+
 export default function HandTracker() {
   const webcamRef = useRef<Webcam | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -48,14 +50,19 @@ export default function HandTracker() {
             // 해당 객체와 손이 동일한 위치에 있고, 주먹 쥔 상태라면 이동
             setObjects(prev =>
               prev.map(({ id, x, y, src, isObj }) => {
-                // 손과 객체가 근접하고, 주먹 쥔 상태라면 이동
-                if (
-                  isObj == true && // 객체만 이동 가능
-                  hand_x < x + 50 && hand_x > x - 50 &&
-                  hand_y < y + 50 && hand_y > y - 50 &&
-                  state === 'fist'
-                ) {
-                  return { id, x: hand_x, y: hand_y, src, isObj }; // 위치 갱신
+                if (state == 'fist') { // 손을 쥔 상태
+                  if ( // 손과 객체가 근접하면 이동
+                    isObj == true && // 객체만 이동 가능
+                    hand_x < x + 50 && hand_x > x - 50 &&
+                    hand_y < y + 50 && hand_y > y - 50 &&
+                    (movingObjId == null || movingObjId == id) // 객체를 쥐고 있지 않거나, 쥐고 있던 객체였다면
+                  ) {
+                    movingObjId = id; // 해당 객체를 이동
+                    return { id, x: hand_x, y: hand_y, src, isObj }; // 위치 갱신
+                  }
+                }
+                else {// 손을 쥐지 않은 상태
+                  movingObjId = null; // 객체를 내려놓음
                 }
                 return { id, x, y, src, isObj }; // 그대로 유지
               })
