@@ -79,6 +79,18 @@ export function getObjectsInfo(
         );
     }
 
+    // 정답 맞추러 가기 버튼
+    objectsInfo.push(
+        {
+            id: 'button-answer', 
+            x: 100, 
+            y: 800, 
+            src: `/asset/button-1.png`,
+            isObj: false, // 객체 아님
+            value: null,
+        }
+    );
+
     return objectsInfo
 }
 
@@ -181,6 +193,30 @@ export function getAnswerInfo(
             src: `/asset/${choices[2]}.png`,
             isObj: true, // 객체임
             value: choices[2],
+        }
+    );
+
+    // 다른 문제 풀러가기 버튼
+    answerInfo.push(
+        {
+            id: 'button-other', 
+            x: 100, 
+            y: 800, 
+            src: `/asset/button-2.png`,
+            isObj: false, // 객체 아님
+            value: null,
+        }
+    );
+
+    // 문제 맞추기 버튼
+    answerInfo.push(
+        {
+            id: 'button-select', 
+            x: 1500, 
+            y: 800, 
+            src: `/asset/button-3.png`,
+            isObj: false, // 객체 아님
+            value: null,
         }
     );
     
