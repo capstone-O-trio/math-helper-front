@@ -146,7 +146,7 @@ export function getAnswerInfo(
             x: 500, 
             y: 600, 
             src: `/asset/${choices[0]}.png`,
-            isObj: false, // 객체 아님
+            isObj: true, // 객체임
         }
     );
 
@@ -157,7 +157,7 @@ export function getAnswerInfo(
             x: 800, 
             y: 600, 
             src: `/asset/${choices[1]}.png`,
-            isObj: false, // 객체 아님
+            isObj: true, // 객체임
         }
     );
 
@@ -168,7 +168,7 @@ export function getAnswerInfo(
             x: 1100, 
             y: 600, 
             src: `/asset/${choices[2]}.png`,
-            isObj: false, // 객체 아님
+            isObj: true, // 객체임
         }
     );
     
