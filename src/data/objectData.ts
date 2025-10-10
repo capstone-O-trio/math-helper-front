@@ -4,6 +4,7 @@ export type Obj = {
     isObj: boolean, // 객체인지
     };
 
+/* 1600 x 900을 기준으로 배치 */
 export function getObjectsInfo(
     probType="addition", 
     entity: string, 
@@ -76,6 +77,7 @@ export function getObjectsInfo(
     return objectsInfo
 }
 
+/* 1600 x 900을 기준으로 배치 */
 export function getAnswerInfo(
     problem: string,
     count1: number, 
@@ -97,8 +99,8 @@ export function getAnswerInfo(
     answerInfo.push(
         {
             id: 'choice1', 
-            x: 180, 
-            y: 150, 
+            x: 500, 
+            y: 600, 
             src: `${choices[0]}.png`,
             isObj: false, // 객체 아님
         }
@@ -108,8 +110,8 @@ export function getAnswerInfo(
     answerInfo.push(
         {
             id: 'choice1', 
-            x: 200, 
-            y: 150, 
+            x: 800, 
+            y: 600, 
             src: `${choices[1]}.png`,
             isObj: false, // 객체 아님
         }
@@ -119,8 +121,8 @@ export function getAnswerInfo(
     answerInfo.push(
         {
             id: 'choice1', 
-            x: 220, 
-            y: 150, 
+            x: 1100, 
+            y: 600, 
             src: `${choices[2]}.png`,
             isObj: false, // 객체 아님
         }
