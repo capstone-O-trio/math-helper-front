@@ -9,6 +9,7 @@ import { getObjectsInfo, getAnswerInfo, Obj } from '../data/objectData';
 import { Button } from './common/Button';
 
 let movingObjId: string | null = null; // 현재 손으로 이동중인 객체의 id
+let selectButtonId: string | null = null; // 손으로 선택한 버튼의 id
 
 export default function HandTracker() {
   const webcamRef = useRef<Webcam | null>(null);
@@ -78,6 +79,11 @@ export default function HandTracker() {
             const handCenter = lm[9];
             const hand_x = handCenter.x * dispW;
             const hand_y = handCenter.y * dispH;
+
+            // 검지 끝 좌표 계산
+            const handIndex = lm[8];
+            const index_x = handIndex.x * dispW;
+            const index_y = handIndex.y * dispH;
             
             // 모든 손에 대해 랜드마크/연결선 그리기
             drawConnectors(ctx, lm as any, HAND_CONNECTIONS);
@@ -85,14 +91,17 @@ export default function HandTracker() {
 
             const state = getHandState(lm); // 손 상태
             // console.log(state, hand_x, hand_y); // 손 상태, 위치 출력
+            // console.log(state, index_x, index_y); // 손 상태, 위치 출력
+            console.log(selectButtonId);
 
             // 해당 객체와 손이 동일한 위치에 있고, 주먹 쥔 상태라면 이동
             setObjects(prev =>
               prev.map(({ id, x, y, src, isObj, value }) => {
+                const ox = x * ratio;          // 객체 화면 X
+                const oy = y * ratio;          // 객체 화면 Y
+                const th = 50 * ratio;         // 히트박스(화면 스케일 반영)
+
                 if (state == 'fist') { // 손을 쥔 상태
-                  const ox = x * ratio;          // 객체 화면 X
-                  const oy = y * ratio;          // 객체 화면 Y
-                  const th = 50 * ratio;         // 히트박스(화면 스케일 반영)
                   if ( // 손과 객체가 근접하면 이동
                     isObj == true && // 객체만 이동 가능
                     hand_x < ox + th && hand_x > ox - th &&
@@ -103,8 +112,20 @@ export default function HandTracker() {
                     return { id, x: hand_x / ratio, y: hand_y / ratio, src, isObj, value }; // 위치 갱신
                   }
                 }
-                else {// 손을 쥐지 않은 상태
+                else if (state == 'indexUp') { // 검지만 편 상태
+                  if (isObj == false && value == 1) { // 버튼인 경우
+                    if (
+                      index_x < ox + 50 && index_x > ox - 50 &&
+                      index_y < oy + 50 && index_y > oy - 50
+                    ) {
+                      selectButtonId = id;
+                    }
+                    else selectButtonId = null; // 버튼 선택 해제
+                  }
+                }
+                else { // 손을 쥐지 않은 상태
                   movingObjId = null; // 객체를 내려놓음
+                  selectButtonId = null; // 버튼 선택 해제
                 }
                 return { id, x, y, src, isObj, value }; // 그대로 유지
               })
