@@ -21,7 +21,7 @@ export function getObjectsInfo(
         objImage = '/asset/사과.png';
 
     // 배치 기준 (화면 크기 가정)
-    const baseY = 200; // 세로 중앙
+    const baseY = 450; // 세로 중앙
     const startX = 150; // 첫 번째 그룹 시작 X
     const gapX = 70; // 객체 간 간격
     const groupGap = 250; // 왼쪽/오른쪽 그룹 사이 거리
@@ -83,11 +83,11 @@ export function getObjectsInfo(
     objectsInfo.push(
         {
             id: 'button-answer', 
-            x: 100, 
+            x: 1500, 
             y: 800, 
             src: `/asset/button-1.png`,
             isObj: false, // 객체 아님
-            value: 1,
+            value: 1, // 버튼
         }
     );
 
@@ -204,7 +204,7 @@ export function getAnswerInfo(
             y: 800, 
             src: `/asset/button-2.png`,
             isObj: false, // 객체 아님
-            value: 1,
+            value: 1, // 버튼
         }
     );
 
@@ -216,7 +216,7 @@ export function getAnswerInfo(
             y: 800, 
             src: `/asset/button-3.png`,
             isObj: false, // 객체 아님
-            value: 1,
+            value: 1, // 버튼
         }
     );
     

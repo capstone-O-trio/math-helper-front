@@ -6,19 +6,29 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 import { getHandState } from '../utils/handState';
 
 import { getObjectsInfo, getAnswerInfo, Obj } from '../data/objectData';
-import { Button } from './common/Button';
 
 let movingObjId: string | null = null; // 현재 손으로 이동중인 객체의 id
 let selectButtonId: string | null = null; // 손으로 선택한 버튼의 id
+
+// 문제 정보 저장
+let probType: string = 'addition';
+let problem: string = '3+5';
+let entity: string = 'apple';
+let count1: number = 3;
+let count2: number = 5;
+let answer: number = 8;
+let wrongAnswer: number[] = [6, 9];
 
 export default function HandTracker() {
   const webcamRef = useRef<Webcam | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   
   const [objects, setObjects] = useState<Obj[]>(
-    // getObjectsInfo('addition', 'apple', 3, 5)
-    getAnswerInfo('3+5', 3, 5, 8, [6,9])
+    getObjectsInfo(probType, entity, count1, count2) // mode 1
+    // getAnswerInfo(problem, count1, count2, answer, wrongAnswer) // mode 2
   );
+  const objectsRef = useRef(objects);
+  useEffect(() => { objectsRef.current = objects; }, [objects]);
 
   const [camRatio, setCamRatio] = useState(1);
   const camRatioRef = useRef(1); 
@@ -29,6 +39,9 @@ export default function HandTracker() {
     camRatioRef.current = r;         // onResults에서 사용할 최신값
     setCamRatio(r);                  // (옵션) 화면에 그릴 때도 사용
   };
+
+  const [mode, setMode] = useState<1 | 2>(1); // 1: 문제 풀어보기, 2: 정답 맞추기
+  const modeRef = useRef(mode); // 최신 mode
 
   // Mediapipe 결과 처리
   function onResults(results: any) {
@@ -46,10 +59,14 @@ export default function HandTracker() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // 전체 캔버스 클리어
 
     // 드롭존 픽셀 좌표
-    const dx = 850 * ratio; // 왼쪽 위 x좌표
-    const dy = 150 * ratio; // 왼쪽 위 y좌표
-    const dw = 400 * ratio; // 가로 길이
-    const dh = 400 * ratio; // 세로 길이
+    let dx = 1200 * ratio; // 왼쪽 위 x좌표
+    let dy = 250 * ratio; // 왼쪽 위 y좌표
+    let dw = 400 * ratio; // 가로 길이
+    let dh = 400 * ratio; // 세로 길이
+    if (modeRef.current == 2) { // mode가 바뀌면 드롭존 위치 수정
+      dx = 1100 * ratio;
+      dy = 100 * ratio;
+    }
 
     // 드롭존 그리기
     ctx.lineWidth = 4;
@@ -59,7 +76,7 @@ export default function HandTracker() {
 
     // 드롭존 안에 선택지가 있는지 확인
     let select: null | number = null; // 고른 정답
-    objects.forEach(({ id, x, y, src, isObj, value }) => {
+    objectsRef.current.forEach(({ id, x, y, src, isObj, value }) => {
       const ox = x * ratio;
       const oy = y * ratio;
       if (
@@ -70,7 +87,8 @@ export default function HandTracker() {
         select = value;
       }
     });
-    if (select !== null) console.log(select);
+    console.log('mode: ' + modeRef.current); // 현재 모드
+    if (select !== null) console.log('select: ' + select); // 고른 정답
 
     const hands = (results.multiHandLandmarks || []) as Array<Array<{ x: number; y: number; z: number }>>;
     if (hands.length > 0) { // 손이 보이면
@@ -92,7 +110,7 @@ export default function HandTracker() {
             const state = getHandState(lm); // 손 상태
             // console.log(state, hand_x, hand_y); // 손 상태, 위치 출력
             // console.log(state, index_x, index_y); // 손 상태, 위치 출력
-            console.log(selectButtonId);
+            // console.log(selectButtonId);
 
             // 해당 객체와 손이 동일한 위치에 있고, 주먹 쥔 상태라면 이동
             setObjects(prev =>
@@ -115,12 +133,20 @@ export default function HandTracker() {
                 else if (state == 'indexUp') { // 검지만 편 상태
                   if (isObj == false && value == 1) { // 버튼인 경우
                     if (
-                      index_x < ox + 50 && index_x > ox - 50 &&
-                      index_y < oy + 50 && index_y > oy - 50
-                    ) {
+                      index_x < ox + 70 && index_x > ox - 70 &&
+                      index_y < oy + 70 && index_y > oy - 70
+                    ) { // 버튼 클릭
                       selectButtonId = id;
                     }
-                    else selectButtonId = null; // 버튼 선택 해제
+                    else { // 버튼 클릭하지 않음
+                      if (selectButtonId !== null) { // 원래 버튼을 누르고 있었다가 뗀 경우
+                        if (selectButtonId == 'button-answer') {
+                          // '정답 맞추러 가기' 버튼을 누르다가 뗸 경우
+                          setMode(2); // 모드 변경
+                        }
+                      }
+                      selectButtonId = null; // 버튼 선택 해제
+                    }
                   }
                 }
                 else { // 손을 쥐지 않은 상태
@@ -137,6 +163,22 @@ export default function HandTracker() {
 
     ctx.restore();
   }
+
+  // 모드 바뀔 때 객체 재생성
+  useEffect(() => {
+    // 모드에 따라 객체 띄우기 초기화
+    // 손으로 잡은/선택한 것 초기화
+    movingObjId = null;
+    selectButtonId = null;
+
+    modeRef.current = mode; // 모드 바뀔 때 갱신
+
+    if (mode === 1) {
+      setObjects(getObjectsInfo(probType, entity, count1, count2));
+    } else {
+      setObjects(getAnswerInfo(problem, count1, count2, answer, wrongAnswer));
+    }
+  }, [mode]);
 
   // Hands 초기화 + 카메라 시작
   useEffect(() => {
@@ -159,7 +201,6 @@ export default function HandTracker() {
     updateRatio();
     const ro = new ResizeObserver(updateRatio);
     if (canvasRef.current) ro.observe(canvasRef.current);
-
 
     const startWhenReady = () => {
       const video = webcamRef.current?.video as HTMLVideoElement | undefined;
