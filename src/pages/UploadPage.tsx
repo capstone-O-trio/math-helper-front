@@ -29,11 +29,14 @@ export const UploadPage: React.FC = () => {
 
         //new 문제 정보 저장
         setUploadedProbInfo({
-          id: response.result.mathId,
+          mathId: response.result.mathId,
           probType: response.result.mathProblemDto.problem,
           entity: response.result.mathProblemDto.entity,
           count1: response.result.mathProblemDto.count1,
           count2: response.result.mathProblemDto.count2,
+          problem: response.result.mathProblemDto.problem,
+          answer: response.result.mathProblemDto.answer,
+          wrongAnswer: response.result.mathProblemDto.wrongAnswers,
         });
       }
     }, 3000); // 3초마다 요청

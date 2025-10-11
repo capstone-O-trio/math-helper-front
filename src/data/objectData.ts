@@ -17,7 +17,7 @@ export function getObjectsInfo(
     ];
 
     let objImage = '/asset/사과.png'; // 객체로 넣을 이미지
-    if (entity == 'apple') // 현재는 사과 이미지만 가능
+    if (entity === 'apple') // 현재는 사과 이미지만 가능
         objImage = '/asset/사과.png';
 
     // 배치 기준 (화면 크기 가정)
