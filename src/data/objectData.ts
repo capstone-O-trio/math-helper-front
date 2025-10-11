@@ -21,7 +21,7 @@ export function getObjectsInfo(
         objImage = '/asset/사과.png';
 
     // 배치 기준 (화면 크기 가정)
-    const baseY = 200; // 세로 중앙
+    const baseY = 400; // 세로 중앙
     const startX = 150; // 첫 번째 그룹 시작 X
     const gapX = 70; // 객체 간 간격
     const groupGap = 250; // 왼쪽/오른쪽 그룹 사이 거리
