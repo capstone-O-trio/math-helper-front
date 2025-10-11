@@ -124,12 +124,20 @@ export default function HandTracker() {
                 else if (state == 'indexUp') { // 검지만 편 상태
                   if (isObj == false && value == 1) { // 버튼인 경우
                     if (
-                      index_x < ox + 50 && index_x > ox - 50 &&
-                      index_y < oy + 50 && index_y > oy - 50
-                    ) {
+                      index_x < ox + 70 && index_x > ox - 70 &&
+                      index_y < oy + 70 && index_y > oy - 70
+                    ) { // 버튼 클릭
                       selectButtonId = id;
                     }
-                    else selectButtonId = null; // 버튼 선택 해제
+                    else { // 버튼 클릭하지 않음
+                      if (selectButtonId !== null) { // 원래 버튼을 누르고 있었다가 뗀 경우
+                        if (selectButtonId == 'button-answer') {
+                          // '정답 맞추러 가기' 버튼을 누르다가 뗸 경우
+                          mode = 2; // 모드 변경
+                        }
+                      }
+                      selectButtonId = null; // 버튼 선택 해제
+                    }
                   }
                 }
                 else { // 손을 쥐지 않은 상태
