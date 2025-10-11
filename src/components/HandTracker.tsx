@@ -60,7 +60,7 @@ export default function HandTracker() {
 
     // 드롭존 픽셀 좌표
     let dx = 1200 * ratio; // 왼쪽 위 x좌표
-    let dy = 200 * ratio; // 왼쪽 위 y좌표
+    let dy = 250 * ratio; // 왼쪽 위 y좌표
     let dw = 400 * ratio; // 가로 길이
     let dh = 400 * ratio; // 세로 길이
     if (modeRef.current == 2) { // mode가 바뀌면 드롭존 위치 수정
