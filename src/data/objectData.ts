@@ -83,11 +83,11 @@ export function getObjectsInfo(
     objectsInfo.push(
         {
             id: 'button-answer', 
-            x: 100, 
+            x: 1500, 
             y: 800, 
             src: `/asset/button-1.png`,
             isObj: false, // 객체 아님
-            value: 1,
+            value: 1, // 버튼
         }
     );
 
@@ -204,7 +204,7 @@ export function getAnswerInfo(
             y: 800, 
             src: `/asset/button-2.png`,
             isObj: false, // 객체 아님
-            value: 1,
+            value: 1, // 버튼
         }
     );
 
@@ -216,7 +216,7 @@ export function getAnswerInfo(
             y: 800, 
             src: `/asset/button-3.png`,
             isObj: false, // 객체 아님
-            value: 1,
+            value: 1, // 버튼
         }
     );
     
