@@ -8,22 +8,16 @@ import { getHandState } from "../utils/handState";
 import { getObjectsInfo, getAnswerInfo, Obj } from "../data/objectData";
 import { probInfoType } from "../type/type";
 import { useNavigate } from "react-router-dom";
-import { useCheckAnswer } from "../Hook/useCheckAnswer";
+import { Heading } from "./common/Heading";
 
 let movingObjId: string | null = null; // 현재 손으로 이동중인 객체의 id
 let selectButtonId: string | null = null; // 손으로 선택한 버튼의 id
 
-// 문제 정보 저장
-/*let probType: string = "addition";
-let problem: string = "3+5";
-let entity: string = "apple";
-let count1: number = 3;
-let count2: number = 5;
-let answer: number = 8;
-let wrongAnswer: number[] = [6, 9];*/
-
 export const HandTracker = (probInfo: probInfoType) => {
   const navigate = useNavigate();
+
+  const [comment, setComment] =
+    useState<string>("정답을 네모칸 안에 넣어주세요");
 
   const webcamRef = useRef<Webcam | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -35,7 +29,6 @@ export const HandTracker = (probInfo: probInfoType) => {
       probInfo.count1,
       probInfo.count2
     ) // mode 1
-    // getAnswerInfo(problem,  probInfo.count1, probInfo.count2, answer, wrongAnswer) // mode 2
   );
   const objectsRef = useRef(objects);
   useEffect(() => {
@@ -126,9 +119,6 @@ export const HandTracker = (probInfo: probInfoType) => {
         drawLandmarks(ctx, lm as any);
 
         const state = getHandState(lm); // 손 상태
-        // console.log(state, hand_x, hand_y); // 손 상태, 위치 출력
-        // console.log(state, index_x, index_y); // 손 상태, 위치 출력
-        // console.log(selectButtonId);
 
         // 해당 객체와 손이 동일한 위치에 있고, 주먹 쥔 상태라면 이동
         setObjects((prev) =>
@@ -183,12 +173,12 @@ export const HandTracker = (probInfo: probInfoType) => {
                       // 정답 확인
                       if (select !== null) {
                         if (select === probInfo.answer) {
-                          alert("정답입니다!");
+                          setComment("정답입니다! 짝짝짝!");
                         } else {
-                          alert("오답입니다ㅠㅠ");
+                          setComment("오답입니다.. ㅠㅠ");
                         }
                       } else {
-                        alert("선택한 답이 없습니다.");
+                        setComment("선택한 답이 없습니다..!");
                       }
                     }
                     if (selectButtonId === "button-other") {
@@ -330,6 +320,19 @@ export const HandTracker = (probInfo: probInfoType) => {
           transformOrigin: "center",
         }}
       >
+        {mode === 2 && (
+          <Heading
+            style={{
+              position: "absolute",
+              top: "-40%",
+              zIndex: 10,
+              color: "navy",
+              fontWeight: "bold",
+            }}
+          >
+            {comment}
+          </Heading>
+        )}
         {/* react-webcam으로 브라우저 카메라 스트림 표시 */}
         <Webcam
           ref={webcamRef}
