@@ -6,8 +6,10 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 import { getHandState } from '../utils/handState';
 
 import { getObjectsInfo, getAnswerInfo, Obj } from '../data/objectData';
+import { Button } from './common/Button';
 
 let movingObjId: string | null = null; // 현재 손으로 이동중인 객체의 id
+let selectButtonId: string | null = null; // 손으로 선택한 버튼의 id
 
 export default function HandTracker() {
   const webcamRef = useRef<Webcam | null>(null);
@@ -19,6 +21,14 @@ export default function HandTracker() {
   );
 
   const [camRatio, setCamRatio] = useState(1);
+  const camRatioRef = useRef(1); 
+  const updateRatio = () => {
+    const el = canvasRef.current;
+    if (!el) return;
+    const r = el.clientWidth / 1600; // 기준 1600 좌표 → 화면 px 스케일
+    camRatioRef.current = r;         // onResults에서 사용할 최신값
+    setCamRatio(r);                  // (옵션) 화면에 그릴 때도 사용
+  };
 
   // Mediapipe 결과 처리
   function onResults(results: any) {
@@ -27,14 +37,40 @@ export default function HandTracker() {
     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D | null;
     if (!ctx) return;
 
-    setCamRatio(canvas.clientWidth / 1600); // 화면 비율 조정
-
     const dispW = canvas.clientWidth;   // = CSS로 보이는 가로
     const dispH = canvas.clientHeight;  // = CSS로 보이는 세로
+    const ratio = camRatioRef.current;  // 현재 화면 비율
 
     // 그리기 전 초기화: 이전 프레임 지우기
     ctx.save(); // 현재 컨텍스트 상태 스택에 저장
     ctx.clearRect(0, 0, canvas.width, canvas.height); // 전체 캔버스 클리어
+
+    // 드롭존 픽셀 좌표
+    const dx = 850 * ratio; // 왼쪽 위 x좌표
+    const dy = 150 * ratio; // 왼쪽 위 y좌표
+    const dw = 400 * ratio; // 가로 길이
+    const dh = 400 * ratio; // 세로 길이
+
+    // 드롭존 그리기
+    ctx.lineWidth = 4;
+    ctx.setLineDash([10, 6]);
+    ctx.strokeStyle = 'rgba(20,160,60,0.95)';
+    ctx.strokeRect(dx, dy, dw, dh);
+
+    // 드롭존 안에 선택지가 있는지 확인
+    let select: null | number = null; // 고른 정답
+    objects.forEach(({ id, x, y, src, isObj, value }) => {
+      const ox = x * ratio;
+      const oy = y * ratio;
+      if (
+        isObj == true &&
+        ox >= dx && ox <= dx + dw &&
+        oy >= dy && oy <= dy + dh
+      ) {
+        select = value;
+      }
+    });
+    if (select !== null) console.log(select);
 
     const hands = (results.multiHandLandmarks || []) as Array<Array<{ x: number; y: number; z: number }>>;
     if (hands.length > 0) { // 손이 보이면
@@ -43,32 +79,55 @@ export default function HandTracker() {
             const handCenter = lm[9];
             const hand_x = handCenter.x * dispW;
             const hand_y = handCenter.y * dispH;
+
+            // 검지 끝 좌표 계산
+            const handIndex = lm[8];
+            const index_x = handIndex.x * dispW;
+            const index_y = handIndex.y * dispH;
             
             // 모든 손에 대해 랜드마크/연결선 그리기
             drawConnectors(ctx, lm as any, HAND_CONNECTIONS);
             drawLandmarks(ctx, lm as any);
 
             const state = getHandState(lm); // 손 상태
-            console.log(state, hand_x, hand_y); // 손 상태, 위치 출력
+            // console.log(state, hand_x, hand_y); // 손 상태, 위치 출력
+            // console.log(state, index_x, index_y); // 손 상태, 위치 출력
+            console.log(selectButtonId);
 
             // 해당 객체와 손이 동일한 위치에 있고, 주먹 쥔 상태라면 이동
             setObjects(prev =>
-              prev.map(({ id, x, y, src, isObj }) => {
+              prev.map(({ id, x, y, src, isObj, value }) => {
+                const ox = x * ratio;          // 객체 화면 X
+                const oy = y * ratio;          // 객체 화면 Y
+                const th = 50 * ratio;         // 히트박스(화면 스케일 반영)
+
                 if (state == 'fist') { // 손을 쥔 상태
                   if ( // 손과 객체가 근접하면 이동
                     isObj == true && // 객체만 이동 가능
-                    hand_x < x + 50 && hand_x > x - 50 &&
-                    hand_y < y + 50 && hand_y > y - 50 &&
+                    hand_x < ox + th && hand_x > ox - th &&
+                    hand_y < oy + th && hand_y > oy - th &&
                     (movingObjId == null || movingObjId == id) // 객체를 쥐고 있지 않거나, 쥐고 있던 객체였다면
                   ) {
                     movingObjId = id; // 해당 객체를 이동
-                    return { id, x: hand_x, y: hand_y, src, isObj }; // 위치 갱신
+                    return { id, x: hand_x / ratio, y: hand_y / ratio, src, isObj, value }; // 위치 갱신
                   }
                 }
-                else {// 손을 쥐지 않은 상태
-                  movingObjId = null; // 객체를 내려놓음
+                else if (state == 'indexUp') { // 검지만 편 상태
+                  if (isObj == false && value == 1) { // 버튼인 경우
+                    if (
+                      index_x < ox + 50 && index_x > ox - 50 &&
+                      index_y < oy + 50 && index_y > oy - 50
+                    ) {
+                      selectButtonId = id;
+                    }
+                    else selectButtonId = null; // 버튼 선택 해제
+                  }
                 }
-                return { id, x, y, src, isObj }; // 그대로 유지
+                else { // 손을 쥐지 않은 상태
+                  movingObjId = null; // 객체를 내려놓음
+                  selectButtonId = null; // 버튼 선택 해제
+                }
+                return { id, x, y, src, isObj, value }; // 그대로 유지
               })
             );
           });
@@ -96,6 +155,12 @@ export default function HandTracker() {
 
     hands.onResults(onResults);
 
+    // 비율 초기화 + 리사이즈 대응
+    updateRatio();
+    const ro = new ResizeObserver(updateRatio);
+    if (canvasRef.current) ro.observe(canvasRef.current);
+
+
     const startWhenReady = () => {
       const video = webcamRef.current?.video as HTMLVideoElement | undefined;
       const canvas = canvasRef.current;
@@ -105,7 +170,7 @@ export default function HandTracker() {
       canvas.width = video.videoWidth || 1280;
       canvas.height = video.videoHeight || 720;
 
-      setCamRatio(canvas.clientWidth / 1600); // 화면 비율 조정
+      updateRatio(); // 시작 시 비율 동기화
 
       // Camera 유틸 시작:
       // 매 프레임마다 onFrame이 호출되고, hands.send({image: video})로 추론 수행
@@ -133,6 +198,7 @@ export default function HandTracker() {
     return () => {
       if (camera?.stop) camera.stop();
       hands.close();
+      ro.disconnect();
     };
   }, []);
 

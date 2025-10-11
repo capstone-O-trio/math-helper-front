@@ -2,6 +2,7 @@
 export type Obj = { 
     id: string; x: number; y: number; src: string, 
     isObj: boolean, // 객체인지
+    value: null | number, // 숫자라면 값이 있음
     };
 
 /* 1600 x 900을 기준으로 배치 */
@@ -15,9 +16,9 @@ export function getObjectsInfo(
         // 처음엔 아무것도 없음
     ];
 
-    let objImage = '/사과.png'; // 객체로 넣을 이미지
+    let objImage = '/asset/사과.png'; // 객체로 넣을 이미지
     if (entity == 'apple') // 현재는 사과 이미지만 가능
-        objImage = '/사과.png';
+        objImage = '/asset/사과.png';
 
     // 배치 기준 (화면 크기 가정)
     const baseY = 200; // 세로 중앙
@@ -32,8 +33,9 @@ export function getObjectsInfo(
             id: 'plus', 
             x: opX, 
             y: baseY, 
-            src: '/plus.png',
+            src: '/asset/plus.png',
             isObj: false, // 객체 아님. 기호임
+            value: null,
         }
     );
 
@@ -43,8 +45,9 @@ export function getObjectsInfo(
             id: 'equal', 
             x: opX + groupGap + count2 * gapX + 40, 
             y: baseY, 
-            src: '/equal.png',
+            src: '/asset/equal.png',
             isObj: false, // 객체 아님. 기호임
+            value: null,
         }
     );
 
@@ -57,6 +60,7 @@ export function getObjectsInfo(
                 y: baseY,
                 src: objImage,
                 isObj: true, // 객체임
+                value: null,
             }
         );
     }
@@ -70,9 +74,22 @@ export function getObjectsInfo(
                 y: baseY,
                 src: objImage,
                 isObj: true, // 객체임
+                value: null,
             }
         );
     }
+
+    // 정답 맞추러 가기 버튼
+    objectsInfo.push(
+        {
+            id: 'button-answer', 
+            x: 100, 
+            y: 800, 
+            src: `/asset/button-1.png`,
+            isObj: false, // 객체 아님
+            value: 1,
+        }
+    );
 
     return objectsInfo
 }
@@ -96,8 +113,9 @@ export function getAnswerInfo(
             id: 'count1', 
             x: 500, 
             y: 300, 
-            src: `${count1}.png`,
+            src: `/asset/${count1}.png`,
             isObj: false, // 객체 아님
+            value: count1,
         }
     );
 
@@ -107,8 +125,9 @@ export function getAnswerInfo(
             id: 'count2', 
             x: 800, 
             y: 300, 
-            src: `${count2}.png`,
+            src: `/asset/${count2}.png`,
             isObj: false, // 객체 아님
+            value: count2,
         }
     );
 
@@ -118,8 +137,9 @@ export function getAnswerInfo(
             id: 'plus', 
             x: 650, 
             y: 300, 
-            src: '/plus.png',
+            src: '/asset/plus.png',
             isObj: false, // 객체 아님. 기호임
+            value: null,
         }
     );
 
@@ -129,8 +149,9 @@ export function getAnswerInfo(
             id: 'equal', 
             x: 950, 
             y: 300, 
-            src: '/equal.png',
+            src: '/asset/equal.png',
             isObj: false, // 객체 아님. 기호임
+            value: null,
         }
     );
 
@@ -145,30 +166,57 @@ export function getAnswerInfo(
             id: 'choice1', 
             x: 500, 
             y: 600, 
-            src: `${choices[0]}.png`,
-            isObj: false, // 객체 아님
+            src: `/asset/${choices[0]}.png`,
+            isObj: true, // 객체임
+            value: choices[0],
         }
     );
 
     // 선택지 2
     answerInfo.push(
         {
-            id: 'choice1', 
+            id: 'choice2', 
             x: 800, 
             y: 600, 
-            src: `${choices[1]}.png`,
-            isObj: false, // 객체 아님
+            src: `/asset/${choices[1]}.png`,
+            isObj: true, // 객체임
+            value: choices[1],
         }
     );
 
     // 선택지 3
     answerInfo.push(
         {
-            id: 'choice1', 
+            id: 'choice3', 
             x: 1100, 
             y: 600, 
-            src: `${choices[2]}.png`,
+            src: `/asset/${choices[2]}.png`,
+            isObj: true, // 객체임
+            value: choices[2],
+        }
+    );
+
+    // 다른 문제 풀러가기 버튼
+    answerInfo.push(
+        {
+            id: 'button-other', 
+            x: 100, 
+            y: 800, 
+            src: `/asset/button-2.png`,
             isObj: false, // 객체 아님
+            value: 1,
+        }
+    );
+
+    // 문제 맞추기 버튼
+    answerInfo.push(
+        {
+            id: 'button-select', 
+            x: 1500, 
+            y: 800, 
+            src: `/asset/button-3.png`,
+            isObj: false, // 객체 아님
+            value: 1,
         }
     );
     

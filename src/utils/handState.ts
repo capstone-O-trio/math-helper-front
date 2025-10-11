@@ -1,6 +1,6 @@
 // 타입 정의
 type Landmark = { x: number; y: number; z?: number };
-type HandState = 'fist' | 'open' | 'unknown';
+type HandState = 'fist' | 'open' | 'indexUp' | 'unknown';
 
 // 거리 계산
 const dist = (a: Landmark, b: Landmark): number => {
@@ -17,7 +17,7 @@ function isCurled(lm: Landmark[], tipIdx: number, pipIdx: number) {
     return disTip < disPip;
 }
 
-// 손 상태 반환: 'fist' | 'open' | 'unknown'
+// 손 상태 반환: 'fist' | 'open' | 'indexUp' | 'unknown'
 function getHandState(lm: Landmark[]): HandState {
     if (!lm || lm.length < 21) return 'unknown';
 
@@ -29,6 +29,9 @@ function getHandState(lm: Landmark[]): HandState {
 
     if (curledIndex && curledMiddle && curledRing && curledPinky) {
         return 'fist';
+    }
+    else if (!curledIndex && curledMiddle && curledRing && curledPinky) {
+        return 'indexUp';
     }
     else {
         return 'open';
