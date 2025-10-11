@@ -11,13 +11,22 @@ import { Button } from './common/Button';
 let movingObjId: string | null = null; // 현재 손으로 이동중인 객체의 id
 let selectButtonId: string | null = null; // 손으로 선택한 버튼의 id
 
+// 문제 정보 저장
+let probType: string = 'addition';
+let problem: string = '3+5';
+let entity: string = 'apple';
+let count1: number = 3;
+let count2: number = 5;
+let answer: number = 8;
+let wrongAnswer: number[] = [6, 9];
+
 export default function HandTracker() {
   const webcamRef = useRef<Webcam | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   
   const [objects, setObjects] = useState<Obj[]>(
-    // getObjectsInfo('addition', 'apple', 3, 5)
-    getAnswerInfo('3+5', 3, 5, 8, [6,9])
+    // getObjectsInfo(probType, entity, count1, count2)
+    getAnswerInfo(problem, count1, count2, answer, wrongAnswer)
   );
 
   const [camRatio, setCamRatio] = useState(1);
