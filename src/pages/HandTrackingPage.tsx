@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
-import HandTracker from "../components/HandTracker";
 import { probInfoType } from "../type/type";
+import { HandTracker } from "../components/HandTracker";
 
 export const HandTrackingPage: React.FC = () => {
   const location = useLocation();
@@ -12,8 +12,16 @@ export const HandTrackingPage: React.FC = () => {
 
   return (
     <div>
-      {probInfo.entity}
-      <HandTracker />
+      <HandTracker
+        mathId={probInfo.mathId}
+        probType={probInfo.probType}
+        entity={probInfo.entity}
+        count1={probInfo.count1}
+        count2={probInfo.count2}
+        problem={probInfo.problem}
+        answer={probInfo.answer}
+        wrongAnswer={probInfo.wrongAnswer}
+      />
     </div>
   );
 };
