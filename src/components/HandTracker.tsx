@@ -6,8 +6,8 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 import { getHandState } from '../utils/handState';
 
 import { getObjectsInfo, getAnswerInfo, Obj } from '../data/objectData';
-import { Button } from './common/Button';
 
+let mode: 1 | 2 = 1; // 1: 문제 풀어보기, 2: 정답 맞추기
 let movingObjId: string | null = null; // 현재 손으로 이동중인 객체의 id
 let selectButtonId: string | null = null; // 손으로 선택한 버튼의 id
 
@@ -25,8 +25,8 @@ export default function HandTracker() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   
   const [objects, setObjects] = useState<Obj[]>(
-    // getObjectsInfo(probType, entity, count1, count2)
-    getAnswerInfo(problem, count1, count2, answer, wrongAnswer)
+    getObjectsInfo(probType, entity, count1, count2) // mode 1
+    // getAnswerInfo(problem, count1, count2, answer, wrongAnswer) // mode 2
   );
 
   const [camRatio, setCamRatio] = useState(1);
@@ -147,6 +147,20 @@ export default function HandTracker() {
     ctx.restore();
   }
 
+  // 모드 바뀔 때 객체 재생성
+  useEffect(() => {
+    // 모드에 따라 객체 띄우기 초기화
+    // 손으로 잡은/선택한 것 초기화
+    movingObjId = null;
+    selectButtonId = null;
+
+    if (mode === 1) {
+      setObjects(getObjectsInfo(probType, entity, count1, count2));
+    } else {
+      setObjects(getAnswerInfo(problem, count1, count2, answer, wrongAnswer));
+    }
+  }, [mode]);
+
   // Hands 초기화 + 카메라 시작
   useEffect(() => {
     let camera: any;
@@ -168,7 +182,6 @@ export default function HandTracker() {
     updateRatio();
     const ro = new ResizeObserver(updateRatio);
     if (canvasRef.current) ro.observe(canvasRef.current);
-
 
     const startWhenReady = () => {
       const video = webcamRef.current?.video as HTMLVideoElement | undefined;
