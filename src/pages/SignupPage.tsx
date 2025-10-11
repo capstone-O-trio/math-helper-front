@@ -6,6 +6,7 @@ import { Button } from "../components/common/Button";
 import { useCallback, useState } from "react";
 import { UserInfo } from "../api/type";
 import { postSignup } from "../api/signup";
+import { BackButton } from "../components/common/BackButton";
 
 export const SignupPage: React.FC = () => {
   const naviagate = useNavigate();
@@ -51,14 +52,12 @@ export const SignupPage: React.FC = () => {
   return (
     <div className="w-full h-full flex flex-col items-center">
       <div className="absolute top-4 w-full">
-        <button
-          className="absolute left-8 top-1"
+        <BackButton
           onClick={() => {
             naviagate(-1);
           }}
-        >
-          이전
-        </button>
+          className="absolute left-8 top-1"
+        />
         <Heading>회원가입</Heading>
       </div>
       <form
