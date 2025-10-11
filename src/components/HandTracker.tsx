@@ -55,8 +55,8 @@ export default function HandTracker() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // 전체 캔버스 클리어
 
     // 드롭존 픽셀 좌표
-    const dx = 850 * ratio; // 왼쪽 위 x좌표
-    const dy = 150 * ratio; // 왼쪽 위 y좌표
+    const dx = 1100 * ratio; // 왼쪽 위 x좌표
+    const dy = 100 * ratio; // 왼쪽 위 y좌표
     const dw = 400 * ratio; // 가로 길이
     const dh = 400 * ratio; // 세로 길이
 
