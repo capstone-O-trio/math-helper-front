@@ -7,7 +7,6 @@ import { getHandState } from '../utils/handState';
 
 import { getObjectsInfo, getAnswerInfo, Obj } from '../data/objectData';
 
-let mode: 1 | 2 = 1; // 1: 문제 풀어보기, 2: 정답 맞추기
 let movingObjId: string | null = null; // 현재 손으로 이동중인 객체의 id
 let selectButtonId: string | null = null; // 손으로 선택한 버튼의 id
 
@@ -28,6 +27,8 @@ export default function HandTracker() {
     getObjectsInfo(probType, entity, count1, count2) // mode 1
     // getAnswerInfo(problem, count1, count2, answer, wrongAnswer) // mode 2
   );
+  const objectsRef = useRef(objects);
+  useEffect(() => { objectsRef.current = objects; }, [objects]);
 
   const [camRatio, setCamRatio] = useState(1);
   const camRatioRef = useRef(1); 
@@ -38,6 +39,9 @@ export default function HandTracker() {
     camRatioRef.current = r;         // onResults에서 사용할 최신값
     setCamRatio(r);                  // (옵션) 화면에 그릴 때도 사용
   };
+
+  const [mode, setMode] = useState<1 | 2>(1); // 1: 문제 풀어보기, 2: 정답 맞추기
+  const modeRef = useRef(mode); // 최신 mode
 
   // Mediapipe 결과 처리
   function onResults(results: any) {
@@ -68,7 +72,7 @@ export default function HandTracker() {
 
     // 드롭존 안에 선택지가 있는지 확인
     let select: null | number = null; // 고른 정답
-    objects.forEach(({ id, x, y, src, isObj, value }) => {
+    objectsRef.current.forEach(({ id, x, y, src, isObj, value }) => {
       const ox = x * ratio;
       const oy = y * ratio;
       if (
@@ -79,7 +83,8 @@ export default function HandTracker() {
         select = value;
       }
     });
-    if (select !== null) console.log(select);
+    console.log('mode: ' + modeRef.current); // 현재 모드
+    if (select !== null) console.log('select: ' + select); // 고른 정답
 
     const hands = (results.multiHandLandmarks || []) as Array<Array<{ x: number; y: number; z: number }>>;
     if (hands.length > 0) { // 손이 보이면
@@ -101,7 +106,7 @@ export default function HandTracker() {
             const state = getHandState(lm); // 손 상태
             // console.log(state, hand_x, hand_y); // 손 상태, 위치 출력
             // console.log(state, index_x, index_y); // 손 상태, 위치 출력
-            console.log(selectButtonId);
+            // console.log(selectButtonId);
 
             // 해당 객체와 손이 동일한 위치에 있고, 주먹 쥔 상태라면 이동
             setObjects(prev =>
@@ -133,7 +138,7 @@ export default function HandTracker() {
                       if (selectButtonId !== null) { // 원래 버튼을 누르고 있었다가 뗀 경우
                         if (selectButtonId == 'button-answer') {
                           // '정답 맞추러 가기' 버튼을 누르다가 뗸 경우
-                          mode = 2; // 모드 변경
+                          setMode(2); // 모드 변경
                         }
                       }
                       selectButtonId = null; // 버튼 선택 해제
@@ -161,6 +166,8 @@ export default function HandTracker() {
     // 손으로 잡은/선택한 것 초기화
     movingObjId = null;
     selectButtonId = null;
+
+    modeRef.current = mode; // 모드 바뀔 때 갱신
 
     if (mode === 1) {
       setObjects(getObjectsInfo(probType, entity, count1, count2));
