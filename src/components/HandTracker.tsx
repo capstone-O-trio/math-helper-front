@@ -94,13 +94,7 @@ export const HandTracker = (probInfo: probInfoType) => {
     objectsRef.current.forEach(({ id, x, y, src, isObj, value }) => {
       const ox = x * ratio;
       const oy = y * ratio;
-      if (
-        isObj === true &&
-        ox >= dx &&
-        ox <= dx + dw &&
-        oy >= dy &&
-        oy <= dy + dh
-      ) {
+      if (isInDropZone(dx,dy,dw,dh,ox,oy,isObj)) { // 객체가 드롭존 안에 있다면
         select = value;
       }
     });
