@@ -9,6 +9,7 @@ import { getObjectsInfo, getAnswerInfo, Obj } from "../data/objectData";
 import { probInfoType } from "../type/type";
 import { useNavigate } from "react-router-dom";
 import { Heading } from "./common/Heading";
+import { isInDropZone } from "../utils/solveProblem";
 
 let movingObjId: string | null = null; // 현재 손으로 이동중인 객체의 id
 let selectButtonId: string | null = null; // 손으로 선택한 버튼의 id
@@ -89,17 +90,30 @@ export const HandTracker = (probInfo: probInfoType) => {
     ctx.strokeStyle = "rgba(20,160,60,0.95)";
     ctx.strokeRect(dx, dy, dw, dh);
 
-    // 드롭존 안에 선택지가 있는지 확인
+    if (mode == 1) { // 문제 풀어보기
+      let totalNum: number = 0; // 객체의 총 개수
+      objectsRef.current.forEach(({ id, x, y, src, isObj, value }) => {
+        const ox = x * ratio;
+        const oy = y * ratio;
+        if (isInDropZone(dx,dy,dw,dh,ox,oy,isObj)) {  // 객체가 드롭존 안에 있다면
+          totalNum = totalNum + 1; // 총 개수 하나 증가
+        }
+      });
+      console.log(totalNum);
+    }
     let select: null | number = null; // 고른 정답
-    objectsRef.current.forEach(({ id, x, y, src, isObj, value }) => {
-      const ox = x * ratio;
-      const oy = y * ratio;
-      if (isInDropZone(dx,dy,dw,dh,ox,oy,isObj)) { // 객체가 드롭존 안에 있다면
-        select = value;
-      }
-    });
-    //console.log("mode: " + modeRef.current); // 현재 모드
-    if (select !== null) console.log("select: " + select); // 고른 정답
+    if (mode == 2) { // 문제 맞추기
+      // 드롭존 안에 선택지가 있는지 확인
+      objectsRef.current.forEach(({ id, x, y, src, isObj, value }) => {
+        const ox = x * ratio;
+        const oy = y * ratio;
+        if (isInDropZone(dx,dy,dw,dh,ox,oy,isObj)) { // 객체가 드롭존 안에 있다면
+          select = value;
+        }
+      });
+      //console.log("mode: " + modeRef.current); // 현재 모드
+      if (select !== null) console.log("select: " + select); // 고른 정답
+    }
 
     const hands = (results.multiHandLandmarks || []) as Array<
       Array<{ x: number; y: number; z: number }>
