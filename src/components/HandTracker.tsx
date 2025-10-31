@@ -37,7 +37,8 @@ export const HandTracker = (probInfo: probInfoType) => {
       probInfo.probType,
       probInfo.entity,
       probInfo.count1,
-      probInfo.count2
+      probInfo.count2,
+      0
     ) // mode 1
   );
   const objectsRef = useRef(objects);
@@ -236,7 +237,8 @@ export const HandTracker = (probInfo: probInfoType) => {
           probInfo.probType,
           probInfo.entity,
           probInfo.count1,
-          probInfo.count2
+          probInfo.count2,
+          0
         )
       );
     } else {
