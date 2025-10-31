@@ -17,3 +17,5 @@ function isInDropZone(
     )   return true;
     else return false;
 }
+
+export { isInDropZone }
