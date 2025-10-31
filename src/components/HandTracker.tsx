@@ -59,6 +59,9 @@ export const HandTracker = (probInfo: probInfoType) => {
   const [mode, setMode] = useState<1 | 2>(1); // 1: 문제 풀어보기, 2: 정답 맞추기
   const modeRef = useRef(mode); // 최신 mode
 
+  const [totalNum, setTotalNum] = useState(0); // 드롭존 안 객체의 총 개수
+  const totalNumRef = useRef(totalNum); // 드롭존 안 객체의 총 개수
+
   // Mediapipe 결과 처리
   function onResults(results: any) {
     const canvas = canvasRef.current;
@@ -92,15 +95,19 @@ export const HandTracker = (probInfo: probInfoType) => {
     ctx.strokeRect(dx, dy, dw, dh);
 
     if (mode == 1) { // 문제 풀어보기
-      let totalNum: number = 0; // 객체의 총 개수
+      let newTotalNum = 0; // 객체의 총 개수
       objectsRef.current.forEach(({ id, x, y, src, isObj, value }) => {
         const ox = x * ratio;
         const oy = y * ratio;
         if (isInDropZone(dx,dy,dw,dh,ox,oy,isObj)) {  // 객체가 드롭존 안에 있다면
-          totalNum = totalNum + 1; // 총 개수 하나 증가
+          newTotalNum++; // 총 개수 하나 증가
         }
       });
-      console.log(totalNum);
+      if (newTotalNum !== totalNumRef.current) {
+        setTotalNum(newTotalNum);
+        totalNumRef.current = newTotalNum;
+      }
+      console.log(totalNumRef.current);
     }
     let select: null | number = null; // 고른 정답
     if (mode == 2) { // 문제 맞추기
@@ -238,7 +245,7 @@ export const HandTracker = (probInfo: probInfoType) => {
           probInfo.entity,
           probInfo.count1,
           probInfo.count2,
-          0
+          totalNum
         )
       );
     } else {
@@ -261,6 +268,22 @@ export const HandTracker = (probInfo: probInfoType) => {
     probInfo.probType,
     probInfo.problem,
     probInfo.wrongAnswer,
+  ]);
+
+  // 드롭존 안에 객체가 추가되거나 빠질수록 총합 숫자 업데이트
+  useEffect(() => {
+      if (mode === 1) {
+      // totalNum이 바뀔 때 숫자 이미지 업데이트
+      setObjects(prev =>
+        prev.map(obj =>
+          obj.id === "totalNumber"
+            ? { ...obj, src: `/asset/${totalNum}.png` }
+            : obj
+        )
+      );
+    }
+  }, [
+    totalNum
   ]);
 
   // Hands 초기화 + 카메라 시작
