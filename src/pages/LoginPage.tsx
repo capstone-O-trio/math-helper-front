@@ -7,6 +7,7 @@ import { TextButton } from "../components/common/TextButton";
 import { useCallback, useState } from "react";
 import { postLogin } from "../api/login";
 import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from "../utils/keys";
+import { BackButton } from "../components/common/BackButton";
 
 export const LoginPage: React.FC = () => {
   const naviagate = useNavigate();
@@ -51,15 +52,12 @@ export const LoginPage: React.FC = () => {
       onSubmit={handleSubmit}
     >
       <div className="absolute top-4 w-full">
-        <button
-          type="button"
-          className="absolute left-8 top-1"
+        <BackButton
           onClick={() => {
             naviagate(-1);
           }}
-        >
-          이전
-        </button>
+          className="absolute left-8 top-1"
+        />
         <Heading>로그인</Heading>
       </div>
       <div className="w-[50%] h-full flex flex-col justify-center">
