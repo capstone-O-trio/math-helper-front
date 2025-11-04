@@ -107,7 +107,7 @@ export const HandTracker = (probInfo: probInfoType) => {
         setTotalNum(newTotalNum);
         totalNumRef.current = newTotalNum;
       }
-      console.log(totalNumRef.current);
+      // console.log(totalNumRef.current);
     }
     let select: null | number = null; // 고른 정답
     if (mode == 2) { // 문제 맞추기
@@ -120,7 +120,7 @@ export const HandTracker = (probInfo: probInfoType) => {
         }
       });
       //console.log("mode: " + modeRef.current); // 현재 모드
-      if (select !== null) console.log("select: " + select); // 고른 정답
+      // if (select !== null) console.log("select: " + select); // 고른 정답
     }
 
     const hands = (results.multiHandLandmarks || []) as Array<
