@@ -3,7 +3,7 @@ import Webcam from "react-webcam";
 import { Hands, HAND_CONNECTIONS } from "@mediapipe/hands";
 import { Camera } from "@mediapipe/camera_utils";
 import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
-import { getHandState } from "../utils/handState";
+import { getHandState } from "../features/handtracking/handState";
 
 import { getObjectsInfo, getAnswerInfo, Obj } from "../data/objectData";
 import { probInfoType } from "../type/type";
