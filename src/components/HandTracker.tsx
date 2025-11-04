@@ -9,9 +9,19 @@ import { getObjectsInfo, getAnswerInfo, Obj } from "../data/objectData";
 import { probInfoType } from "../type/type";
 import { useNavigate } from "react-router-dom";
 import { Heading } from "./common/Heading";
+import { isInDropZone } from "../utils/solveProblem";
 
 let movingObjId: string | null = null; // 현재 손으로 이동중인 객체의 id
 let selectButtonId: string | null = null; // 손으로 선택한 버튼의 id
+
+// 문제 정보 저장
+let probType: string = 'addition';
+let problem: string = '3+5';
+let entity: string = 'apple';
+let count1: number = 3;
+let count2: number = 5;
+let answer: number = 8;
+let wrongAnswer: number[] = [6, 9];
 
 export const HandTracker = (probInfo: probInfoType) => {
   const navigate = useNavigate();
@@ -27,7 +37,8 @@ export const HandTracker = (probInfo: probInfoType) => {
       probInfo.probType,
       probInfo.entity,
       probInfo.count1,
-      probInfo.count2
+      probInfo.count2,
+      0
     ) // mode 1
   );
   const objectsRef = useRef(objects);
@@ -47,6 +58,9 @@ export const HandTracker = (probInfo: probInfoType) => {
 
   const [mode, setMode] = useState<1 | 2>(1); // 1: 문제 풀어보기, 2: 정답 맞추기
   const modeRef = useRef(mode); // 최신 mode
+
+  const [totalNum, setTotalNum] = useState(0); // 드롭존 안 객체의 총 개수
+  const totalNumRef = useRef(totalNum); // 드롭존 안 객체의 총 개수
 
   // Mediapipe 결과 처리
   function onResults(results: any) {
@@ -80,23 +94,34 @@ export const HandTracker = (probInfo: probInfoType) => {
     ctx.strokeStyle = "rgba(20,160,60,0.95)";
     ctx.strokeRect(dx, dy, dw, dh);
 
-    // 드롭존 안에 선택지가 있는지 확인
-    let select: null | number = null; // 고른 정답
-    objectsRef.current.forEach(({ id, x, y, src, isObj, value }) => {
-      const ox = x * ratio;
-      const oy = y * ratio;
-      if (
-        isObj === true &&
-        ox >= dx &&
-        ox <= dx + dw &&
-        oy >= dy &&
-        oy <= dy + dh
-      ) {
-        select = value;
+    if (mode == 1) { // 문제 풀어보기
+      let newTotalNum = 0; // 객체의 총 개수
+      objectsRef.current.forEach(({ id, x, y, src, isObj, value }) => {
+        const ox = x * ratio;
+        const oy = y * ratio;
+        if (isInDropZone(dx,dy,dw,dh,ox,oy,isObj)) {  // 객체가 드롭존 안에 있다면
+          newTotalNum++; // 총 개수 하나 증가
+        }
+      });
+      if (newTotalNum !== totalNumRef.current) {
+        setTotalNum(newTotalNum);
+        totalNumRef.current = newTotalNum;
       }
-    });
-    //console.log("mode: " + modeRef.current); // 현재 모드
-    if (select !== null) console.log("select: " + select); // 고른 정답
+      // console.log(totalNumRef.current);
+    }
+    let select: null | number = null; // 고른 정답
+    if (mode == 2) { // 문제 맞추기
+      // 드롭존 안에 선택지가 있는지 확인
+      objectsRef.current.forEach(({ id, x, y, src, isObj, value }) => {
+        const ox = x * ratio;
+        const oy = y * ratio;
+        if (isInDropZone(dx,dy,dw,dh,ox,oy,isObj)) { // 객체가 드롭존 안에 있다면
+          select = value;
+        }
+      });
+      //console.log("mode: " + modeRef.current); // 현재 모드
+      // if (select !== null) console.log("select: " + select); // 고른 정답
+    }
 
     const hands = (results.multiHandLandmarks || []) as Array<
       Array<{ x: number; y: number; z: number }>
@@ -219,7 +244,8 @@ export const HandTracker = (probInfo: probInfoType) => {
           probInfo.probType,
           probInfo.entity,
           probInfo.count1,
-          probInfo.count2
+          probInfo.count2,
+          totalNum
         )
       );
     } else {
@@ -242,6 +268,22 @@ export const HandTracker = (probInfo: probInfoType) => {
     probInfo.probType,
     probInfo.problem,
     probInfo.wrongAnswer,
+  ]);
+
+  // 드롭존 안에 객체가 추가되거나 빠질수록 총합 숫자 업데이트
+  useEffect(() => {
+      if (mode === 1) {
+      // totalNum이 바뀔 때 숫자 이미지 업데이트
+      setObjects(prev =>
+        prev.map(obj =>
+          obj.id === "totalNumber" // 이 객체가 드롭존 안의 객체를 나타내기 위한 숫자 객체라면
+            ? { ...obj, src: `/asset/${totalNum}.png` } // 숫자 수정
+            : obj // 아니라면 그대로 유지
+        )
+      );
+    }
+  }, [
+    totalNum
   ]);
 
   // Hands 초기화 + 카메라 시작
