@@ -276,9 +276,9 @@ export const HandTracker = (probInfo: probInfoType) => {
       // totalNum이 바뀔 때 숫자 이미지 업데이트
       setObjects(prev =>
         prev.map(obj =>
-          obj.id === "totalNumber"
-            ? { ...obj, src: `/asset/${totalNum}.png` }
-            : obj
+          obj.id === "totalNumber" // 이 객체가 드롭존 안의 객체를 나타내기 위한 숫자 객체라면
+            ? { ...obj, src: `/asset/${totalNum}.png` } // 숫자 수정
+            : obj // 아니라면 그대로 유지
         )
       );
     }
