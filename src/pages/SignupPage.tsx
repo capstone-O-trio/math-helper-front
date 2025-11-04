@@ -7,6 +7,7 @@ import { useCallback, useState } from "react";
 import { UserInfo } from "../api/type";
 import { postSignup } from "../api/signup";
 import { BackButton } from "../components/common/BackButton";
+import { toast } from "react-toastify";
 
 export const SignupPage: React.FC = () => {
   const naviagate = useNavigate();
@@ -38,9 +39,8 @@ export const SignupPage: React.FC = () => {
     };
 
     try {
-      // 회원가입 API 호출
       await postSignup(signupDataForApi);
-      alert("회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.");
+      toast.success("회원가입 완료! 로그인 페이지로 이동합니다.");
       naviagate("/login");
     } catch (error) {
       alert("회원가입에 실패했습니다. 다시 시도해주세요.");
