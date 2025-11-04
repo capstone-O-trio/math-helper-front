@@ -1,3 +1,7 @@
+/*
+    handState.ts -> 손의 상태 구분하는 함수 로직
+*/
+
 // 타입 정의
 type Landmark = { x: number; y: number; z?: number };
 type HandState = 'fist' | 'open' | 'indexUp' | 'unknown';
