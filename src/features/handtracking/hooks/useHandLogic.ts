@@ -5,10 +5,10 @@
 import { useEffect, useRef, useState } from "react";
 import { HAND_CONNECTIONS } from "@mediapipe/hands";
 import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
-import { getHandState } from "./handState";
+import { getHandState } from "../utils/handState";
 import { useNavigate } from "react-router-dom";
-import { getAnswerInfo, getObjectsInfo } from "../../data/objectData";
-import { isInDropZone } from "./solveProblem";
+import { getAnswerInfo, getObjectsInfo } from "../../../data/objectData";
+import { isInDropZone } from "../utils/solveProblem";
 
 let movingObjId: string | null = null; // 현재 손으로 이동중인 객체의 id
 let selectButtonId: string | null = null; // 손으로 선택한 버튼의 id

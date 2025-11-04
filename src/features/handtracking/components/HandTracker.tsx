@@ -3,12 +3,12 @@
 */
 
 import { useRef, useState } from "react";
-import { WebCamera } from "../webcam/WebCamera";
+import { WebCamera } from "../../webcam/WebCamera";
 import { HandRenderer } from "./HandRenderer";
-import { useHandLogic } from "./useHandLogic";
+import { useHandLogic } from "../hooks/useHandLogic";
 import Webcam from "react-webcam";
-import { Heading } from "../../components/common/Heading";
-import { probInfoType } from "../../type/type";
+import { Heading } from "../../../components/common/Heading";
+import { probInfoType } from "../../../type/type";
 
 export const HandTracker = (probInfo: probInfoType) => {
     const [camRatio, setCamRatio] = useState(1);
