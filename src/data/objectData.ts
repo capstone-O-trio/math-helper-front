@@ -10,7 +10,9 @@ export function getObjectsInfo(
     probType="addition", 
     entity: string, 
     count1: number, 
-    count2: number): Obj[] {
+    count2: number,
+    totalNumber: number
+    ): Obj[] {
     
     const objectsInfo: Obj[] = [ // 문제 풀이를 위한 객체
         // 처음엔 아무것도 없음
@@ -88,6 +90,18 @@ export function getObjectsInfo(
             src: `/asset/button-1.png`,
             isObj: false, // 객체 아님
             value: 1, // 버튼
+        }
+    );
+
+    // 드롭존 위 객체의 총합을 나타내는 숫자
+    objectsInfo.push(
+        { 
+            id: 'totalNumber', 
+            x: 1300, 
+            y: 150,
+            src: `/asset/${totalNumber}.png`,
+            isObj: false, // 객체 아님. 총합을 나타내는 숫자임
+            value: null,
         }
     );
 
