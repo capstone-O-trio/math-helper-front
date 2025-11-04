@@ -12,6 +12,9 @@ export interface LoginResponse {
 }
 
 export interface NewMathInfoResponse {
+  isSuccess: boolean,
+  code: string,
+  message: string,
   result: {
     mathId: number;
     image: string; //사진url

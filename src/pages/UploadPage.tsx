@@ -5,6 +5,7 @@ import { Text } from "../components/common/Text";
 import { getNewMaths, postUpload } from "../api/upload";
 import { probInfoType } from "../type/type";
 import { useNavigate } from "react-router-dom";
+import { ACCESS_TOKEN_KEY } from "../utils/keys";
 
 export const UploadPage: React.FC = () => {
   const navigate = useNavigate();
@@ -20,29 +21,36 @@ export const UploadPage: React.FC = () => {
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      //새로운 문제 확인 api
-      const response = await getNewMaths();
+      //엑세스토큰 없으면 로그인 페이지로 이동
+      const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY);
+      if (!accessToken) {
+        alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
+        navigate("/login");
+      } else {
+        //새로운 문제 확인 api
+        const response = await getNewMaths();
 
-      if (response.result !== null && selectedFile == null) {
-        setIsUpload(true);
-        setPreviewUrl(response.result.image);
+        if (response.result !== null && selectedFile == null) {
+          setIsUpload(true);
+          setPreviewUrl(response.result.image);
 
-        //new 문제 정보 저장
-        setUploadedProbInfo({
-          mathId: response.result.mathId,
-          probType: response.result.mathProblemDto.problem,
-          entity: response.result.mathProblemDto.entity,
-          count1: response.result.mathProblemDto.count1,
-          count2: response.result.mathProblemDto.count2,
-          problem: response.result.mathProblemDto.problem,
-          answer: response.result.mathProblemDto.answer,
-          wrongAnswer: response.result.mathProblemDto.wrongAnswers,
-        });
+          //new 문제 정보 저장
+          setUploadedProbInfo({
+            mathId: response.result.mathId,
+            probType: response.result.mathProblemDto.problem,
+            entity: response.result.mathProblemDto.entity,
+            count1: response.result.mathProblemDto.count1,
+            count2: response.result.mathProblemDto.count2,
+            problem: response.result.mathProblemDto.problem,
+            answer: response.result.mathProblemDto.answer,
+            wrongAnswer: response.result.mathProblemDto.wrongAnswers,
+          });
+        }
       }
     }, 3000); // 3초마다 요청
 
     return () => clearInterval(interval);
-  }, [selectedFile]);
+  }, [navigate, selectedFile]);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
