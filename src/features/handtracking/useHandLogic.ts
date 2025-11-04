@@ -8,7 +8,7 @@ import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
 import { getHandState } from "./handState";
 import { useNavigate } from "react-router-dom";
 import { getAnswerInfo, getObjectsInfo } from "../../data/objectData";
-import { isInDropZone } from "../../utils/solveProblem";
+import { isInDropZone } from "./solveProblem";
 
 let movingObjId: string | null = null; // 현재 손으로 이동중인 객체의 id
 let selectButtonId: string | null = null; // 손으로 선택한 버튼의 id

@@ -3,7 +3,7 @@
 */
 
 import { useRef, useState } from "react";
-import { WebCamera } from "./WebCamera";
+import { WebCamera } from "../webcam/WebCamera";
 import { HandRenderer } from "./HandRenderer";
 import { useHandLogic } from "./useHandLogic";
 import Webcam from "react-webcam";
