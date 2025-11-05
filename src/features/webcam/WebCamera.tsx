@@ -8,6 +8,8 @@ import { Hands } from "@mediapipe/hands";
 import { Camera } from "@mediapipe/camera_utils";
 
 export const WebCamera = ({ webcamRef, canvasRef, onResults, setCamRatio }: any) => {
+    const handsRef = useRef<Hands | null>(null);
+
     // Hands 초기화 + 카메라 시작
     useEffect(() => {
         let camera: any;
@@ -15,6 +17,7 @@ export const WebCamera = ({ webcamRef, canvasRef, onResults, setCamRatio }: any)
         locateFile: (file: string) =>
             `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
         });
+        handsRef.current = hands;
 
         // Hand 옵션
         hands.setOptions({
@@ -65,8 +68,8 @@ export const WebCamera = ({ webcamRef, canvasRef, onResults, setCamRatio }: any)
         };
 
         // <video>가 재생 가능해지면(메타데이터 로드) startWhenReady 실행
-            const video = webcamRef.current?.video as HTMLVideoElement | undefined;
-            if (video) {
+        const video = webcamRef.current?.video as HTMLVideoElement | undefined;
+        if (video) {
             if (video.readyState >= 2) {
                 startWhenReady();
             } else {
@@ -80,23 +83,30 @@ export const WebCamera = ({ webcamRef, canvasRef, onResults, setCamRatio }: any)
         return () => {
             if (camera?.stop) camera.stop();
             hands.close();
+            handsRef.current = null;
             ro.disconnect();
         };
-  }, []);
+    }, []);
 
-  return (
-    <Webcam
-        ref={webcamRef}
-        audio={false}
-        style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            transform: "scaleX(-1)",
-        }}
-        videoConstraints={{ width: 1280, height: 720, facingMode: "user" }}
-    />
-  );
+    useEffect(() => {
+        if (handsRef.current && onResults) {
+            handsRef.current.onResults(onResults);
+        }
+    }, [onResults]);
+
+    return (
+        <Webcam
+            ref={webcamRef}
+            audio={false}
+            style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                transform: "scaleX(-1)",
+            }}
+            videoConstraints={{ width: 1280, height: 720, facingMode: "user" }}
+        />
+    );
 };
