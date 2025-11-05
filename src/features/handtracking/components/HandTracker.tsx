@@ -2,30 +2,30 @@
     HandTracker.tsx -> 핵심 조립 컴포넌트
 */
 
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { WebCamera } from "../../webcam/WebCamera";
 import { HandRenderer } from "./HandRenderer";
 import { useHandLogic } from "../logic/useHandLogic";
 import Webcam from "react-webcam";
 import { Heading } from "../../../components/common/Heading";
-import { probInfoType } from "../../../type/type";
+import { useNavigate } from "react-router-dom";
+import { mathProbInfoType } from "../types/problemTypes";
 
-export const HandTracker = (probInfo: probInfoType) => {
-    const [camRatio, setCamRatio] = useState(1);
-
-    const [comment, setComment] = useState("정답을 네모칸 안에 넣어주세요");
+export const HandTracker = (mathProbInfo: mathProbInfoType) => {
+    const navigate = useNavigate();
 
     const webcamRef = useRef<Webcam | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-    const { objects, step, onResults } = useHandLogic({
-        probInfo,
-        webcamRef,
-        canvasRef,
-        setComment,
+    // 핵심 로직 훅
+    const {
         camRatio,
-        setCamRatio
-    });
+        setCamRatio,
+        comment,
+        step,
+        objects,
+        onResults
+    } = useHandLogic({ mathProbInfo, canvasRef, navigate });
 
     return (
         <div style={{ position: "relative", width: "min(100%, 1280px)" }}>
