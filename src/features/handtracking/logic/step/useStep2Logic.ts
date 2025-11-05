@@ -76,7 +76,7 @@ export const useStep2Logic = ({
                 selectAnswer = value;
             }
         });
-        console.log("selectAnswer: " + selectAnswer)
+        // console.log("selectAnswer: " + selectAnswer)
 
         handleHandActions(
             results,

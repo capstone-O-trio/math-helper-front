@@ -98,7 +98,7 @@ export const useAdditionTemplate = ({
         })
         if (newTotalNum !== totalNumRef.current) setTotalNum(newTotalNum);
         totalNumRef.current = newTotalNum;
-        console.log("totalNum: " + newTotalNum);
+        // console.log("totalNum: " + newTotalNum);
 
         handleHandActions(
             results,
