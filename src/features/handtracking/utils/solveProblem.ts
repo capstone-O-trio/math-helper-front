@@ -29,3 +29,18 @@ export function isInDropZone(
     )   return true;
     else return false;
 }
+
+// answer을 포함한 중복 없는 세 개의 숫자 리스트를 반환
+export function makeChoicesOptions(answer: number): number[] {
+  const choices = new Set<number>();
+  choices.add(answer);
+
+  while (choices.size < 3) {
+    // ±1~2 범위의 랜덤한 오차 생성
+    const offset = (Math.random() < 0.5 ? -1 : 1) * (1 + Math.floor(Math.random() * 2));
+    const candidate = answer + offset;
+    choices.add(candidate);
+  }
+
+  return Array.from(choices).sort((a, b) => a - b);
+}
