@@ -17,7 +17,8 @@ instance.interceptors.request.use((config) => {
 instance.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 404 || 401) {
+    const status = error.response?.status;
+    if (status === 404 || status === 401) {
       localStorage.removeItem(ACCESS_TOKEN_KEY);
       localStorage.removeItem(REFRESH_TOKEN_KEY);
       window.location.href = "/login";

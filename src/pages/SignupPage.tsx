@@ -42,11 +42,11 @@ export const SignupPage: React.FC = () => {
       await postSignup(signupDataForApi);
       toast.success("회원가입 완료! 로그인 페이지로 이동합니다.");
       naviagate("/login");
-    } catch (error) {
-      alert("회원가입에 실패했습니다. 다시 시도해주세요.");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setFormData({ name: "", password: "", passwordConfirm: "" });
     }
-
-    setFormData({ name: "", password: "", passwordConfirm: "" });
   };
 
   return (
