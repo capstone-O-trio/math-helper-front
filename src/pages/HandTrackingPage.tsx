@@ -1,26 +1,45 @@
 import { useLocation } from "react-router-dom";
-import { probInfoType } from "../type/type";
 import { HandTracker } from "../features/handtracking/components/HandTracker";
+import { mathProbInfoType, probEntityType } from "../features/handtracking/types/problemTypes";
+
+// 임시 데이터 -> 이후 수정해야 함
+const entity1:probEntityType = {
+  kind: "apple",
+  count: 3,
+  image: null
+}
+const entity2:probEntityType = {
+  kind: "apple",
+  count: 5,
+  image: null
+}
+
+const DEFAULT_PROB_INFO: mathProbInfoType = {
+  mathId:0,
+  probText:"2+3",
+  answer: 8,
+  probType:"addition",
+  probTemplate:"addition",
+  entityList: [entity1, entity2]
+};
 
 export const HandTrackingPage: React.FC = () => {
   const location = useLocation();
-  const { probInfo } = location.state as { probInfo: probInfoType | null };
+  const mathProbInfo: mathProbInfoType = (location.state as { mathProbInfo?: mathProbInfoType })?.mathProbInfo || DEFAULT_PROB_INFO;
 
-  if (!probInfo) {
+  if (!mathProbInfo) {
     return <div>문제 정보가 없습니다.</div>;
   }
 
   return (
     <div>
       <HandTracker
-        mathId={probInfo.mathId}
-        probType={probInfo.probType}
-        entity={probInfo.entity}
-        count1={probInfo.count1}
-        count2={probInfo.count2}
-        problem={probInfo.problem}
-        answer={probInfo.answer}
-        wrongAnswer={probInfo.wrongAnswer}
+        mathId={mathProbInfo.mathId}
+        probText={mathProbInfo.probText}
+        answer={mathProbInfo.answer}
+        probType={mathProbInfo.probType}
+        probTemplate={mathProbInfo.probTemplate}
+        entityList={mathProbInfo.entityList}
       />
     </div>
   );
