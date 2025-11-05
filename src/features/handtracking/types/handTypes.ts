@@ -4,5 +4,5 @@
 
 // 손 상태 타입
 // 타입 정의
-type Landmark = { x: number; y: number; z?: number };
-type HandState = 'fist' | 'open' | 'indexUp' | 'unknown';
+export type Landmark = { x: number; y: number; z?: number };
+export type HandState = 'fist' | 'open' | 'indexUp' | 'unknown';
