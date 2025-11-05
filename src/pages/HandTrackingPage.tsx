@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
-import { HandTracker } from "../features/handtracking/components/HandTracker";
-import { mathProbInfoType, probEntityType } from "../features/handtracking/types/problemTypes";
+import { HandTracker } from "../features/handTracking/components/HandTracker";
+import { mathProbInfoType, probEntityType } from "../features/handTracking/types/problemTypes";
 
 // 임시 데이터 -> 이후 수정해야 함
 const entity1:probEntityType = {
