@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { probInfoType } from "../type/type";
-import { HandTracker } from "../components/HandTracker";
+import { HandTracker } from "../features/handtracking/components/HandTracker";
 
 export const HandTrackingPage: React.FC = () => {
   const location = useLocation();
