@@ -16,8 +16,8 @@ let selectButtonId: string | null = null; // 손으로 선택한 버튼의 id
 export const useHandLogic = ({ probInfo, webcamRef, canvasRef, setComment, camRatio, setCamRatio }: any) => {
     const navigate = useNavigate();
 
-    const [mode, setMode] = useState<1 | 2>(1); // 1: 문제 풀어보기, 2: 정답 맞추기
-    const modeRef = useRef(mode); // 최신 mode
+    const [step, setStep] = useState<1 | 2>(1); // 1: 문제 풀어보기, 2: 정답 맞추기
+    const stepRef = useRef(step); // 최신 mode
 
     const [totalNum, setTotalNum] = useState(0); // 드롭존 안 객체의 총 개수
     const totalNumRef = useRef(totalNum); // 드롭존 안 객체의 총 개수
@@ -56,9 +56,9 @@ export const useHandLogic = ({ probInfo, webcamRef, canvasRef, setComment, camRa
         movingObjId = null;
         selectButtonId = null;
         
-        modeRef.current = mode; // 모드 바뀔 때 갱신
+        stepRef.current = step; // 모드 바뀔 때 갱신
         
-        if (mode === 1) {
+        if (step === 1) {
             setObjects(
             getObjectsInfo(
                 probInfo.probType,
@@ -79,11 +79,11 @@ export const useHandLogic = ({ probInfo, webcamRef, canvasRef, setComment, camRa
                 )
             );
         }
-    }, [mode]);
+    }, [step]);
 
     // 드롭존 안에 객체가 추가되거나 빠질수록 총합 숫자 업데이트
     useEffect(() => {
-        if (mode === 1) {
+        if (step === 1) {
             // totalNum이 바뀔 때 숫자 이미지 업데이트
             setObjects(prev =>
                 prev.map(obj =>
@@ -115,7 +115,7 @@ export const useHandLogic = ({ probInfo, webcamRef, canvasRef, setComment, camRa
         let dy = 250 * ratio; // 왼쪽 위 y좌표
         let dw = 400 * ratio; // 가로 길이
         let dh = 400 * ratio; // 세로 길이
-        if (modeRef.current === 2) {
+        if (stepRef.current === 2) {
             // mode가 바뀌면 드롭존 위치 수정
             dx = 1100 * ratio;
             dy = 100 * ratio;
@@ -128,7 +128,7 @@ export const useHandLogic = ({ probInfo, webcamRef, canvasRef, setComment, camRa
         ctx.strokeRect(dx, dy, dw, dh);
     
         // 드롭존 안에 선택지가 있는지 확인
-        if (mode == 1) { // 문제 풀어보기
+        if (step == 1) { // 문제 풀어보기
             let newTotalNum = 0; // 객체의 총 개수
             objectsRef.current.forEach(({ id, x, y, src, isObj, value }) => {
                 const ox = x * ratio;
@@ -145,7 +145,7 @@ export const useHandLogic = ({ probInfo, webcamRef, canvasRef, setComment, camRa
         // console.log(totalNumRef.current);
     
         let select: null | number = null; // 고른 정답
-        if (modeRef.current == 2) { // 문제 맞추기
+        if (stepRef.current == 2) { // 문제 맞추기
             // 드롭존 안에 선택지가 있는지 확인
             objectsRef.current.forEach(({ id, x, y, src, isObj, value }) => {
                 const ox = x * ratio;
@@ -226,7 +226,7 @@ export const useHandLogic = ({ probInfo, webcamRef, canvasRef, setComment, camRa
                                     // 원래 버튼을 누르고 있었다가 뗀 경우
                                     if (selectButtonId === "button-answer") {
                                     // '정답 맞추러 가기' 버튼을 누르다가 뗀 경우
-                                    setMode(2); // 모드 변경
+                                    setStep(2); // 모드 변경
                                     }
                                     if (selectButtonId === "button-select") {
                                     // '문제 맞추기' 버튼을 누르다가 뗀 경우
@@ -272,5 +272,5 @@ export const useHandLogic = ({ probInfo, webcamRef, canvasRef, setComment, camRa
         return () => ro.disconnect();
     }, []);
 
-    return { objects, camRatio, mode, onResults };
+    return { objects, camRatio, step, onResults };
 };

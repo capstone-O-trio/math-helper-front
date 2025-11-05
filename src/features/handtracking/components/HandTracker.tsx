@@ -18,7 +18,7 @@ export const HandTracker = (probInfo: probInfoType) => {
     const webcamRef = useRef<Webcam | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-    const { objects, mode, onResults } = useHandLogic({
+    const { objects, step, onResults } = useHandLogic({
         probInfo,
         webcamRef,
         canvasRef,
@@ -37,7 +37,7 @@ export const HandTracker = (probInfo: probInfoType) => {
                 transformOrigin: "center",
                 }}
             >
-            {mode === 2 && (
+            {step === 2 && (
                 <Heading
                     style={{
                         position: "absolute",
