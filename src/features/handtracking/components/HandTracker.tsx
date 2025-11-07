@@ -5,7 +5,7 @@
 import { useRef, useState } from "react";
 import { WebCamera } from "../../webcam/WebCamera";
 import { HandRenderer } from "./HandRenderer";
-import { useHandLogic } from "../hooks/useHandLogic";
+import { useHandLogic } from "../logic/useHandLogic";
 import Webcam from "react-webcam";
 import { Heading } from "../../../components/common/Heading";
 import { probInfoType } from "../../../type/type";
