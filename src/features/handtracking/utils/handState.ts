@@ -2,6 +2,9 @@
     handState.ts -> 손의 상태 구분하는 함수 로직
 */
 
+import { Landmark } from "@mediapipe/hands";
+import { HandState } from "../types/handTypes";
+
 // 거리 계산
 const dist = (a: Landmark, b: Landmark): number => {
   const dx = a.x - b.x, dy = a.y - b.y;
