@@ -79,7 +79,7 @@ export const useHandLogic = ({ probInfo, webcamRef, canvasRef, setComment, camRa
                 )
             );
         }
-    }, [mode]);
+    }, [mode, probInfo.answer, probInfo.count1, probInfo.count2, probInfo.entity, probInfo.probType, probInfo.problem, probInfo.wrongAnswer, totalNum]);
 
     // 드롭존 안에 객체가 추가되거나 빠질수록 총합 숫자 업데이트
     useEffect(() => {
@@ -93,7 +93,7 @@ export const useHandLogic = ({ probInfo, webcamRef, canvasRef, setComment, camRa
                 )
             );
         }
-    }, [totalNum]);
+    }, [mode, totalNum]);
 
     // Mediapipe 결과 처리
     function onResults(results: any) {
@@ -128,7 +128,7 @@ export const useHandLogic = ({ probInfo, webcamRef, canvasRef, setComment, camRa
         ctx.strokeRect(dx, dy, dw, dh);
     
         // 드롭존 안에 선택지가 있는지 확인
-        if (mode == 1) { // 문제 풀어보기
+        if (mode === 1) { // 문제 풀어보기
             let newTotalNum = 0; // 객체의 총 개수
             objectsRef.current.forEach(({ id, x, y, src, isObj, value }) => {
                 const ox = x * ratio;
@@ -145,7 +145,7 @@ export const useHandLogic = ({ probInfo, webcamRef, canvasRef, setComment, camRa
         // console.log(totalNumRef.current);
     
         let select: null | number = null; // 고른 정답
-        if (modeRef.current == 2) { // 문제 맞추기
+        if (modeRef.current === 2) { // 문제 맞추기
             // 드롭존 안에 선택지가 있는지 확인
             objectsRef.current.forEach(({ id, x, y, src, isObj, value }) => {
                 const ox = x * ratio;
@@ -270,7 +270,7 @@ export const useHandLogic = ({ probInfo, webcamRef, canvasRef, setComment, camRa
         const ro = new ResizeObserver(updateRatio);
         if (canvasRef.current) ro.observe(canvasRef.current);
         return () => ro.disconnect();
-    }, []);
+    }, [canvasRef, updateRatio]);
 
     return { objects, camRatio, mode, onResults };
 };
