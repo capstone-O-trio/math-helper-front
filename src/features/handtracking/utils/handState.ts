@@ -1,6 +1,9 @@
-// 타입 정의
-type Landmark = { x: number; y: number; z?: number };
-type HandState = 'fist' | 'open' | 'indexUp' | 'unknown';
+/*
+    handState.ts -> 손의 상태 구분하는 함수 로직
+*/
+
+import { Landmark } from "@mediapipe/hands";
+import { HandState } from "../types/handTypes";
 
 // 거리 계산
 const dist = (a: Landmark, b: Landmark): number => {
