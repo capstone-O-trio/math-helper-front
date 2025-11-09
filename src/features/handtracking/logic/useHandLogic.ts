@@ -41,6 +41,7 @@ export const useHandLogic = ({ probInfo, webcamRef, canvasRef, setComment, camRa
         camRatioRef.current = camRatio;
     }, [camRatio]); // 화면 비율 변경되면 업데이트
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const updateRatio = () => {
         const el = canvasRef.current;
         if (!el) return;
