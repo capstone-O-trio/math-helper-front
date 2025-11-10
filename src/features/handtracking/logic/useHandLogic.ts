@@ -32,7 +32,7 @@ export const useHandLogic = ({
         const ro = new ResizeObserver(updateRatio);
         if (canvasRef.current) ro.observe(canvasRef.current);
         return () => ro.disconnect();
-    }, [canvasRef]);
+    }, [canvasRef, updateRatio]);
 
     useEffect(() => {
         stepRef.current = step;
