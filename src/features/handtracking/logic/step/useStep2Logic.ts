@@ -43,7 +43,7 @@ export const useStep2Logic = ({
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
         drawDropZone(ctx, camRatioRef.current, dx, dy, dw, dh);
-    }, []);
+    }, [camRatioRef, canvasRef]);
 
     /* 템플릿 로직 */
     // object 변경되면 업데이트
