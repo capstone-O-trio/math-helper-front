@@ -8,6 +8,8 @@ import { useCallback, useState } from "react";
 import { postLogin } from "../api/login";
 import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from "../utils/keys";
 import { BackButton } from "../components/common/BackButton";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const LoginPage: React.FC = () => {
   const naviagate = useNavigate();
@@ -37,8 +39,7 @@ export const LoginPage: React.FC = () => {
       //토큰 로컬스토리지에 저장
       localStorage.setItem(ACCESS_TOKEN_KEY, response.accessToken);
       localStorage.setItem(REFRESH_TOKEN_KEY, response.refreshToken);
-      alert("로그인이 완료되었습니다. 업로드 페이지로 이동합니다.");
-
+      toast.success("로그인 완료! 업로드 페이지로 이동합니다");
       naviagate("/upload");
     } catch (error) {
       alert("로그인에 실패했습니다. 다시 시도해주세요.");
