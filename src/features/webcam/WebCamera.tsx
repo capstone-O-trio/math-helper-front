@@ -14,8 +14,8 @@ export const WebCamera = ({ webcamRef, canvasRef, onResults, setCamRatio }: any)
     useEffect(() => {
         let camera: any;
         const hands = new Hands({
-        locateFile: (file: string) =>
-            `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
+            locateFile: (file: string) =>
+                `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
         });
         handsRef.current = hands;
 
@@ -58,7 +58,7 @@ export const WebCamera = ({ webcamRef, canvasRef, onResults, setCamRatio }: any)
             // 매 프레임마다 onFrame이 호출되고, hands.send({image: video})로 추론 수행
             camera = new Camera(video, {
                 onFrame: async () => {
-                await hands.send({ image: video });
+                    await hands.send({ image: video });
                 },
                 width: canvas.width,
                 height: canvas.height,
@@ -74,7 +74,7 @@ export const WebCamera = ({ webcamRef, canvasRef, onResults, setCamRatio }: any)
                 startWhenReady();
             } else {
                 video.addEventListener("loadeddata", startWhenReady as EventListener, {
-                once: true,
+                    once: true,
                 });
             }
         }
@@ -86,7 +86,7 @@ export const WebCamera = ({ webcamRef, canvasRef, onResults, setCamRatio }: any)
             handsRef.current = null;
             ro.disconnect();
         };
-    }, []);
+    }, [canvasRef, onResults, setCamRatio, webcamRef]);
 
     useEffect(() => {
         if (handsRef.current && onResults) {
