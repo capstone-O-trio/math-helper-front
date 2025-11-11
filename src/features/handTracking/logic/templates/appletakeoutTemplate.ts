@@ -21,10 +21,10 @@ export const useAppletakeoutTemplate = ({
 }: any) => {
 
     // 나무 드롭존 좌표
-    // const tree__dx = 1000;
-    // const tree__dy = 300;
-    // const tree__dw = 400;
-    // const tree__dh = 400;
+    const tree_dx = 100;
+    const tree_dy = 220;
+    const tree_dw = 440;
+    const tree_dh = 440;
 
     // 박스 드롭존 좌표
     const box_dx = 1000;
@@ -35,7 +35,7 @@ export const useAppletakeoutTemplate = ({
     /* 필요한 객체 */
     const [objects, setObjects] = useState(
         getAppletakeoutTemplateObjects( // 템플릿에 필요한 객체 가져오기
-            mathProbInfo.entityList[0], // 나무 엔티티들
+            mathProbInfo.entityList[0], // 나무에 있는 엔티티들
             mathProbInfo.entityList[0].count, // 나무에 있는 객체의 개수
             0
         )
@@ -48,6 +48,7 @@ export const useAppletakeoutTemplate = ({
         if (!canvas) return;
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
+        drawDropZone(ctx, camRatioRef.current, tree_dx, tree_dy, tree_dw, tree_dh);
         drawDropZone(ctx, camRatioRef.current, box_dx, box_dy, box_dw, box_dh);
     }, [camRatioRef, canvasRef]);
 
@@ -57,26 +58,37 @@ export const useAppletakeoutTemplate = ({
         objectsRef.current = objects;
     }, [objects]);
 
+    const [treeTotalNum, setTreeTotalNum] = useState(0); // 드롭존 안 객체의 총 개수
+    const treeTotalNumRef = useRef(treeTotalNum); // 드롭존 안 객체의 총 개수
+
     const [boxTotalNum, setBoxTotalNum] = useState(0); // 드롭존 안 객체의 총 개수
     const boxTotalNumRef = useRef(boxTotalNum); // 드롭존 안 객체의 총 개수
 
     // totalNum 변경되면 업데이트
+    useEffect(() => {
+        treeTotalNumRef.current = treeTotalNum;
+    }, [treeTotalNum]);
     useEffect(() => {
         boxTotalNumRef.current = boxTotalNum;
     }, [boxTotalNum]);
 
     // 총합 숫자 변경되면 업데이트
     useEffect(() => {
+        treeTotalNumRef.current = treeTotalNum;
         boxTotalNumRef.current = boxTotalNum;
         // totalNum이 바뀔 때 숫자 이미지 업데이트
         setObjects(prev =>
-            prev.map(obj =>
-                obj.id === "boxTotalNumber" // 이 객체가 드롭존 안의 객체를 나타내기 위한 숫자 객체라면
-                    ? { ...obj, src: `/asset/${boxTotalNum}.png` } // 숫자 수정
-                    : obj // 아니라면 그대로 유지
-            )
+            prev.map(obj => {
+                if (obj.id === "treeTotalNumber") {
+                    return { ...obj, src: `/asset/${treeTotalNum}.png` };
+                } else if (obj.id === "boxTotalNumber") {
+                    return { ...obj, src: `/asset/${boxTotalNum}.png` };
+                } else {
+                    return obj; // 아무 조건에도 해당 안 되면 그대로 반환
+                }
+            })
         );
-    }, [boxTotalNum]);
+    }, [treeTotalNum, boxTotalNum]);
 
     /* Mediapipe 관련 로직 */
     function onResults(results: any) {
@@ -93,20 +105,27 @@ export const useAppletakeoutTemplate = ({
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         // 드롭존 다시 그리기
+        drawDropZone(ctx, camRatioRef.current, tree_dx, tree_dy, tree_dw, tree_dh);
         drawDropZone(ctx, camRatioRef.current, box_dx, box_dy, box_dw, box_dh);
 
         // 드롭존 안 객체가 추가될 때 총합 숫자 변경
-        let newBoxTotalNum = 0; // 객체의 총 갯수
+        let newTreeTotalNum = 0; // 트리 안 객체의 총 갯수
+        let newBoxTotalNum = 0; // 박스 안 객체의 총 갯수
         objectsRef.current.forEach(({
             x, y, isObj
         }) => {
             const ox = x;
             const oy = y;
-            if (isInDropZone(ratio, box_dx, box_dy, box_dw, box_dh, ox, oy, isObj)) {  // 객체가 드롭존 안에 있다면
+            if (isInDropZone(ratio, tree_dx, tree_dy, tree_dw, tree_dh, ox, oy, isObj)) {  // 객체가 드롭존 안에 있다면
+                newTreeTotalNum++; // 총 개수 하나 증가
+            }
+            else if (isInDropZone(ratio, box_dx, box_dy, box_dw, box_dh, ox, oy, isObj)) {  // 객체가 드롭존 안에 있다면
                 newBoxTotalNum++; // 총 개수 하나 증가
             }
         })
-        if (newBoxTotalNum !== boxTotalNumRef.current) setBoxTotalNum(newBoxTotalNum);
+        if (newTreeTotalNum !== treeTotalNumRef.current) setTreeTotalNum(newTreeTotalNum)
+        else if (newBoxTotalNum !== boxTotalNumRef.current) setBoxTotalNum(newBoxTotalNum);
+        treeTotalNumRef.current = newTreeTotalNum;
         boxTotalNumRef.current = newBoxTotalNum;
 
         handleHandActions(
