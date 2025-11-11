@@ -2,7 +2,7 @@
     HandTracker.tsx -> 핵심 조립 컴포넌트
 */
 
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { WebCamera } from "../../webcam/WebCamera";
 import { HandRenderer } from "./HandRenderer";
 import { useHandLogic } from "../logic/useHandLogic";
