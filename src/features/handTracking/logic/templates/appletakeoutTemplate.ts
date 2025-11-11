@@ -13,24 +13,24 @@ import { drawDropZone } from "../../utils/draw";
 const obj_width = 60;
 const obj_height = 60;
 
+// 나무 드롭존 좌표
+const tree_dx = 0;
+const tree_dy = 180;
+const tree_dw = 600;
+const tree_dh = 440;
+
+// 박스 드롭존 좌표
+const box_dx = 1000;
+const box_dy = 300;
+const box_dw = 400;
+const box_dh = 400;
+
 export const useAppletakeoutTemplate = ({
     mathProbInfo, canvasRef, camRatioRef,
     setStep, setComment,
     selectAnswer,
     navigate
 }: any) => {
-
-    // 나무 드롭존 좌표
-    const tree_dx = 100;
-    const tree_dy = 220;
-    const tree_dw = 440;
-    const tree_dh = 440;
-
-    // 박스 드롭존 좌표
-    const box_dx = 1000;
-    const box_dy = 300;
-    const box_dw = 400;
-    const box_dh = 400;
 
     /* 필요한 객체 */
     const [objects, setObjects] = useState(
@@ -161,10 +161,6 @@ function getAppletakeoutTemplateObjects(
     if (entity1.kind === 'apple') // 현재는 사과 이미지만 가능
         objImage1 = '/asset/사과.png';
 
-    // 배치 기준 (화면 크기 가정)
-    const baseY = 450; // 세로 중앙
-    const startX = 150; // 첫 번째 그룹 시작 X
-    const gapX = 70; // 객체 간 간격
 
     // 나무
     objectsInfo.push(
@@ -195,20 +191,44 @@ function getAppletakeoutTemplateObjects(
         }
     );
 
-    // 나무 위 객체들
-    for (let i = 0; i < entity1.count; i++) {
-        objectsInfo.push(
-            {
-                id: `left-${i + 1}`,
-                x: startX + i * gapX,
-                y: baseY,
-                src: objImage1,
-                isObj: true, // 객체임
-                value: null,
-                width: obj_width,
-                height: obj_height,
-            }
-        );
+    // 나무 위 객체들 (나무 드롭존 x: 130~510, y: 250~560 범위 내 두줄로 배치)
+    // const xMin = tree_dx + obj_width / 2 + 30;
+    // const xMax = tree_dx + tree_dw - obj_width / 2 - 30;
+    const xMiddle = (tree_dx + tree_dx + tree_dw) / 2;
+    const yMiddle = (tree_dy + tree_dy + tree_dh) / 2;
+    const yTop = yMiddle - 100;   // 위쪽 행 y좌표
+    const yBottom = yMiddle + 40; // 아래쪽 행 y좌표
+
+    const count = entity1.count;
+    const half = Math.ceil(count / 2); // 반 나누기
+    const xOffset = 100; // 중앙에서 양쪽으로 퍼질 거리 단위
+
+    for (let i = 0; i < count; i++) {
+        const isTop = i < half; // 절반까지는 위쪽, 나머지는 아래쪽
+        const rowIndex = isTop ? i : i - half; // 각 행 내에서의 인덱스
+        const y = isTop ? yTop : yBottom;
+
+        let x;
+        if (half === 1) {
+            // 하나면 중앙
+            x = xMiddle;
+        } else {
+            const isEven = (half % 2 === 0);
+            const midIndex = isEven ? (half / 2 - 0.5) : Math.floor(half / 2);
+            const offsetFromCenter = (rowIndex - midIndex) * xOffset;
+            x = xMiddle + offsetFromCenter;
+        }
+
+        objectsInfo.push({
+            id: `left-${i + 1}`,
+            x,
+            y,
+            src: objImage1,
+            isObj: true,
+            value: null,
+            width: obj_width,
+            height: obj_height,
+        });
     }
 
     // 정답 맞추러 가기 버튼
