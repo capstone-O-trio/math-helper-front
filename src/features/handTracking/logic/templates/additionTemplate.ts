@@ -9,6 +9,10 @@ import { isInDropZone } from "../../utils/solveProblem";
 import { handleHandActions } from "../../utils/handAction";
 import { drawDropZone } from "../../utils/draw";
 
+// 기본 객체 크기
+const obj_width = 50;
+const obj_height = 50;
+
 export const useAdditionTemplate = ({
     mathProbInfo, canvasRef, camRatioRef,
     setStep, setComment,
@@ -152,6 +156,8 @@ function getAdditionTemplateObjects(
             src: '/asset/plus.png',
             isObj: false, // 객체 아님. 기호임
             value: null,
+            width: obj_width,
+            height: obj_height,
         }
     );
 
@@ -164,6 +170,8 @@ function getAdditionTemplateObjects(
             src: '/asset/equal.png',
             isObj: false, // 객체 아님. 기호임
             value: null,
+            width: obj_width,
+            height: obj_height,
         }
     );
 
@@ -177,6 +185,8 @@ function getAdditionTemplateObjects(
                 src: objImage1,
                 isObj: true, // 객체임
                 value: null,
+                width: obj_width,
+                height: obj_height,
             }
         );
     }
@@ -191,6 +201,8 @@ function getAdditionTemplateObjects(
                 src: objImage2,
                 isObj: true, // 객체임
                 value: null,
+                width: obj_width,
+                height: obj_height,
             }
         );
     }
@@ -204,6 +216,8 @@ function getAdditionTemplateObjects(
             src: `/asset/button-1.png`,
             isObj: false, // 객체 아님
             value: 1, // 버튼
+            width: obj_width,
+            height: obj_height,
         }
     );
 
@@ -216,6 +230,8 @@ function getAdditionTemplateObjects(
             src: `/asset/${totalNumber}.png`,
             isObj: false, // 객체 아님. 총합을 나타내는 숫자임
             value: null,
+            width: obj_width,
+            height: obj_height,
         }
     );
 
