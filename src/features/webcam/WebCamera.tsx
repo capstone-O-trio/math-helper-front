@@ -2,7 +2,7 @@
     WebCamera.tsx -> 웹캠 띄우기, Mediapipe Hands + Camera 초기화 로직
 */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Webcam from "react-webcam";
 import { Hands } from "@mediapipe/hands";
 import { Camera } from "@mediapipe/camera_utils";
