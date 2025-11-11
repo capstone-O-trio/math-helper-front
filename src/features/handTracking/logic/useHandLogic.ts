@@ -2,7 +2,7 @@
     useHandLogic.ts -> 손 움직임 상태 변화에 따른 상태 업데이트 -> 전체 흐름 제어(step 상태 전환, 공통 관리)
 */
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useStep1Logic } from "./step/useStep1Logic";
 import { useStep2Logic } from "./step/useStep2Logic";
 
@@ -19,13 +19,13 @@ export const useHandLogic = ({
 
     let selectAnswer: null | number = null; // 고른 정답
 
-    const updateRatio = () => {
+    const updateRatio = useCallback(() => {
         const el = canvasRef.current;
         if (!el) return;
         const r = el.clientWidth / 1600; // 기준 좌표 -> 실제 px 비율
         camRatioRef.current = r;
         setCamRatio(r);
-    };
+    }, [canvasRef]);
 
     useEffect(() => {
         updateRatio();
