@@ -37,14 +37,15 @@ export function handleHandActions(
         const handCenter = lm[9];
         const hand_x = handCenter.x * dispW;
         const hand_y = handCenter.y * dispH;
-        
+
         // 검지 끝 좌표 계산
         const handIndex = lm[8];
         const index_x = handIndex.x * dispW;
         const index_y = handIndex.y * dispH;
 
-        setObjects((prev) =>
-            prev.map((obj) => {
+        setObjects((prev) => {
+            let changed = false;
+            const next = prev.map((obj) => {
                 const ox = obj.x * ratio; // 객체 화면 X
                 const oy = obj.y * ratio; // 객체 화면 Y
                 const hitRange = 50 * ratio; // 히트박스
@@ -60,7 +61,11 @@ export function handleHandActions(
                         (movingObjId === null || movingObjId === obj.id) // 객체를 쥐고 있지 않거나, 쥐고 있던 객체였다면
                     ) {
                         movingObjId = obj.id; // 해당 객체를 이동
-                        return { ...obj, x: hand_x / ratio, y: hand_y / ratio }; // 위치 갱신
+                        const nextObj = { ...obj, x: hand_x / ratio, y: hand_y / ratio }; // 위치 갱신
+                        if (nextObj.x !== obj.x || nextObj.y !== obj.y) {
+                            changed = true;
+                            return nextObj;
+                        }
                     }
                 }
                 else if (state === "indexUp") { // 검지만 편 상태 ☝️
@@ -83,17 +88,17 @@ export function handleHandActions(
                                     setStep(2); // 다음 단계로
                                 }
                                 if (selectedButtonId === "button-select") {
-                                // '문제 맞추기' 버튼을 누르다가 뗀 경우
-                                // 정답 확인
-                                if (selectAnswer !== null) {
-                                    if (selectAnswer === mathProbInfo.answer) {
-                                    setComment("정답입니다! 짝짝짝!");
+                                    // '문제 맞추기' 버튼을 누르다가 뗀 경우
+                                    // 정답 확인
+                                    if (selectAnswer !== null) {
+                                        if (selectAnswer === mathProbInfo.answer) {
+                                            setComment("정답입니다! 짝짝짝!");
+                                        } else {
+                                            setComment("오답입니다.. ㅠㅠ");
+                                        }
                                     } else {
-                                    setComment("오답입니다.. ㅠㅠ");
+                                        setComment("선택한 답이 없습니다..!");
                                     }
-                                } else {
-                                    setComment("선택한 답이 없습니다..!");
-                                }
                                 }
                                 if (selectedButtonId === "button-other") {
                                     // '다른 문제 풀러 가기' 버튼을 누르다가 뗀 경우
@@ -110,7 +115,8 @@ export function handleHandActions(
                         movingObjId = null;
                 }
                 return obj;
-            })
-        );
+            });
+            return changed ? next : prev;
+        });
     });
 }
