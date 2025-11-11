@@ -9,12 +9,12 @@ import { isInDropZone } from "../../utils/solveProblem";
 import { handleHandActions } from "../../utils/handAction";
 import { drawDropZone } from "../../utils/draw";
 
-export const useAdditionTemplate = ({ 
+export const useAdditionTemplate = ({
     mathProbInfo, canvasRef, camRatioRef,
     setStep, setComment,
     selectAnswer,
     navigate
- }: any) => {
+}: any) => {
 
     // 드롭존 좌표
     const dx = 1200;
@@ -39,7 +39,7 @@ export const useAdditionTemplate = ({
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
         drawDropZone(ctx, camRatioRef.current, dx, dy, dw, dh);
-    }, []);
+    }, [camRatioRef, canvasRef]);
 
     /* 템플릿 로직 */
     // object 변경되면 업데이트
@@ -61,9 +61,9 @@ export const useAdditionTemplate = ({
         // totalNum이 바뀔 때 숫자 이미지 업데이트
         setObjects(prev =>
             prev.map(obj =>
-            obj.id === "totalNumber" // 이 객체가 드롭존 안의 객체를 나타내기 위한 숫자 객체라면
-                ? { ...obj, src: `/asset/${totalNum}.png` } // 숫자 수정
-                : obj // 아니라면 그대로 유지
+                obj.id === "totalNumber" // 이 객체가 드롭존 안의 객체를 나타내기 위한 숫자 객체라면
+                    ? { ...obj, src: `/asset/${totalNum}.png` } // 숫자 수정
+                    : obj // 아니라면 그대로 유지
             )
         );
     }, [totalNum]);
@@ -92,7 +92,7 @@ export const useAdditionTemplate = ({
         }) => {
             const ox = x;
             const oy = y;
-            if (isInDropZone(ratio,dx,dy,dw,dh,ox,oy,isObj)) {  // 객체가 드롭존 안에 있다면
+            if (isInDropZone(ratio, dx, dy, dw, dh, ox, oy, isObj)) {  // 객체가 드롭존 안에 있다면
                 newTotalNum++; // 총 개수 하나 증가
             }
         })
@@ -120,11 +120,11 @@ export const useAdditionTemplate = ({
 
 /* 1600 x 900을 기준으로 배치 */
 function getAdditionTemplateObjects(
-    entity1: probEntityType, 
+    entity1: probEntityType,
     entity2: probEntityType,
     totalNumber: number
-    ): Obj[] {
-    
+): Obj[] {
+
     const objectsInfo: Obj[] = [ // 문제 풀이를 위한 객체
         // 처음엔 아무것도 없음
     ];
@@ -141,14 +141,14 @@ function getAdditionTemplateObjects(
     const startX = 150; // 첫 번째 그룹 시작 X
     const gapX = 70; // 객체 간 간격
     const groupGap = 250; // 왼쪽/오른쪽 그룹 사이 거리
-    
+
     // + 기호
     const opX = startX + entity1.count * gapX + 40
     objectsInfo.push(
         {
-            id: 'plus', 
-            x: opX, 
-            y: baseY, 
+            id: 'plus',
+            x: opX,
+            y: baseY,
             src: '/asset/plus.png',
             isObj: false, // 객체 아님. 기호임
             value: null,
@@ -157,10 +157,10 @@ function getAdditionTemplateObjects(
 
     // = 기호
     objectsInfo.push(
-        { 
-            id: 'equal', 
-            x: opX + groupGap + entity2.count * gapX + 40, 
-            y: baseY, 
+        {
+            id: 'equal',
+            x: opX + groupGap + entity2.count * gapX + 40,
+            y: baseY,
             src: '/asset/equal.png',
             isObj: false, // 객체 아님. 기호임
             value: null,
@@ -170,8 +170,8 @@ function getAdditionTemplateObjects(
     // 왼쪽 객체들
     for (let i = 0; i < entity1.count; i++) {
         objectsInfo.push(
-            { 
-                id: `left-${i+1}`,
+            {
+                id: `left-${i + 1}`,
                 x: startX + i * gapX,
                 y: baseY,
                 src: objImage1,
@@ -184,8 +184,8 @@ function getAdditionTemplateObjects(
     // 오른쪽 객체들
     for (let i = 0; i < entity2.count; i++) {
         objectsInfo.push(
-            { 
-                id: `right-${i+1}`, 
+            {
+                id: `right-${i + 1}`,
                 x: opX + groupGap + i * gapX,
                 y: baseY,
                 src: objImage2,
@@ -198,9 +198,9 @@ function getAdditionTemplateObjects(
     // 정답 맞추러 가기 버튼
     objectsInfo.push(
         {
-            id: 'button-answer', 
-            x: 1500, 
-            y: 800, 
+            id: 'button-answer',
+            x: 1500,
+            y: 800,
             src: `/asset/button-1.png`,
             isObj: false, // 객체 아님
             value: 1, // 버튼
@@ -209,9 +209,9 @@ function getAdditionTemplateObjects(
 
     // 드롭존 위 객체의 총합을 나타내는 숫자
     objectsInfo.push(
-        { 
-            id: 'totalNumber', 
-            x: 1300, 
+        {
+            id: 'totalNumber',
+            x: 1300,
             y: 150,
             src: `/asset/${totalNumber}.png`,
             isObj: false, // 객체 아님. 총합을 나타내는 숫자임
