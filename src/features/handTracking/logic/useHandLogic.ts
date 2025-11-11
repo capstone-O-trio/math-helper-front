@@ -7,7 +7,7 @@ import { useStep1Logic } from "./step/useStep1Logic";
 import { useStep2Logic } from "./step/useStep2Logic";
 
 
-export const useHandLogic = ({ 
+export const useHandLogic = ({
     mathProbInfo, canvasRef, navigate
 }: any) => {
     const [step, setStep] = useState<1 | 2>(1); // 1: 문제 풀어보기, 2: 정답 맞추기
@@ -50,12 +50,10 @@ export const useHandLogic = ({
 
     const step2 = useStep2Logic({
         stepRef,
-        mathProbInfo,
-        canvasRef,
-        camRatioRef,
-        setStep,
-        setComment,
-        navigate,
+        mathProbInfo, canvasRef, camRatioRef,
+        setStep, setComment,
+        selectAnswer,
+        navigate
     });
 
     const active = step === 1 ? step1 : step2;
