@@ -2,18 +2,27 @@
     WebCamera.tsx -> 웹캠 띄우기, Mediapipe Hands + Camera 초기화 로직
 */
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Webcam from "react-webcam";
 import { Hands } from "@mediapipe/hands";
 import { Camera } from "@mediapipe/camera_utils";
 
 export const WebCamera = ({ webcamRef, canvasRef, onResults, setCamRatio }: any) => {
+    const handsRef = useRef<Hands | null>(null);
+    const isActiveRef = useRef(true);
+    const onResultsRef = useRef(onResults);
+
+    useEffect(() => {
+        onResultsRef.current = onResults;
+    }, [onResults]);
+
     // Hands 초기화 + 카메라 시작
     useEffect(() => {
         let camera: any;
+
+        const HANDS_ASSET_URL = "https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240";
         const hands = new Hands({
-        locateFile: (file: string) =>
-            `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
+            locateFile: (file: string) => `${HANDS_ASSET_URL}/${file}`,
         });
 
         // Hand 옵션
@@ -24,8 +33,11 @@ export const WebCamera = ({ webcamRef, canvasRef, onResults, setCamRatio }: any)
             minTrackingConfidence: 0.5,
             selfieMode: true, // 셀피 모드 기준
         });
+        handsRef.current = hands;
 
-        hands.onResults(onResults);
+        hands.onResults((results) => {
+            onResultsRef.current && onResultsRef.current(results);
+        });
 
         // 화면 비율 반영
         const updateRatio = () => {
@@ -55,7 +67,10 @@ export const WebCamera = ({ webcamRef, canvasRef, onResults, setCamRatio }: any)
             // 매 프레임마다 onFrame이 호출되고, hands.send({image: video})로 추론 수행
             camera = new Camera(video, {
                 onFrame: async () => {
-                await hands.send({ image: video });
+                    if (!isActiveRef.current || !handsRef.current) return;
+                    const hands = handsRef.current;
+                    if (!hands) return;
+                    await handsRef.current.send({ image: video });
                 },
                 width: canvas.width,
                 height: canvas.height,
@@ -65,13 +80,13 @@ export const WebCamera = ({ webcamRef, canvasRef, onResults, setCamRatio }: any)
         };
 
         // <video>가 재생 가능해지면(메타데이터 로드) startWhenReady 실행
-            const video = webcamRef.current?.video as HTMLVideoElement | undefined;
-            if (video) {
+        const video = webcamRef.current?.video as HTMLVideoElement | undefined;
+        if (video) {
             if (video.readyState >= 2) {
                 startWhenReady();
             } else {
                 video.addEventListener("loadeddata", startWhenReady as EventListener, {
-                once: true,
+                    once: true,
                 });
             }
         }
@@ -79,24 +94,27 @@ export const WebCamera = ({ webcamRef, canvasRef, onResults, setCamRatio }: any)
         // cleanup: 컴포넌트가 내려갈 때 카메라 루프 정지 + Hands 리소스 해제
         return () => {
             if (camera?.stop) camera.stop();
-            hands.close();
+            if (handsRef.current) {
+                hands.close();
+                handsRef.current = null;
+            }
             ro.disconnect();
         };
-  }, [canvasRef, onResults, setCamRatio, webcamRef]);
+    }, [canvasRef, setCamRatio, webcamRef]);
 
-  return (
-    <Webcam
-        ref={webcamRef}
-        audio={false}
-        style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            transform: "scaleX(-1)",
-        }}
-        videoConstraints={{ width: 1280, height: 720, facingMode: "user" }}
-    />
-  );
+    return (
+        <Webcam
+            ref={webcamRef}
+            audio={false}
+            style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                transform: "scaleX(-1)",
+            }}
+            videoConstraints={{ width: 1280, height: 720, facingMode: "user" }}
+        />
+    );
 };
