@@ -29,8 +29,8 @@ export const useAdditionTemplate = ({
     /* 필요한 객체 */
     const [objects, setObjects] = useState(
         getAdditionTemplateObjects( // 덧셈 템플릿에 필요한 객체 가져오기
-            mathProbInfo.entityList[0], // 왼쪽 엔티티들
-            mathProbInfo.entityList[1], // 오른쪽 엔티티들
+            mathProbInfo.entityList[0] ?? null, // 왼쪽 엔티티들
+            mathProbInfo.entityList[1] ?? null, // 오른쪽 엔티티들
             0
         )
     );
@@ -132,6 +132,9 @@ function getAdditionTemplateObjects(
     const objectsInfo: Obj[] = [ // 문제 풀이를 위한 객체
         // 처음엔 아무것도 없음
     ];
+
+    // 항상 모든 템플릿을 생성하기 때문에, null로 넘기는 경우가 있을 수 있음
+    if (entity1 === null || entity2 === null) return objectsInfo;
 
     let objImage1 = '/asset/사과.png'; // 객체로 넣을 이미지
     let objImage2 = '/asset/사과.png'; // 객체로 넣을 이미지
