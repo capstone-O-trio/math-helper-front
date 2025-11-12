@@ -4,10 +4,22 @@
 
 import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
 import { HAND_CONNECTIONS } from "@mediapipe/hands";
-import { getHandState } from "./handState";
+import { getHandState, type HandState } from "./handState";
 
 let movingObjId: string | null = null;
 let selectedButtonId: string | null = null;
+
+//이전 프레임 손상태저장 - 튕기기 제스쳐를 위함
+let lastKnownState: {
+    [handIndex: number]:{
+        state: HandState,
+        indexTip: {x:number, y:number},
+        timestamp: number //감지 시간
+    };
+} = {};
+
+const FLICK_VELOCITY_THRESHOLD = 50; // 튕기기 속도 임계값
+const FLICK_TIME_THRESHOLD = 150; // 튕기기 시간 임계값 (밀리초)
 
 export function handleHandActions(
     results: any,
@@ -23,9 +35,12 @@ export function handleHandActions(
     navigate: (path: string) => void
 ) {
     const hands = results.multiHandLandmarks || [];
-    if (!hands.length) return;
+    if (!hands.length) {
+        lastKnownState = {}; // 손이 없으면 상태 초기화
+        return;
+    };
 
-    hands.forEach((lm: any) => {
+    hands.forEach((lm: any, index: number) => {
         // 모든 손에 대해 랜드마크/연결선 그리기
         drawConnectors(ctx, lm, HAND_CONNECTIONS);
         drawLandmarks(ctx, lm);
@@ -42,6 +57,33 @@ export function handleHandActions(
         const handIndex = lm[8];
         const index_x = handIndex.x * dispW;
         const index_y = handIndex.y * dispH;
+
+        // 튕기기 제스쳐 감지
+        const currentTime = performance.now();
+        const lastState = lastKnownState[index]
+
+        if (lastState) {
+            const timeDiff = currentTime - lastState.timestamp;
+
+            //1. 매우 짧은시간 안에 동작이 일어났는지 확인
+            if (timeDiff > 0 && timeDiff < FLICK_TIME_THRESHOLD) {
+                //2 상태가 일단은 fist에서 open또는 indexUp로 바뀌었는지 확인
+                if((lastState.state === "okay") && (state === "open" || state === "indexUp"))
+                    {
+                    //3. 검지끝이 임계값 이상으로 빠르게 이동했는지 확인
+                    const dist = Math.hypot(index_x - lastState.indexTip.x, index_y - lastState.indexTip.y);
+                    if (dist > FLICK_VELOCITY_THRESHOLD){
+                        console.log(`Flick detected! (Hand ${index}, dist: ${dist})`);
+                    }
+                }
+            }
+        }
+        // 현재 프레임의 손 상태 저장
+        lastKnownState[index] = {
+            state: state,
+            indexTip: {x: index_x, y: index_y},
+            timestamp: currentTime
+        };
 
         setObjects((prev) => {
             let changed = false;
