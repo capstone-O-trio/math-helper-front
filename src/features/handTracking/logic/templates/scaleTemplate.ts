@@ -57,8 +57,31 @@ export const useScaleTemplate = ({
     }, [objects]);
 
     // 저울 이미지
-    const [scareImage, setScareImage] = useState(0); // 드롭존 안 객체
-    const scareImageRef = useRef(scareImage); // 드롭존 안 객체
+    const [scaleImage, setScaleImage] = useState(0); // 드롭존 안 객체
+    const scareImageRef = useRef(scaleImage); // 드롭존 안 객체
+
+    // 저울 무게 달라지면 업데이트
+    useEffect(() => {
+        scareImageRef.current = scaleImage;
+        // 저울 무게 달라지면 저울 이미지 업데이트
+        setObjects(prev =>
+            prev.map(obj => {
+                if (obj.id === "scale") {
+                    setTimeout(() => { }, 200); // 0.2초 대기 후 바뀜
+                    if (scareImageRef.current === -1) { // 왼쪽이 더 무거운 경우
+                        return { ...obj, src: '/asset/scale-left.png' };
+                    }
+                    else if (scareImageRef.current === 1) { // 오른쪽이 더 무거운 경우
+                        return { ...obj, src: '/asset/scale-right.png' };
+                    } else { // 왼쪽 오른쪽 무게가 같은 경우
+                        return { ...obj, src: '/asset/scale-equal.png' };
+                    }
+                } else {
+                    return obj; // 아무 조건에도 해당 안 되면 그대로 반환
+                }
+            })
+        );
+    }, [scaleImage]);
 
     /* Mediapipe 관련 로직 */
     function onResults(results: any) {
@@ -101,7 +124,13 @@ export const useScaleTemplate = ({
                 }
             }
         })
-        // console.log(left_weight, right_weight);
+        console.log(left_weight, right_weight);
+
+        // 저울 왼쪽 오른쪽에 객체가 추가된 경우 저울에 반영
+        if (left_weight > right_weight) setScaleImage(-1); // 왼쪽이 더 무거운 경우
+        else if (left_weight < right_weight) setScaleImage(1); // 오른쪽이 더 무거운 경우
+        else setScaleImage(0); // 왼쪽 오른쪽 무게가 같은 경우
+        scareImageRef.current = scaleImage;
 
         handleHandActions(
             results,
