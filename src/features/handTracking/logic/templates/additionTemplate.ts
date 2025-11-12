@@ -9,6 +9,10 @@ import { isInDropZone } from "../../utils/solveProblem";
 import { handleHandActions } from "../../utils/handAction";
 import { drawDropZone } from "../../utils/draw";
 
+// 기본 객체 크기
+const obj_width = 50;
+const obj_height = 50;
+
 export const useAdditionTemplate = ({
     mathProbInfo, canvasRef, camRatioRef,
     setStep, setComment,
@@ -25,8 +29,8 @@ export const useAdditionTemplate = ({
     /* 필요한 객체 */
     const [objects, setObjects] = useState(
         getAdditionTemplateObjects( // 덧셈 템플릿에 필요한 객체 가져오기
-            mathProbInfo.entityList[0], // 왼쪽 엔티티들
-            mathProbInfo.entityList[1], // 오른쪽 엔티티들
+            mathProbInfo.entityList[0] ?? null, // 왼쪽 엔티티들
+            mathProbInfo.entityList[1] ?? null, // 오른쪽 엔티티들
             0
         )
     );
@@ -129,6 +133,9 @@ function getAdditionTemplateObjects(
         // 처음엔 아무것도 없음
     ];
 
+    // 항상 모든 템플릿을 생성하기 때문에, null로 넘기는 경우가 있을 수 있음
+    if (entity1 === null || entity2 === null) return objectsInfo;
+
     let objImage1 = '/asset/사과.png'; // 객체로 넣을 이미지
     let objImage2 = '/asset/사과.png'; // 객체로 넣을 이미지
     if (entity1.kind === 'apple') // 현재는 사과 이미지만 가능
@@ -152,6 +159,8 @@ function getAdditionTemplateObjects(
             src: '/asset/plus.png',
             isObj: false, // 객체 아님. 기호임
             value: null,
+            width: obj_width,
+            height: obj_height,
         }
     );
 
@@ -164,6 +173,8 @@ function getAdditionTemplateObjects(
             src: '/asset/equal.png',
             isObj: false, // 객체 아님. 기호임
             value: null,
+            width: obj_width,
+            height: obj_height,
         }
     );
 
@@ -177,6 +188,8 @@ function getAdditionTemplateObjects(
                 src: objImage1,
                 isObj: true, // 객체임
                 value: null,
+                width: obj_width,
+                height: obj_height,
             }
         );
     }
@@ -191,6 +204,8 @@ function getAdditionTemplateObjects(
                 src: objImage2,
                 isObj: true, // 객체임
                 value: null,
+                width: obj_width,
+                height: obj_height,
             }
         );
     }
@@ -204,6 +219,8 @@ function getAdditionTemplateObjects(
             src: `/asset/button-1.png`,
             isObj: false, // 객체 아님
             value: 1, // 버튼
+            width: obj_width,
+            height: obj_height,
         }
     );
 
@@ -216,6 +233,8 @@ function getAdditionTemplateObjects(
             src: `/asset/${totalNumber}.png`,
             isObj: false, // 객체 아님. 총합을 나타내는 숫자임
             value: null,
+            width: obj_width,
+            height: obj_height,
         }
     );
 
