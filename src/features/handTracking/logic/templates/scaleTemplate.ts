@@ -12,16 +12,18 @@ import { drawDropZone } from "../../utils/draw";
 // 기본 객체 크기
 const obj_width = 100;
 const obj_height = 100;
+// 기본 객체 위치
+const baseY = 200; // 카드들의 y 위치 (위쪽)
 
 // 저울 왼쪽 드롭존 좌표
 const left_dx = 230;
-const left_dy = 300;
+let left_dy = 300;
 const left_dw = 300;
 const left_dh = 300;
 
 // 저울 오른쪽 드롭존 좌표
 const right_dx = 1070;
-const right_dy = 300;
+let right_dy = 300;
 const right_dw = 300;
 const right_dh = 300;
 
@@ -63,24 +65,57 @@ export const useScaleTemplate = ({
     // 저울 무게 달라지면 업데이트
     useEffect(() => {
         scareImageRef.current = scaleImage;
-        // 저울 무게 달라지면 저울 이미지 업데이트
-        setObjects(prev =>
-            prev.map(obj => {
-                if (obj.id === "scale") {
-                    setTimeout(() => { }, 200); // 0.2초 대기 후 바뀜
-                    if (scareImageRef.current === -1) { // 왼쪽이 더 무거운 경우
-                        return { ...obj, src: '/asset/scale-left.png' };
+        const timer = setTimeout(() => {
+            // 저울 무게 달라지면 저울 이미지 업데이트
+            setObjects(prev =>
+                prev.map(obj => {
+                    if (obj.id === "scale") {
+                        if (scareImageRef.current === -1) { // 왼쪽이 더 무거운 경우
+                            left_dy = 400; // 드롭존 위치 조정
+                            right_dy = 300; // 반대쪽 복귀
+                            return { ...obj, src: '/asset/scale-left.png' };
+                        }
+                        else if (scareImageRef.current === 1) { // 오른쪽이 더 무거운 경우
+                            right_dy = 400; // 드롭존 위치 조정
+                            left_dy = 300;  // 반대쪽 복귀
+                            return { ...obj, src: '/asset/scale-right.png' };
+                        } else { // 왼쪽 오른쪽 무게가 같은 경우
+                            left_dy = 300; right_dy = 300; // 드롭존 위치 조정
+                            return { ...obj, src: '/asset/scale-equal.png' };
+                        }
+                    } else if (obj.isObj) {
+                        if (scareImageRef.current === -1) {
+                            // 왼쪽이 내려감 → 왼쪽 드롭존 객체만 내려감. 오른쪽 객체는 다시 올라옴
+                            if (obj.x > left_dx && obj.x < left_dx + left_dw) {
+                                return { ...obj, y: left_dy + left_dh / 2 + 80 };
+                            }
+                            else if (obj.x > right_dx && obj.x < right_dx + right_dw) {
+                                return { ...obj, y: right_dy + right_dh / 2 + 80 };
+                            }
+                        } else if (scareImageRef.current === 1) {
+                            // 오른쪽이 내려감 → 오른쪽 드롭존 객체만 내려감. 왼쪽 객체는 다시 올라옴
+                            if (obj.x > right_dx && obj.x < right_dx + right_dw) {
+                                return { ...obj, y: right_dy + right_dh / 2 + 80 };
+                            }
+                            else if (obj.x > left_dx && obj.x < left_dx + left_dw) {
+                                return { ...obj, y: left_dy + left_dh / 2 + 80 };
+                            }
+                        } else {
+                            // 다시 평형 상태 → 둘 다 원래 위치로 복귀
+                            if (
+                                (obj.x > left_dx && obj.x < left_dx + left_dw) ||
+                                (obj.x > right_dx && obj.x < right_dx + right_dw)
+                            ) {
+                                return { ...obj, y: baseY }; // 원래 객체 위치로 돌아옴
+                            }
+                        }
                     }
-                    else if (scareImageRef.current === 1) { // 오른쪽이 더 무거운 경우
-                        return { ...obj, src: '/asset/scale-right.png' };
-                    } else { // 왼쪽 오른쪽 무게가 같은 경우
-                        return { ...obj, src: '/asset/scale-equal.png' };
-                    }
-                } else {
                     return obj; // 아무 조건에도 해당 안 되면 그대로 반환
-                }
-            })
-        );
+                })
+            );
+        }, 2000);
+        // cleanup (다음 업데이트 전에 기존 타이머 제거)
+        return () => clearTimeout(timer);
     }, [scaleImage]);
 
     /* Mediapipe 관련 로직 */
@@ -124,7 +159,7 @@ export const useScaleTemplate = ({
                 }
             }
         })
-        console.log(left_weight, right_weight);
+        // console.log(left_weight, right_weight);
 
         // 저울 왼쪽 오른쪽에 객체가 추가된 경우 저울에 반영
         if (left_weight > right_weight) setScaleImage(-1); // 왼쪽이 더 무거운 경우
@@ -161,7 +196,6 @@ function getScaleTemplateObjects(
     const objWeightInfo: objWeight[] = [] // 객체의 무게를 저장
 
     // 기본 값 설정
-    const baseY = 200; // 카드들의 y 위치 (위쪽)
     const centerX = 800; // 화면 중앙 (1600 기준)
     const gapX = 250
     // 저울
