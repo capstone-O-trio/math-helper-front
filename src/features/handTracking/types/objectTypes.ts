@@ -9,3 +9,9 @@ export type Obj = {
     value: null | number, // 숫자라면 값이 있음
     width: number, height: number, // 크기
 };
+
+// 객체의 무게 저장할 타입
+export type objWeight = {
+    kind: string;
+    weight: number;
+}
