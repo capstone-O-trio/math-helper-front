@@ -5,12 +5,12 @@ import { mathProbInfoType, probEntityType } from "../features/handTracking/types
 // 임시 데이터 -> 이후 수정해야 함
 const entity1:probEntityType = {
   kind: "apple",
-  count: 3,
+  count: 2,
   image: null
 }
 const entity2:probEntityType = {
   kind: "apple",
-  count: 5,
+  count: 6,
   image: null
 }
 
@@ -18,8 +18,8 @@ const DEFAULT_PROB_INFO: mathProbInfoType = {
   mathId:0,
   probText:"2+3",
   answer: 8,
-  probType:"addition",
-  probTemplate:"addition",
+  probType:"compareApple",
+  probTemplate:"compareApple",
   entityList: [entity1, entity2]
 };
 
