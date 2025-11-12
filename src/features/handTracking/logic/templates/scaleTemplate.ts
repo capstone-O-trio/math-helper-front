@@ -3,7 +3,7 @@
 */
 
 import { useEffect, useRef, useState } from "react";
-import { Obj } from "../../types/objectTypes";
+import { Obj, objWeight } from "../../types/objectTypes";
 import { probEntityType } from "../../types/problemTypes";
 import { isInDropZone } from "../../utils/solveProblem";
 import { handleHandActions } from "../../utils/handAction";
@@ -33,10 +33,10 @@ export const useScaleTemplate = ({
 }: any) => {
 
     /* 필요한 객체 */
+    const { objectsInfo, objWeightInfo } = getScaleTemplateObjects(mathProbInfo.entityList);
     const [objects, setObjects] = useState(
-        getScaleTemplateObjects( // 템플릿에 필요한 객체 가져오기
-            mathProbInfo.entityList
-        )
+        // 템플릿에 필요한 객체 가져오기
+        objectsInfo
     );
     const objectsRef = useRef(objects);
 
@@ -60,22 +60,6 @@ export const useScaleTemplate = ({
     const [scareImage, setScareImage] = useState(0); // 드롭존 안 객체
     const scareImageRef = useRef(scareImage); // 드롭존 안 객체
 
-    // 저울 왼쪽팔
-    const [scareLeftObj, setScareLeftObj] = useState(0); // 드롭존 안 객체
-    const scareLeftObjRef = useRef(scareLeftObj); // 드롭존 안 객체
-
-    // 저울 오른쪽팔
-    const [scareRightObj, setScareRightObj] = useState(0); // 드롭존 안 객체
-    const scareRightObjRef = useRef(scareRightObj); // 드롭존 안 객체
-
-    // totalNum 변경되면 업데이트
-    useEffect(() => {
-        scareLeftObjRef.current = scareLeftObj;
-    }, [scareLeftObj]);
-    useEffect(() => {
-        scareRightObjRef.current = scareRightObj;
-    }, [scareRightObj]);
-
     /* Mediapipe 관련 로직 */
     function onResults(results: any) {
         const canvas = canvasRef.current;
@@ -94,25 +78,30 @@ export const useScaleTemplate = ({
         drawDropZone(ctx, camRatioRef.current, left_dx, left_dy, left_dw, left_dh);
         drawDropZone(ctx, camRatioRef.current, right_dx, right_dy, right_dw, right_dh);
 
-        // 드롭존 안 객체가 추가될 때 총합 숫자 변경
-        let newTreeTotalNum = 0; // 트리 안 객체의 총 갯수
-        let newBoxTotalNum = 0; // 박스 안 객체의 총 갯수
+        // 드롭존 안 객체가 추가될 때 추가된 객체 찾기
+        let left_weight = 0; // 저울 왼쪽 무게
+        let right_weight = 0; // 저울 오른쪽 무게
         objectsRef.current.forEach(({
-            x, y, isObj
+            id, x, y, isObj,
         }) => {
             const ox = x;
             const oy = y;
             if (isInDropZone(ratio, left_dx, left_dy, left_dw, left_dh, ox, oy, isObj)) { // 객체가 드롭존 안에 있다면
-                newTreeTotalNum++; // 총 개수 하나 증가
+                for (const obj_weight of objWeightInfo) {
+                    if (obj_weight.kind === id) { // 왼쪽 드롭존 안에 있는 객체의
+                        left_weight += obj_weight.weight // 무게 추가
+                    }
+                }
             }
             else if (isInDropZone(ratio, right_dx, right_dy, right_dw, right_dh, ox, oy, isObj)) { // 객체가 드롭존 안에 있다면
-                newBoxTotalNum++; // 총 개수 하나 증가
+                for (const obj_weight of objWeightInfo) {
+                    if (obj_weight.kind === id) { // 왼쪽 드롭존 안에 있는 객체의
+                        right_weight += obj_weight.weight // 무게 추가
+                    }
+                }
             }
         })
-        if (scareLeftObj !== scareLeftObjRef.current) setScareLeftObj(newTreeTotalNum)
-        else if (scareRightObj !== scareRightObjRef.current) setScareRightObj(newBoxTotalNum);
-        scareLeftObjRef.current = scareLeftObj;
-        scareRightObjRef.current = scareRightObj;
+        // console.log(left_weight, right_weight);
 
         handleHandActions(
             results,
@@ -135,11 +124,12 @@ export const useScaleTemplate = ({
 /* 1600 x 900을 기준으로 배치 */
 function getScaleTemplateObjects(
     entityList: probEntityType[]
-): Obj[] {
+): { objectsInfo: Obj[]; objWeightInfo: objWeight[] } {
 
     const objectsInfo: Obj[] = [ // 문제 풀이를 위한 객체
         // 처음엔 아무것도 없음
     ];
+    const objWeightInfo: objWeight[] = [] // 객체의 무게를 저장
 
     // 기본 값 설정
     const baseY = 200; // 카드들의 y 위치 (위쪽)
@@ -171,10 +161,9 @@ function getScaleTemplateObjects(
     // 각 카드 배치
     for (let i = 0; i < card_number; i++) {
         const card = entityList[i];
-        console.log(`/asset/scale-card/${card.kind}.png`);
         objectsInfo.push(
             {
-                id: `object${i + 1}`,
+                id: card.kind,
                 x: startX + i * gapX,
                 y: baseY,
                 src: `/asset/scale-card/${card.kind}.png`,
@@ -184,7 +173,15 @@ function getScaleTemplateObjects(
                 height: obj_height,
             }
         );
+        if (card.weight) {
+            objWeightInfo.push(
+                {
+                    kind: card.kind,
+                    weight: card.weight,
+                }
+            )
+        }
     }
 
-    return objectsInfo
+    return { objectsInfo, objWeightInfo }
 }
