@@ -18,20 +18,20 @@ export const HandRenderer = ({ objects, camRatio, canvasRef }: any) => (
         />
 
         {/* 객체를 화면에 표시 */}
-        {objects.map(({ id, x, y, src }: any) => (
+        {objects.map(({ id, x, y, src, width, height }: any) => (
             <img
                 key={id}
                 src={src}
                 alt={id}
                 style={{
-                position: "absolute",
-                left: x * camRatio,
-                top: y * camRatio,
-                width: 48,
-                height: 48,
-                transform: "translate(-50%, -50%)",
-                pointerEvents: "none",
-                zIndex: 3,
+                    position: "absolute",
+                    left: x * camRatio,
+                    top: y * camRatio,
+                    width: width,
+                    height: height,
+                    transform: "translate(-50%, -50%)",
+                    pointerEvents: "none",
+                    zIndex: 3,
                 }}
             />
         ))}
