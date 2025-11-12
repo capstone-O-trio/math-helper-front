@@ -262,6 +262,18 @@ function getCompareAppleTemplateObjects(
   const objImage1 = "/asset/사과.png";
   const objImage2 = "/asset/사과.png";
 
+  //말하는 새 객체
+  objectsInfo.push({
+    id: "talking-bird",
+    x: 100,
+    y: 200,
+    src: "/asset/talkingBird.png",
+    isObj: false,
+    value: null,
+    width: 144,
+    height: 163,
+  })
+
   //말풍선 객체
   objectsInfo.push({
     id: "speechbubble-applemove",
