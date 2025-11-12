@@ -47,7 +47,6 @@ export const useCompareAppleTemplate = ({
   const [effects, setEffects] = useState<
     { id: string; side: "left" | "right" }[]
   >([]);
-  const [appleComment, setAppleComment] = useState("사과를 옮겨봐!"); // 사과 관련 코멘트
 
   /* 초기 드롭존 표시 */
   useEffect(() => {
@@ -182,7 +181,6 @@ export const useCompareAppleTemplate = ({
           setEffects((prev) => prev.slice(1));
         }, 1000);
       }
-      setAppleComment("잘했어! 초록색 집에 사과가 하나 더 들어갔어!");
       setLeftTotalNum(newLeftTotalNum);
     } else if (newRightTotalNum !== rightTotalNumRef.current) {
       if (newRightTotalNum > rightTotalNumRef.current) {
@@ -197,7 +195,6 @@ export const useCompareAppleTemplate = ({
           setEffects((prev) => prev.slice(1));
         }, 1000);
       }
-      setAppleComment("핑크색 집에 사과가 하나 더 들어갔네!");
       setRightTotalNum(newRightTotalNum);
     }
 
@@ -301,16 +298,32 @@ function getCompareAppleTemplateObjects(
     height: 150,
   });
 
-  // 왼쪽 사과들 (초기 위치: 왼쪽 yard)
-  const leftStartX = 150;
-  const leftStartY = 600;
-  const gap = 70;
+  // 왼쪽 사과 배치
+  const leftxMiddle = (left_dx + left_dx + left_dw) / 2;
+  const leftCount = entity1.count;
+  const half = Math.ceil(leftCount / 2); // 반 나누기
+  const xOffset = 80; // 중앙에서 양쪽으로 퍼질 거리 단위
 
-  for (let i = 0; i < entity1.count; i++) {
+  for (let i = 0; i < leftCount; i++) {
+    const isTop = i < half; // 절반까지는 위쪽, 나머지는 아래쪽
+    const rowIndex = isTop ? i : i - half; // 각 행 내에서의 인덱스
+    const y = isTop ? left_dy + left_dh / 2 - 60 : left_dy + left_dh / 2 + 40;
+
+    let x;
+    if (half === 1) {
+      // 하나면 중앙
+      x = leftxMiddle;
+    } else {
+      const isEven = half % 2 === 0;
+      const midIndex = isEven ? half / 2 - 0.5 : Math.floor(half / 2);
+      const offsetFromCenter = (rowIndex - midIndex) * xOffset;
+      x = leftxMiddle + offsetFromCenter;
+    }
+
     objectsInfo.push({
       id: `left-apple-${i + 1}`,
-      x: leftStartX + i * gap,
-      y: leftStartY,
+      x,
+      y,
       src: objImage1,
       isObj: true,
       value: null,
@@ -319,15 +332,31 @@ function getCompareAppleTemplateObjects(
     });
   }
 
-  // 오른쪽 사과들 (초기 위치: 오른쪽 yard)
-  const rightStartX = 1000;
-  const rightStartY = 600;
+  // 오른쪽 사과 배치
+  const rightxMiddle = (right_dx + right_dx + right_dw) / 2;
+  const rightCount = entity2.count;
+  const rhalf = Math.ceil(rightCount / 2); // 반 나누기
 
-  for (let i = 0; i < entity2.count; i++) {
+  for (let i = 0; i < rightCount; i++) {
+    const isTop = i < rhalf; // 절반까지는 위쪽, 나머지는 아래쪽
+    const rowIndex = isTop ? i : i - rhalf; // 각 행 내에서의 인덱스
+    const y = isTop ? right_dy + right_dh / 2 - 60 : right_dy + right_dh / 2 + 40;
+
+    let x;
+    if (rhalf === 1) {
+      // 하나면 중앙
+      x = rightxMiddle;
+    } else {
+      const isEven = rhalf % 2 === 0;
+      const midIndex = isEven ? rhalf / 2 - 0.5 : Math.floor(rhalf / 2);
+      const offsetFromCenter = (rowIndex - midIndex) * xOffset;
+      x = rightxMiddle + offsetFromCenter;
+    }
+
     objectsInfo.push({
       id: `right-apple-${i + 1}`,
-      x: rightStartX + i * gap,
-      y: rightStartY,
+      x,
+      y,
       src: objImage2,
       isObj: true,
       value: null,
@@ -336,7 +365,7 @@ function getCompareAppleTemplateObjects(
     });
   }
 
-  // ⬅왼쪽 총합 숫자 (초록 집 아래)
+  // 왼쪽 총합 숫자 (초록 집 아래)
   objectsInfo.push({
     id: "leftTotalNumber",
     x: 520,
