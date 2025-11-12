@@ -17,5 +17,5 @@ export type probEntityType = {
   kind: string; // 엔티티 종류
   count: number; // 수량
   image: null | string; // 추출 이미지가 있다면
-  weight: null | number; // 무게 필드가 있다면
+  weight?: null | number; // 무게 필드가 있다면
 }
