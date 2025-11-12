@@ -4,6 +4,7 @@
 
 import { useAdditionTemplate } from "../templates/additionTemplate";
 import { useAppletakeoutTemplate } from "../templates/appletakeoutTemplate";
+import { useAppleAdditionTemplate } from "../templates/appleAdditionTemplate";
 
 export const useStep1Logic = ({
     stepRef, mathProbInfo, canvasRef, camRatioRef,
@@ -16,6 +17,10 @@ export const useStep1Logic = ({
     const appletakeout = useAppletakeoutTemplate({
         mathProbInfo, canvasRef, camRatioRef, setStep, setComment, selectAnswer, navigate
     });
+    const appleAddition = useAppleAdditionTemplate({
+        mathProbInfo, canvasRef, camRatioRef, setStep, setComment, selectAnswer, navigate
+    });
+
 
     // 필요한 템플릿만 반환 (조건부 반환은 OK)
     if (mathProbInfo.probTemplate === "addition") {
@@ -23,6 +28,9 @@ export const useStep1Logic = ({
     }
     else if (mathProbInfo.probTemplate === "appletakeout") {
         return appletakeout;
+    }
+    else if (mathProbInfo.probTemplate === "appleAddition") {
+        return appleAddition;
     }
 
     // 다른 템플릿 대비 기본 반환
