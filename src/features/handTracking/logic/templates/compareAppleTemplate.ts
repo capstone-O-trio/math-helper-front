@@ -7,23 +7,22 @@ import { Obj } from "../../types/objectTypes";
 import { probEntityType } from "../../types/problemTypes";
 import { isInDropZone } from "../../utils/solveProblem";
 import { handleHandActions } from "../../utils/handAction";
-import { drawDropZone } from "../../utils/draw";
 
 // 기본 객체 크기
 const obj_width = 50;
 const obj_height = 50;
 
 // 왼쪽 드롭존 좌표
-const left_dx = 0;
-const left_dy = 180;
-const left_dw = 600;
-const left_dh = 440;
+const left_dx = 250;
+const left_dy = 320;
+const left_dw = 400;
+const left_dh = 300;
 
 // 오른쪽 드롭존 좌표
-const right_dx = 1000;
-const right_dy = 300;
+const right_dx = 930;
+const right_dy = 320;
 const right_dw = 400;
-const right_dh = 400;
+const right_dh = 300;
 
 export const useCompareAppleTemplate = ({
   mathProbInfo,
@@ -45,6 +44,10 @@ export const useCompareAppleTemplate = ({
     )
   );
   const objectsRef = useRef(objects);
+  const [effects, setEffects] = useState<
+    { id: string; side: "left" | "right" }[]
+  >([]);
+  const [appleComment, setAppleComment] = useState("사과를 옮겨봐!"); // 사과 관련 코멘트
 
   /* 초기 드롭존 표시 */
   useEffect(() => {
@@ -52,8 +55,15 @@ export const useCompareAppleTemplate = ({
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    drawDropZone(ctx, camRatioRef.current, left_dx, left_dy, left_dw, left_dh);
-    drawDropZone(
+    drawYardDropZone(
+      ctx,
+      camRatioRef.current,
+      left_dx,
+      left_dy,
+      left_dw,
+      left_dh
+    );
+    drawYardDropZone(
       ctx,
       camRatioRef.current,
       right_dx,
@@ -116,8 +126,15 @@ export const useCompareAppleTemplate = ({
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // 드롭존 다시 그리기
-    drawDropZone(ctx, camRatioRef.current, left_dx, left_dy, left_dw, left_dh);
-    drawDropZone(
+    drawYardDropZone(
+      ctx,
+      camRatioRef.current,
+      left_dx,
+      left_dy,
+      left_dw,
+      left_dh
+    );
+    drawYardDropZone(
       ctx,
       camRatioRef.current,
       right_dx,
@@ -152,10 +169,50 @@ export const useCompareAppleTemplate = ({
       }
     });
 
-    if (newLeftTotalNum !== leftTotalNumRef.current)
+    if (newLeftTotalNum !== leftTotalNumRef.current) {
+      if (newLeftTotalNum > leftTotalNumRef.current) {
+        // effects 배열에 추가
+        setEffects((prev) => [
+          ...prev,
+          { id: Math.random().toString(), side: "left" },
+        ]);
+
+        // 1초 후 effects에서 제거
+        setTimeout(() => {
+          setEffects((prev) => prev.slice(1));
+        }, 1000);
+      }
+      setAppleComment("잘했어! 초록색 집에 사과가 하나 더 들어갔어!");
       setLeftTotalNum(newLeftTotalNum);
-    else if (newRightTotalNum !== rightTotalNumRef.current)
+    } else if (newRightTotalNum !== rightTotalNumRef.current) {
+      if (newRightTotalNum > rightTotalNumRef.current) {
+        // effects 배열에 추가
+        setEffects((prev) => [
+          ...prev,
+          { id: Math.random().toString(), side: "right" },
+        ]);
+
+        // 1초 후 effects에서 제거
+        setTimeout(() => {
+          setEffects((prev) => prev.slice(1));
+        }, 1000);
+      }
+      setAppleComment("핑크색 집에 사과가 하나 더 들어갔네!");
       setRightTotalNum(newRightTotalNum);
+    }
+
+    // effects 배열을 순회하며 +1 텍스트 그리기
+    effects.forEach(({ side }) => {
+      if (side === "left") {
+        ctx.font = "bold 48px Arial";
+        ctx.fillStyle = "green";
+        ctx.fillText("+1", left_dx - 30, left_dy - 100);
+      } else {
+        ctx.font = "bold 48px Arial";
+        ctx.fillStyle = "#7D0354";
+        ctx.fillText("+1", right_dx + 30, right_dy - 100);
+      }
+    });
     leftTotalNumRef.current = newLeftTotalNum;
     rightTotalNumRef.current = newRightTotalNum;
 
@@ -177,112 +234,133 @@ export const useCompareAppleTemplate = ({
   return { objects, onResults };
 };
 
-/* 1600 x 900을 기준으로 배치 */
+function drawYardDropZone(
+  ctx: CanvasRenderingContext2D,
+  ratio: number,
+  dx: number,
+  dy: number,
+  dw: number,
+  dh: number
+) {
+  const new_dx = dx * ratio;
+  const new_dy = dy * ratio;
+  const new_dw = dw * ratio;
+  const new_dh = dh * ratio;
+
+  ctx.setLineDash([]);
+  ctx.fillStyle = "rgba(244, 164, 96, 0.4)"; // sandybrown + 50% 투명도
+
+  // 채워진 사각형으로 그리기
+  ctx.fillRect(new_dx, new_dy, new_dw, new_dh);
+}
+
 function getCompareAppleTemplateObjects(
   entity1: probEntityType,
   entity2: probEntityType,
   leftTotalNum: number,
   rightTotalNum: number
 ): Obj[] {
-  const objectsInfo: Obj[] = [
-    // 문제 풀이를 위한 객체
-    // 처음엔 아무것도 없음
-  ];
+  const objectsInfo: Obj[] = [];
 
-  let objImage1 = "/asset/사과.png"; // 객체로 넣을 이미지
-  let objImage2 = "/asset/사과.png"; // 객체로 넣을 이미지
+  const objImage1 = "/asset/사과.png";
+  const objImage2 = "/asset/사과.png";
 
-  if (entity1.kind === "apple")
-    // 현재는 사과 이미지만 가능
-    objImage1 = "/asset/사과.png";
-  if (entity2.kind === "apple")
-    // 현재는 사과 이미지만 가능
-    objImage2 = "/asset/사과.png";
+  //말풍선 객체
+  objectsInfo.push({
+    id: "speechbubble-applemove",
+    x: 400,
+    y: 100,
+    src: "/asset/talk-applemove.png",
+    isObj: false,
+    value: null,
+    width: 300,
+    height: 100,
+  });
 
-  //green house
+  // 🌳 초록색 집 (왼쪽)
   objectsInfo.push({
     id: "greenhouse",
-    x: 700,
+    x: 520,
     y: 250,
     src: "/asset/greenhouse.png",
-    isObj: false, // 객체 아님
+    isObj: false,
     value: null,
-    width: 200,
-    height: 200,
+    width: 150,
+    height: 150,
   });
 
-  //pink house
+  // 🏠 핑크색 집 (오른쪽)
   objectsInfo.push({
     id: "pinkhouse",
-    x: 900,
-    y: 500,
+    x: 1080,
+    y: 255,
     src: "/asset/pinkhouse.png",
-    isObj: false, // 객체 아님
+    isObj: false,
     value: null,
-    width: 200,
-    height: 200,
+    width: 150,
+    height: 150,
   });
 
-  // 배치 기준 (화면 크기 가정)
-  const baseY = 450; // 세로 중앙
-  const startX = 150; // 첫 번째 그룹 시작 X
-  const gapX = 70; // 객체 간 간격
-  const groupGap = 250; // 왼쪽/오른쪽 그룹 사이 거리
+  // 왼쪽 사과들 (초기 위치: 왼쪽 yard)
+  const leftStartX = 150;
+  const leftStartY = 600;
+  const gap = 70;
 
-  // + 기호
-  const opX = startX + entity1.count * gapX + 40;
-  objectsInfo.push({
-    id: "plus",
-    x: opX,
-    y: baseY,
-    src: "/asset/plus.png",
-    isObj: false, // 객체 아님. 기호임
-    value: null,
-    width: obj_width,
-    height: obj_height,
-  });
-
-  // = 기호
-  objectsInfo.push({
-    id: "equal",
-    x: opX + groupGap + entity2.count * gapX + 40,
-    y: baseY,
-    src: "/asset/equal.png",
-    isObj: false, // 객체 아님. 기호임
-    value: null,
-    width: obj_width,
-    height: obj_height,
-  });
-
-  // 왼쪽 객체들
   for (let i = 0; i < entity1.count; i++) {
     objectsInfo.push({
-      id: `left-${i + 1}`,
-      x: startX + i * gapX,
-      y: baseY,
+      id: `left-apple-${i + 1}`,
+      x: leftStartX + i * gap,
+      y: leftStartY,
       src: objImage1,
-      isObj: true, // 객체임
+      isObj: true,
       value: null,
       width: obj_width,
       height: obj_height,
     });
   }
 
-  // 오른쪽 객체들
+  // 오른쪽 사과들 (초기 위치: 오른쪽 yard)
+  const rightStartX = 1000;
+  const rightStartY = 600;
+
   for (let i = 0; i < entity2.count; i++) {
     objectsInfo.push({
-      id: `right-${i + 1}`,
-      x: opX + groupGap + i * gapX,
-      y: baseY,
+      id: `right-apple-${i + 1}`,
+      x: rightStartX + i * gap,
+      y: rightStartY,
       src: objImage2,
-      isObj: true, // 객체임
+      isObj: true,
       value: null,
       width: obj_width,
       height: obj_height,
     });
   }
 
-  // 정답 맞추러 가기 버튼
+  // ⬅왼쪽 총합 숫자 (초록 집 아래)
+  objectsInfo.push({
+    id: "leftTotalNumber",
+    x: 520,
+    y: 700,
+    src: `/asset/${leftTotalNum}.png`,
+    isObj: false,
+    value: null,
+    width: 80,
+    height: 80,
+  });
+
+  // 오른쪽 총합 숫자 (핑크 집 아래)
+  objectsInfo.push({
+    id: "rightTotalNumber",
+    x: 1080,
+    y: 700,
+    src: `/asset/${rightTotalNum}.png`,
+    isObj: false,
+    value: null,
+    width: 80,
+    height: 80,
+  });
+
+  // 정답 확인 버튼
   objectsInfo.push({
     id: "button-answer",
     x: 1500,
@@ -290,18 +368,6 @@ function getCompareAppleTemplateObjects(
     src: `/asset/button-1.png`,
     isObj: false, // 객체 아님
     value: 1, // 버튼
-    width: obj_width,
-    height: obj_height,
-  });
-
-  // 드롭존 위 객체의 총합을 나타내는 숫자
-  objectsInfo.push({
-    id: "totalNumber",
-    x: 1300,
-    y: 150,
-    src: `/asset/${leftTotalNum}.png`,
-    isObj: false, // 객체 아님. 총합을 나타내는 숫자임
-    value: null,
     width: obj_width,
     height: obj_height,
   });
