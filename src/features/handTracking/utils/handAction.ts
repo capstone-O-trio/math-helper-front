@@ -10,7 +10,11 @@ import { Obj } from "features/handTracking/types/objectTypes";
 let movingObjId: string | null = null;
 let selectedButtonId: string | null = null;
 
-const DISAPPEAR_TARGET_X = 800;
+// [신규] 마지막으로 튕기기가 성공한 시간 저장
+let lastFlickSuccessTime = 0;
+const FLICK_COOLDOWN = 500;
+
+const DISAPPEAR_TARGET_X = 1300;
 const DISAPPEAR_TARGET_Y = 300;
 
 //이전 프레임 손상태저장 - 튕기기 제스쳐를 위함
@@ -74,21 +78,25 @@ export function handleHandActions(
         const lastState = lastKnownState[index]
         let flickToApply: {x: number, y: number} | null = null;
 
-        if (lastState) {
-            const timeDiff = currentTime - lastState.timestamp;
+        if (currentTime - lastFlickSuccessTime > FLICK_COOLDOWN) {
+            if (lastState) {
+                const timeDiff = currentTime - lastState.timestamp;
 
-            //1. 매우 짧은시간 안에 동작이 일어났는지 확인
-            if (timeDiff > 0 && timeDiff < FLICK_TIME_THRESHOLD) {
-                //2 상태가 일단은 fist에서 open또는 indexUp로 바뀌었는지 확인
-                if((lastState.state === "okay") && (state === "open" || state === "indexUp"))
-                    {
-                    //3. 검지끝이 임계값 이상으로 빠르게 이동했는지 확인
-                    const dist = Math.hypot(index_x - lastState.indexTip.x, index_y - lastState.indexTip.y);
-                    if (dist > FLICK_VELOCITY_THRESHOLD){
-                        flickToApply = {
-                            x: lastState.pinchPoint.x, 
-                            y: lastState.pinchPoint.y
-                        };
+                //1. 매우 짧은시간 안에 동작이 일어났는지 확인
+                if (timeDiff > 0 && timeDiff < FLICK_TIME_THRESHOLD) {
+                    //2 상태가 일단은 fist에서 open또는 indexUp로 바뀌었는지 확인
+                    if((lastState.state === "okay") && (state === "open" || state === "indexUp"))
+                        {
+                        //3. 검지끝이 임계값 이상으로 빠르게 이동했는지 확인
+                        const dist = Math.hypot(index_x - lastState.indexTip.x, index_y - lastState.indexTip.y);
+                        if (dist > FLICK_VELOCITY_THRESHOLD){
+                            flickToApply = {
+                                x: lastState.pinchPoint.x, 
+                                y: lastState.pinchPoint.y
+                            };
+                            //튕기기 후 쿨다다운
+                            lastFlickSuccessTime = currentTime;
+                        }
                     }
                 }
             }

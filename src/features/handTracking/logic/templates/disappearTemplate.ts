@@ -5,18 +5,28 @@
 import { useEffect, useRef, useState } from "react";
 import { movingObj } from "../../types/objectTypes";
 import { probEntityType } from "../../types/problemTypes";
-import { isInDropZone } from "../../utils/solveProblem";
 import { handleHandActions } from "../../utils/handAction";
-import { drawDropZone } from "../../utils/draw";
+import { mathProbInfoType } from "../../types/problemTypes";
+
+// Props 인터페이스 정의
+interface UseDisappearTemplateProps {
+  mathProbInfo: mathProbInfoType; // 여기가 핵심입니다!
+  canvasRef: React.RefObject<HTMLCanvasElement>;
+  camRatioRef: React.RefObject<number>;
+  setStep: (step: number) => void;
+  setComment: (msg: string) => void;
+  selectAnswer: number | null;
+  navigate: (path: string) => void;
+}
 
 // 기본 객체 크기
-const obj_width = 50;
-const obj_height = 50;
+const obj_width = 70;
+const obj_height = 70;
 
-// [신규] 이동 속도 계수 (0.1 = 매 프레임 10%씩 이동, 1에 가까울수록 빠름)
-const MOVE_SPEED = 0.15;
-// [신규] 도착으로 간주할 거리 (5px 이내)
-const ARRIVAL_THRESHOLD = 5;
+// 이동 속도 계수 (0.1 = 매 프레임 10%씩 이동, 1에 가까울수록 빠름)
+const MOVE_SPEED = 0.07;
+// 도착으로 간주할 거리
+const ARRIVAL_THRESHOLD = 1;
 
 export const useDisappearTemplate = ({
   mathProbInfo,
@@ -26,57 +36,47 @@ export const useDisappearTemplate = ({
   setComment,
   selectAnswer,
   navigate,
-}: any) => {
-  // 드롭존 좌표
-  const dx = 1200;
-  const dy = 250;
-  const dw = 400;
-  const dh = 400;
-
+}: UseDisappearTemplateProps) => {
   /* 필요한 객체 */
+  const initialNumOfEntity = mathProbInfo.entityList[0]
+    ? mathProbInfo.entityList[0].count
+    : 0;
   const [objects, setObjects] = useState(
     getDisappearTemplateObjects(
       // 덧셈 템플릿에 필요한 객체 가져오기
-      mathProbInfo.entityList[0] ?? null, // 왼쪽 엔티티들
-      mathProbInfo.entityList[1] ?? null, // 오른쪽 엔티티들
-      0
+      mathProbInfo.entityList[0] ?? null,
+      initialNumOfEntity
     )
   );
   const objectsRef = useRef(objects);
   const animationFrameRef = useRef<number | null>(null);
 
-  /* 초기 드롭존 표시 */
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    drawDropZone(ctx, camRatioRef.current, dx, dy, dw, dh);
-  }, [camRatioRef, canvasRef]);
-
   /* 템플릿 로직 */
 
-  const [totalNum, setTotalNum] = useState(0); // 드롭존 안 객체의 총 개수
-  const totalNumRef = useRef(totalNum); // 드롭존 안 객체의 총 개수
+  const [entityCount, setEntitiyCount] = useState(initialNumOfEntity); //  객체의 총 개수
 
-  // totalNum 변경되면 업데이트
+  // objects 변경되면 entityCount 업데이트
   useEffect(() => {
-    totalNumRef.current = totalNum;
-  }, [totalNum]);
+    const currentRealCount = objects.filter((obj) => obj.isObj).length;
+    setEntitiyCount((prev) => {
+      if (prev !== currentRealCount) {
+        return currentRealCount;
+      }
+      return prev;
+    });
+  }, [objects]);
 
-  // 총합 숫자 변경되면 업데이트
+  // 숫자 image 업데이트
   useEffect(() => {
-    totalNumRef.current = totalNum;
-    // totalNum이 바뀔 때 숫자 이미지 업데이트
     setObjects((prev) =>
       prev.map(
         (obj) =>
-          obj.id === "totalNumber" // 이 객체가 드롭존 안의 객체를 나타내기 위한 숫자 객체라면
-            ? { ...obj, src: `/asset/${totalNum}.png` } // 숫자 수정
+          obj.id === "numOfEntity"
+            ? { ...obj, src: `/asset/${entityCount}.png` }
             : obj // 아니라면 그대로 유지
       )
     );
-  }, [totalNum]);
+  }, [entityCount]);
 
   // 객체 이동 및 제거 애니메이션 루프
   useEffect(() => {
@@ -116,7 +116,8 @@ export const useDisappearTemplate = ({
                 obj.targetX! - obj.x,
                 obj.targetY! - obj.y
               );
-              // 도착했으면(거리가 가까우면) 배열에서 제거
+
+              // 도착했으면(거리가 가까우면)
               return dist > ARRIVAL_THRESHOLD;
             }
             return true;
@@ -133,7 +134,6 @@ export const useDisappearTemplate = ({
           } else {
             animationFrameRef.current = null; // 더 이상 움직일 게 없으면 종료
           }
-
           return nextObjects;
         });
       };
@@ -166,23 +166,6 @@ export const useDisappearTemplate = ({
     ctx.save();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // 드롭존 다시 그리기
-    drawDropZone(ctx, camRatioRef.current, dx, dy, dw, dh);
-
-    // 드롭존 안 객체가 추가될 때 총합 숫자 변경
-    let newTotalNum = 0; // 객체의 총 갯수
-    objectsRef.current.forEach(({ x, y, isObj }) => {
-      const ox = x;
-      const oy = y;
-      if (isInDropZone(ratio, dx, dy, dw, dh, ox, oy, isObj)) {
-        // 객체가 드롭존 안에 있다면
-        newTotalNum++; // 총 개수 하나 증가
-      }
-    });
-    if (newTotalNum !== totalNumRef.current) setTotalNum(newTotalNum);
-    totalNumRef.current = newTotalNum;
-    // console.log("totalNum: " + newTotalNum);
-
     handleHandActions(
       results,
       ctx,
@@ -205,79 +188,69 @@ export const useDisappearTemplate = ({
 /* 1600 x 900을 기준으로 배치 */
 function getDisappearTemplateObjects(
   entity1: probEntityType,
-  entity2: probEntityType,
-  totalNumber: number
+  numOfEntity: number
 ): movingObj[] {
   const objectsInfo: movingObj[] = [
     // 문제 풀이를 위한 객체
-    // 처음엔 아무것도 없음
   ];
 
-  // 항상 모든 템플릿을 생성하기 때문에, null로 넘기는 경우가 있을 수 있음
-  if (entity1 === null || entity2 === null) return objectsInfo;
+  if (entity1 === null) return objectsInfo;
 
   let objImage1 = "/asset/사과.png"; // 객체로 넣을 이미지
-  let objImage2 = "/asset/사과.png"; // 객체로 넣을 이미지
-  if (entity1.kind === "apple")
-    // 현재는 사과 이미지만 가능
-    objImage1 = "/asset/사과.png";
-  if (entity2.kind === "apple")
-    // 현재는 사과 이미지만 가능
-    objImage2 = "/asset/사과.png";
+  if (entity1.kind === "apple") objImage1 = "/asset/사과.png";
 
-  // 배치 기준 (화면 크기 가정)
-  const baseY = 450; // 세로 중앙
-  const startX = 150; // 첫 번째 그룹 시작 X
-  const gapX = 70; // 객체 간 간격
-  const groupGap = 250; // 왼쪽/오른쪽 그룹 사이 거리
-
-  // + 기호
-  const opX = startX + entity1.count * gapX + 40;
+  //window
   objectsInfo.push({
-    id: "plus",
-    x: opX,
-    y: baseY,
-    src: "/asset/plus.png",
-    isObj: false, // 객체 아님. 기호임
+    id: "window",
+    x: 1200,
+    y: 300,
+    src: "/asset/window.png",
+    isObj: false,
     value: null,
-    width: obj_width,
-    height: obj_height,
+    width: 600,
+    height: 400,
   });
 
-  // = 기호
+  //speechbubble
   objectsInfo.push({
-    id: "equal",
-    x: opX + groupGap + entity2.count * gapX + 40,
-    y: baseY,
-    src: "/asset/equal.png",
-    isObj: false, // 객체 아님. 기호임
+    id: "disappear-talk",
+    x: 300,
+    y: 150,
+    src: "/asset/talk_disappear.png",
+    isObj: false,
     value: null,
-    width: obj_width,
-    height: obj_height,
+    width: 400,
+    height: 180,
   });
 
-  // 왼쪽 객체들
-  for (let i = 0; i < entity1.count; i++) {
+  // 객체 배치 계산
+  const xMiddle = 400;
+  const yMiddle = 650;
+  const count = entity1.count;
+  const half = Math.ceil(count / 2); // 반 나누기
+  const xOffset = 120; // 중앙에서 양쪽으로 퍼질 거리 단위
+
+  for (let i = 0; i < count; i++) {
+    const isTop = i < half; // 절반까지는 위쪽, 나머지는 아래쪽
+    const rowIndex = isTop ? i : i - half; // 각 행 내에서의 인덱스
+    const y = isTop ? yMiddle - 100 : yMiddle + 40;
+
+    let x;
+    if (half === 1) {
+      x = xMiddle;
+    } else {
+      const isEven = half % 2 === 0;
+      const midIndex = isEven ? half / 2 - 0.5 : Math.floor(half / 2);
+      const offsetFromCenter = (rowIndex - midIndex) * xOffset;
+      x = xMiddle + offsetFromCenter;
+    }
+
     objectsInfo.push({
       id: `left-${i + 1}`,
-      x: startX + i * gapX,
-      y: baseY,
+      x,
+      y,
       src: objImage1,
-      isObj: true, // 객체임
-      value: null,
-      width: obj_width,
-      height: obj_height,
-    });
-  }
-
-  // 오른쪽 객체들
-  for (let i = 0; i < entity2.count; i++) {
-    objectsInfo.push({
-      id: `right-${i + 1}`,
-      x: opX + groupGap + i * gapX,
-      y: baseY,
-      src: objImage2,
-      isObj: true, // 객체임
+      isObj: true,
       value: null,
       width: obj_width,
       height: obj_height,
@@ -296,16 +269,16 @@ function getDisappearTemplateObjects(
     height: obj_height,
   });
 
-  // 드롭존 위 객체의 총합을 나타내는 숫자
+  // 객체의 총합을 나타내는 숫자
   objectsInfo.push({
-    id: "totalNumber",
-    x: 1300,
-    y: 150,
-    src: `/asset/${totalNumber}.png`,
+    id: "numOfEntity",
+    x: 150,
+    y: 400,
+    src: `/asset/${numOfEntity}.png`,
     isObj: false, // 객체 아님. 총합을 나타내는 숫자임
     value: null,
-    width: obj_width,
-    height: obj_height,
+    width: 80,
+    height: 80,
   });
 
   return objectsInfo;
