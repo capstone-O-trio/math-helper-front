@@ -18,8 +18,8 @@ const DEFAULT_PROB_INFO: mathProbInfoType = {
   mathId:0,
   probText:"2+3",
   answer: 8,
-  probType:"compareApple",
-  probTemplate:"compareApple",
+  probType:"addition",
+  probTemplate:"addition",
   entityList: [entity1, entity2]
 };
 

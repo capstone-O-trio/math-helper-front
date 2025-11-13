@@ -5,6 +5,7 @@
 import { useCompareAppleTemplate } from "features/handTracking/logic/templates/compareAppleTemplate";
 import { useAdditionTemplate } from "../templates/additionTemplate";
 import { useAppletakeoutTemplate } from "../templates/appletakeoutTemplate";
+import { useScaleTemplate } from "../templates/scaleTemplate";
 
 export const useStep1Logic = ({
     stepRef, mathProbInfo, canvasRef, camRatioRef,
@@ -17,6 +18,9 @@ export const useStep1Logic = ({
     const appletakeout = useAppletakeoutTemplate({
         mathProbInfo, canvasRef, camRatioRef, setStep, setComment, selectAnswer, navigate
     });
+    const scale = useScaleTemplate({
+        mathProbInfo, canvasRef, camRatioRef, setStep, setComment, selectAnswer, navigate
+    });
     const appleCompare = useCompareAppleTemplate({
         mathProbInfo, canvasRef, camRatioRef, setStep, setComment, selectAnswer, navigate
     });
@@ -27,6 +31,9 @@ export const useStep1Logic = ({
     }
     else if (mathProbInfo.probTemplate === "appletakeout") {
         return appletakeout;
+    } 
+    else if (mathProbInfo.probTemplate === "scale") {
+        return scale;
     }
     else if (mathProbInfo.probTemplate === "compareApple") {
         return appleCompare;
