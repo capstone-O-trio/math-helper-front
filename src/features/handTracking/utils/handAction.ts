@@ -18,6 +18,7 @@ let lastKnownState: {
     [handIndex: number]:{
         state: HandState,
         indexTip: {x:number, y:number},
+        pinchPoint: {x:number, y:number},
         timestamp: number //감지 시간
     };
 } = {};
@@ -63,6 +64,11 @@ export function handleHandActions(
         const index_x = handIndex.x * dispW;
         const index_y = handIndex.y * dispH;
 
+        // 엄지 끝 좌표 계산 (핀치 위치)
+        const handThumb = lm[4];
+        const pinch_x = ((handThumb.x + handIndex.x) / 2) * dispW;
+        const pinch_y = ((handThumb.y + handIndex.y) / 2) * dispH;
+
         // 튕기기 제스쳐 감지
         const currentTime = performance.now();
         const lastState = lastKnownState[index]
@@ -80,8 +86,8 @@ export function handleHandActions(
                     const dist = Math.hypot(index_x - lastState.indexTip.x, index_y - lastState.indexTip.y);
                     if (dist > FLICK_VELOCITY_THRESHOLD){
                         flickToApply = {
-                            x: index_x,
-                            y: index_y
+                            x: lastState.pinchPoint.x, 
+                            y: lastState.pinchPoint.y
                         };
                     }
                 }
@@ -91,6 +97,7 @@ export function handleHandActions(
         lastKnownState[index] = {
             state: state,
             indexTip: {x: index_x, y: index_y},
+            pinchPoint: {x: pinch_x, y: pinch_y}, 
             timestamp: currentTime
         };
 
