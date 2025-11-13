@@ -7,6 +7,7 @@ import { useCompareAppleTemplate } from "features/handTracking/logic/templates/c
 import { useDisappearTemplate } from "features/handTracking/logic/templates/disappearTemplate";
 import { useAdditionTemplate } from "../templates/additionTemplate";
 import { useAppletakeoutTemplate } from "../templates/appletakeoutTemplate";
+import { useAppleAdditionTemplate } from "../templates/appleAdditionTemplate";
 import { useScaleTemplate } from "../templates/scaleTemplate";
 
 export const useStep1Logic = ({
@@ -36,6 +37,11 @@ export const useStep1Logic = ({
     }
     else if (mathProbInfo.probTemplate === "disappear") {
         return useDisappearTemplate({
+        mathProbInfo, canvasRef, camRatioRef, setStep, setComment, selectAnswer, navigate
+    });
+    }
+    else if (mathProbInfo.probTemplate === "appleAddition") {
+        return useAppleAdditionTemplate({
         mathProbInfo, canvasRef, camRatioRef, setStep, setComment, selectAnswer, navigate
     });
     }
