@@ -7,7 +7,6 @@ import { Obj } from "../../types/objectTypes";
 import { probEntityType } from "../../types/problemTypes";
 import { isInDropZone } from "../../utils/solveProblem";
 import { handleHandActions } from "../../utils/handAction";
-import { drawDropZone } from "../../utils/draw";
 
 // 기본 객체 크기
 const obj_width = 80;
