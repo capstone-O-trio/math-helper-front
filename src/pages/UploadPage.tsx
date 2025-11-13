@@ -30,7 +30,7 @@ export const UploadPage: React.FC = () => {
         //새로운 문제 확인 api
         const response = await getNewMaths();
 
-        if (response.result !== null && selectedFile == null) {
+        if (selectedFile == null && response.result !== null ) {
           setIsUpload(true);
           setPreviewUrl(response.result.image);
 

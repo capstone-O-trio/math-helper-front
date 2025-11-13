@@ -10,6 +10,12 @@ export type Obj = {
     width: number, height: number, // 크기
 };
 
+// 객체의 무게 저장할 타입
+export type objWeight = {
+    kind: string;
+    weight: number;
+}
+
 export type movingObj = {
     id: string; x: number; y: number; src: string,
     isObj: boolean, // 객체인지
