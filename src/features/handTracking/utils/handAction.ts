@@ -109,7 +109,7 @@ export function handleHandActions(
                     
                     const distance = Math.hypot(ox - flickToApply!.x, oy - flickToApply!.y);
                     // 튕긴 지점 반경 내 가장 가까운 객체
-                    if (distance < minDist && distance < 500 * ratio) { 
+                    if (distance < minDist && distance < 200 * ratio) { 
                         minDist = distance;
                         flickedObjectId = obj.id;
                     }
