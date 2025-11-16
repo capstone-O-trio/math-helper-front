@@ -6,12 +6,12 @@ import { WaterComparisonTracker } from "features/handTracking/components/WaterCo
 // 임시 데이터 -> 이후 수정해야 함
 const entity1:probEntityType = {
   kind: "apple",
-  count: 3,
+  count: 2,
   image: null
 }
 const entity2:probEntityType = {
   kind: "apple",
-  count: 5,
+  count: 6,
   image: null
 }
 

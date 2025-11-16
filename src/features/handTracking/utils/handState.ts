@@ -3,6 +3,7 @@
 */
 
 import type { HandState, Landmark } from "../types/handTypes";
+export type { HandState };
 
 // 거리 계산
 const dist = (a: Landmark, b: Landmark): number => {
@@ -19,7 +20,7 @@ function isCurled(lm: Landmark[], tipIdx: number, pipIdx: number) {
     return disTip < disPip;
 }
 
-// 손 상태 반환: 'fist' | 'open' | 'indexUp' | 'unknown'
+// 손 상태 반환: 'fist' | 'open' | 'indexUp' | 'okay' |'unknown'
 function getHandState(lm: Landmark[]): HandState {
     if (!lm || lm.length < 21) return 'unknown';
 
@@ -32,12 +33,18 @@ function getHandState(lm: Landmark[]): HandState {
     if (curledIndex && curledMiddle && curledRing && curledPinky) {
         return 'fist';
     }
-    else if (!curledIndex && curledMiddle && curledRing && curledPinky) {
+
+    const distThumbIndex = dist(lm[4], lm[8]);
+    if (distThumbIndex < 0.05) {
+        return 'okay';
+    }
+    
+    if (!curledIndex && curledMiddle && curledRing && curledPinky) {
         return 'indexUp';
     }
-    else {
-        return 'open';
-    }
+    
+    return 'open';
+    
 }
 
 export { getHandState };

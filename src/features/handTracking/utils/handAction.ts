@@ -4,10 +4,31 @@
 
 import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
 import { HAND_CONNECTIONS } from "@mediapipe/hands";
-import { getHandState } from "./handState";
+import { getHandState, type HandState } from "./handState";
+import { Obj } from "features/handTracking/types/objectTypes";
 
 let movingObjId: string | null = null;
 let selectedButtonId: string | null = null;
+
+// [신규] 마지막으로 튕기기가 성공한 시간 저장
+let lastFlickSuccessTime = 0;
+const FLICK_COOLDOWN = 500;
+
+const DISAPPEAR_TARGET_X = 1300;
+const DISAPPEAR_TARGET_Y = 300;
+
+//이전 프레임 손상태저장 - 튕기기 제스쳐를 위함
+let lastKnownState: {
+    [handIndex: number]:{
+        state: HandState,
+        indexTip: {x:number, y:number},
+        pinchPoint: {x:number, y:number},
+        timestamp: number //감지 시간
+    };
+} = {};
+
+const FLICK_VELOCITY_THRESHOLD = 50; // 튕기기 속도 임계값
+const FLICK_TIME_THRESHOLD = 150; // 튕기기 시간 임계값 (밀리초)
 
 export function handleHandActions(
     results: any,
@@ -20,12 +41,16 @@ export function handleHandActions(
     setObjects: React.Dispatch<React.SetStateAction<any[]>>,
     setStep: (step: number) => void,
     setComment: (msg: string) => void,
-    navigate: (path: string) => void
+    navigate: (path: string) => void,
+    objectsRef?: React.RefObject<Obj[]>,
 ) {
     const hands = results.multiHandLandmarks || [];
-    if (!hands.length) return;
+    if (!hands.length) {
+        lastKnownState = {}; // 손이 없으면 상태 초기화
+        return;
+    };
 
-    hands.forEach((lm: any) => {
+    hands.forEach((lm: any, index: number) => {
         // 모든 손에 대해 랜드마크/연결선 그리기
         drawConnectors(ctx, lm, HAND_CONNECTIONS);
         drawLandmarks(ctx, lm);
@@ -43,9 +68,83 @@ export function handleHandActions(
         const index_x = handIndex.x * dispW;
         const index_y = handIndex.y * dispH;
 
+        // 엄지 끝 좌표 계산 (핀치 위치)
+        const handThumb = lm[4];
+        const pinch_x = ((handThumb.x + handIndex.x) / 2) * dispW;
+        const pinch_y = ((handThumb.y + handIndex.y) / 2) * dispH;
+
+        // 튕기기 제스쳐 감지
+        const currentTime = performance.now();
+        const lastState = lastKnownState[index]
+        let flickToApply: {x: number, y: number} | null = null;
+
+        if (currentTime - lastFlickSuccessTime > FLICK_COOLDOWN) {
+            if (lastState) {
+                const timeDiff = currentTime - lastState.timestamp;
+
+                //1. 매우 짧은시간 안에 동작이 일어났는지 확인
+                if (timeDiff > 0 && timeDiff < FLICK_TIME_THRESHOLD) {
+                    //2 상태가 일단은 fist에서 open또는 indexUp로 바뀌었는지 확인
+                    if((lastState.state === "okay") && (state === "open" || state === "indexUp"))
+                        {
+                        //3. 검지끝이 임계값 이상으로 빠르게 이동했는지 확인
+                        const dist = Math.hypot(index_x - lastState.indexTip.x, index_y - lastState.indexTip.y);
+                        if (dist > FLICK_VELOCITY_THRESHOLD){
+                            flickToApply = {
+                                x: lastState.pinchPoint.x, 
+                                y: lastState.pinchPoint.y
+                            };
+                            //튕기기 후 쿨다다운
+                            lastFlickSuccessTime = currentTime;
+                        }
+                    }
+                }
+            }
+        }
+        // 현재 프레임의 손 상태 저장
+        lastKnownState[index] = {
+            state: state,
+            indexTip: {x: index_x, y: index_y},
+            pinchPoint: {x: pinch_x, y: pinch_y}, 
+            timestamp: currentTime
+        };
+
         setObjects((prev) => {
             let changed = false;
+            let flickedObjectId: string | null = null;
+
+            //1. 튕기기 적용 대상 찾기
+            if (flickToApply && objectsRef && objectsRef.current) {
+                let minDist = Infinity;
+                objectsRef.current.forEach(obj => {
+                    if (!obj.isObj) return; 
+
+                    const ox = obj.x * ratio; 
+                    const oy = obj.y * ratio; 
+                    
+                    const distance = Math.hypot(ox - flickToApply!.x, oy - flickToApply!.y);
+                    // 튕긴 지점 반경 내 가장 가까운 객체
+                    if (distance < minDist && distance < 200 * ratio) { 
+                        minDist = distance;
+                        flickedObjectId = obj.id;
+                    }
+                });
+            }
+
             const next = prev.map((obj) => {
+                // 2. 튕기기 상태 적용
+                if (obj.id === flickedObjectId && flickToApply) {
+                    changed = true;
+                    movingObjId = null; 
+                    return {
+                        ...obj,
+                        isDisappearing: true,      // 사라지기 시작!
+                        targetX: DISAPPEAR_TARGET_X, // 목표 X 설정
+                        targetY: DISAPPEAR_TARGET_Y  // 목표 Y 설정
+                    };
+                }
+
+                // 기존 이동/버튼 로직
                 const ox = obj.x * ratio; // 객체 화면 X
                 const oy = obj.y * ratio; // 객체 화면 Y
                 const hitRange = 50 * ratio; // 히트박스
