@@ -3,12 +3,8 @@
     useStep1Logic.ts -> step 1: 문제 풀어보기 단계
 */
 
-import { useCompareAppleTemplate } from "features/handTracking/logic/templates/compareAppleTemplate";
-import { useDisappearTemplate } from "features/handTracking/logic/templates/disappearTemplate";
 import { useAdditionTemplate } from "../templates/additionTemplate";
 import { useAppletakeoutTemplate } from "../templates/appletakeoutTemplate";
-import { useAppleAdditionTemplate } from "../templates/appleAdditionTemplate";
-import { useScaleTemplate } from "../templates/scaleTemplate";
 import { useWaterComparisonTemplate } from "../templates/waterComparisonTemplate";
 
 export const useStep1Logic = ({
@@ -26,26 +22,6 @@ export const useStep1Logic = ({
         mathProbInfo, canvasRef, camRatioRef, setStep, setComment, selectAnswer, navigate
     });
     } 
-    else if (mathProbInfo.probTemplate === "scale") {
-        return useScaleTemplate({
-        mathProbInfo, canvasRef, camRatioRef, setStep, setComment, selectAnswer, navigate
-    });
-    }
-    else if (mathProbInfo.probTemplate === "compareApple") {
-        return useCompareAppleTemplate({
-        mathProbInfo, canvasRef, camRatioRef, setStep, setComment, selectAnswer, navigate
-    });
-    }
-    else if (mathProbInfo.probTemplate === "disappear") {
-        return useDisappearTemplate({
-        mathProbInfo, canvasRef, camRatioRef, setStep, setComment, selectAnswer, navigate
-    });
-    }
-    else if (mathProbInfo.probTemplate === "appleAddition") {
-        return useAppleAdditionTemplate({
-        mathProbInfo, canvasRef, camRatioRef, setStep, setComment, selectAnswer, navigate
-    });
-    }
     else if (mathProbInfo.probTemplate == "waterComparison") {
         return useWaterComparisonTemplate({
         mathProbInfo, canvasRef, camRatioRef, setStep, setComment, selectAnswer, navigate
