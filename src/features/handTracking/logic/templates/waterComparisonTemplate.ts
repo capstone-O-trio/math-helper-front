@@ -1,18 +1,7 @@
-/*
-    appleAddTemplate.ts -> 사과덧셈 템플릿 (회전 반영)
-    - handleHandActions 대신 handleHandActionsWithRotation 사용.
-    - objectsInfo (Obj 타입)에 rotation 초기값을 주고 있다.
-*/
-
 import { useEffect, useRef, useState } from "react";
-import { Obj } from "../../types/objectTypes";
-import { probEntityType } from "../../types/problemTypes";
-import { handleHandActionsWithRotation } from "../../utils/handActionWithRotation";
 
-// 기본 객체 크기
-const obj_width = 80;
-const obj_height = 80;
-
+import { applyWaterTransfer } from "features/handTracking/utils/waterComparisonUtils";
+import { waterComparisonAction } from "../../utils/waterComparisonAction";
 
 export const useWaterComparisonTemplate = ({
     mathProbInfo,
@@ -23,26 +12,17 @@ export const useWaterComparisonTemplate = ({
     selectAnswer,
     navigate,
 }: any) => {
-    /* 필요한 객체 */
-    const [objects, setObjects] = useState(
-        getAdditionTemplateObjects(
-            // 덧셈 템플릿에 필요한 객체 가져오기
-            mathProbInfo.entityList[0] ?? null, // 왼쪽 엔티티들
-            mathProbInfo.entityList[1] ?? null, // 오른쪽 엔티티들
-            0
-        )
+    const [objects, setObjects] = useState<any[]>(() =>
+        createWaterComparisonObjects()
     );
-    const objectsRef = useRef(objects);
 
-    /* 템플릿 로직 */
-    // object 변경되면 업데이트
+    const objectsRef = useRef(objects);
+    const streamRef = useRef<WaterComparision.StreamInfo | null>(null);
+
     useEffect(() => {
         objectsRef.current = objects;
     }, [objects]);
 
-    
-
-    /* Mediapipe 관련 로직 */
     function onResults(results: any) {
         const canvas = canvasRef.current;
         if (!canvas) return;
@@ -56,8 +36,7 @@ export const useWaterComparisonTemplate = ({
         ctx.save();
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-
-        handleHandActionsWithRotation(
+        waterComparisonAction(
             results,
             ctx,
             ratio,
@@ -70,73 +49,118 @@ export const useWaterComparisonTemplate = ({
             setComment,
             navigate
         );
+
+        // 떨어지는 물 draw.
+        const stream = streamRef.current;
+        if (stream && stream.active) {
+            const sx = stream.x * ratio;
+            const sy = stream.y * ratio;
+            const sy2 = sy + stream.length * ratio - 7;
+
+            ctx.beginPath();
+            ctx.moveTo(sx, sy);
+            ctx.lineTo(sx, sy2);
+            ctx.lineWidth = stream.thickness;
+            ctx.lineCap = "round";
+            ctx.strokeStyle = "rgba(80,160,255,0.6)";
+            ctx.stroke();
+        }
+
+        ctx.restore();
     }
+
+    useEffect(() => {
+        let rafId: number;
+        let lastTime = performance.now();
+
+        const loop = (time: number) => {
+            const dt = (time - lastTime) / 1000;
+            lastTime = time;
+
+            setObjects((prev) => {
+                if (!prev || prev.length === 0) return prev;
+
+                const next = prev.map((o: any) => ({
+                    ...o,
+                    water: o.water ? { ...o.water } : undefined,
+                }));
+
+                const changed = applyWaterTransfer(next, dt, (info) => {
+                    streamRef.current = info;
+                });
+
+                if (!changed) {
+                    // 떨어지는 물 없는 상태도 ref에 저장
+                    if (!streamRef.current || streamRef.current.active) {
+                        streamRef.current = {
+                            x: 0,
+                            y: 0,
+                            length: 0,
+                            thickness: 0,
+                            active: false,
+                        };
+                    }
+                }
+
+                return changed ? next : prev;
+            });
+
+            rafId = requestAnimationFrame(loop);
+        };
+
+        rafId = requestAnimationFrame(loop);
+        return () => cancelAnimationFrame(rafId);
+    }, []);
 
     return { objects, onResults };
 };
 
-/* 1600 x 900을 기준으로 배치 */
-function getAdditionTemplateObjects(
-    entity1: probEntityType,
-    entity2: probEntityType,
-    totalNumber: number
-): Obj[] {
-    const objectsInfo: Obj[] = [
-        // 문제 풀이를 위한 객체
-        // 처음엔 아무것도 없음
-    ];
+// 컵 init.
+function createWaterComparisonObjects(): any[] {
+    const objects: any[] = [];
 
-    // 항상 모든 템플릿을 생성하기 때문에, null로 넘기는 경우가 있을 수 있음
-    if (entity1 === null || entity2 === null) return objectsInfo;
-
-    let objImage1 = "/asset/water.png"; // 객체로 넣을 이미지
-    let objImage2 = "/asset/water.png"; // 객체로 넣을 이미지
-    if (entity1.kind === "apple")
-        // 현재는 사과 이미지만 가능
-        objImage1 = "/asset/water.png";
-    if (entity2.kind === "apple")
-        // 현재는 사과 이미지만 가능
-        objImage2 = "/asset/water.png";
-
-
-    
-    objectsInfo.push({
-        id: "water1",
-        x: 400,
-        y: 600,
-        src: objImage1,
-        isObj: true, // 객체임
+    // 컵 A (source)
+    objects.push({
+        id: "cupA",
+        kind: "cupA",
+        x: 1100,
+        y: 798,
+        isObj: true,
         value: null,
-        width: 170,
-        height: 210,
+        width: 200,
+        height: 200,
         rotation: 0,
+        water: {
+            capacity: 100,
+            volume: 90,
+            innerWidth: 200,
+            innerHeight: 200,
+            tiltStartRad: (20 * Math.PI) / 180,
+            tiltMaxRad: (80 * Math.PI) / 180,
+            maxFlowPerSec: 50,
+            role: "source",
+        },
     });
-    objectsInfo.push({
-        id: "water2",
-        x: 1000,
-        y: 600,
-        src: objImage2,
-        isObj: true, // 객체임
+
+    // 컵 B (target)
+    objects.push({
+        id: "cupB",
+        kind: "cupB",
+        x: 600,
+        y: 698,
+        isObj: false,
         value: null,
-        width: 170,
-        height: 210,
+        width: 400,
+        height: 400,
         rotation: 0,
-    });
-    
-
-
-    // 정답 맞추러 가기 버튼
-    objectsInfo.push({
-        id: "button-answer",
-        x: 1500,
-        y: 800,
-        src: `/asset/button-1.png`,
-        isObj: false, // 객체 아님
-        value: 1, // 버튼
-        width: obj_width,
-        height: obj_height,
-        rotation: 0,
+        water: {
+            capacity: 400,
+            volume: 0,
+            innerWidth: 400,
+            innerHeight: 400,
+            role: "target",
+        },
     });
 
-    return objectsInfo;
+    return objects;
 }
