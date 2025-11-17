@@ -1,3 +1,5 @@
+import { templateInfoType } from "type/type";
+
 export interface UserInfo {
   name: string;
   password: string;
@@ -12,9 +14,9 @@ export interface LoginResponse {
 }
 
 export interface NewMathInfoResponse {
-  isSuccess: boolean,
-  code: string,
-  message: string,
+  isSuccess: boolean;
+  code: string;
+  message: string;
   result: {
     mathId: number;
     image: string; //사진url
@@ -28,3 +30,7 @@ export interface NewMathInfoResponse {
     };
   };
 }
+
+export type TemplateListResponse = {
+  result: { templates: templateInfoType[] };
+};

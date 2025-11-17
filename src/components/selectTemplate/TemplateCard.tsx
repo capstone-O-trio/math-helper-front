@@ -7,10 +7,10 @@ type TemplatePropsType = {
 
 export const TemplateCard = ({ temInfo }: TemplatePropsType) => {
   return (
-    <div className="relative max-w-xs min-w-min h-64 shadow-md rounded-3xl flex flex-col justify-center items-center gap-3">
+    <button className="relative w-full max-w-xs min-w-min h-64 shadow-md rounded-3xl flex flex-col justify-center items-center gap-3">
       <img
         src={temInfo.templateImage}
-        alt="template ex img"
+        alt="template img"
         className="w-[80%]"
       />
       {!temInfo.isPossible && (
@@ -19,6 +19,6 @@ export const TemplateCard = ({ temInfo }: TemplatePropsType) => {
         </div>
       )}
       <Text className=" font-normal">{temInfo.templateName}</Text>
-    </div>
+    </button>
   );
 };

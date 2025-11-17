@@ -12,6 +12,6 @@ export type probInfoType = {
 export type templateInfoType = {
   templateId: number;
   templateName: string; //사과로 더해보기
+  isPossible: boolean;
   templateImage: string; //미리보기 이미지
-  isPossible: boolean; //이용 가능한지아닌지(구현?)
 };
