@@ -1,43 +1,90 @@
-import { Button } from "components/common/Button";
-import { Text } from "components/common/Text";
+import { BackButton } from "components/common/BackButton";
+import { Heading } from "components/common/Heading";
 import { TemplateCard } from "components/selectTemplate/TemplateCard";
+import { useNavigate } from "react-router-dom";
+import { templateInfoType } from "type/type";
 
-export type TEMPLATE_INFO = {
-  id: number;
-  templateName: string; //사과로 더해보기
-  templateImage: string; //미리보기 이미지
-  available: boolean; //이용 가능한지아닌지(구현?)
-};
-
-const tem_list: TEMPLATE_INFO[] = [
+const tem_list: templateInfoType[] = [
   {
-    id: 0,
+    templateId: 0,
     templateName: "사과로 더해보기",
-    templateImage: "미리보기 이미지",
-    available: true,
+    templateImage: "/asset/temExample.png",
+    isPossible: true,
   },
   {
-    id: 1,
+    templateId: 1,
     templateName: "사과 나누기",
-    templateImage: "미리보기 이미지",
-    available: false,
+    templateImage: "/asset/temExample.png",
+    isPossible: false,
   },
   {
-    id: 2,
+    templateId: 2,
     templateName: "저울",
-    templateImage: "미리보기 이미지",
-    available: false,
+    templateImage: "/asset/temExample.png",
+    isPossible: false,
+  },
+  {
+    templateId: 4,
+    templateName: "사과로 더해보기",
+    templateImage: "/asset/temExample.png",
+    isPossible: true,
+  },
+  {
+    templateId: 2,
+    templateName: "저울",
+    templateImage: "/asset/temExample.png",
+    isPossible: false,
+  },
+  {
+    templateId: 4,
+    templateName: "사과로 더해보기",
+    templateImage: "/asset/temExample.png",
+    isPossible: true,
+  },
+  {
+    templateId: 2,
+    templateName: "저울",
+    templateImage: "/asset/temExample.png",
+    isPossible: false,
+  },
+  {
+    templateId: 4,
+    templateName: "사과로 더해보기",
+    templateImage: "/asset/temExample.png",
+    isPossible: true,
+  },
+  {
+    templateId: 2,
+    templateName: "저울",
+    templateImage: "/asset/temExample.png",
+    isPossible: false,
+  },
+  {
+    templateId: 4,
+    templateName: "사과로 더해보기",
+    templateImage: "/asset/temExample.png",
+    isPossible: true,
   },
 ];
 
 export const SelectingTemplatePage = () => {
+  const navigate = useNavigate();
   return (
-    <div>
-      <Text>풀이를 선택해봐!</Text>
-      {tem_list.map((template) => {
-        return <TemplateCard temInfo={template} />;
-      })}
-      <Button>문제 풀기</Button>
+    <div className="h-full flex justify-center items-center">
+      <div className="absolute top-4 w-full">
+        <BackButton
+          onClick={() => {
+            navigate(-1);
+          }}
+          className="absolute left-8 top-1"
+        />
+        <Heading>풀이를 선택해봐!</Heading>
+      </div>
+      <div className="grid grid-cols-3 gap-9 max-h-[75%] w-[80%] max-w-[1100px] overflow-scroll p-1">
+        {tem_list.map((template) => (
+          <TemplateCard temInfo={template} />
+        ))}
+      </div>
     </div>
   );
 };
