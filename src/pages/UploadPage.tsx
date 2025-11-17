@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Button } from "../components/common/Button";
 import { Heading } from "../components/common/Heading";
 import { Text } from "../components/common/Text";
-import { getNewMaths, postUpload } from "../api/upload";
+import { getNewMaths, postImgGetType } from "../api/upload";
 import { probInfoType } from "../type/type";
 import { useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN_KEY } from "../utils/keys";
@@ -35,16 +35,7 @@ export const UploadPage: React.FC = () => {
           setPreviewUrl(response.result.image);
 
           //new 문제 정보 저장
-          setUploadedProbInfo({
-            mathId: response.result.mathId,
-            probType: response.result.mathProblemDto.problem,
-            entity: response.result.mathProblemDto.entity,
-            count1: response.result.mathProblemDto.count1,
-            count2: response.result.mathProblemDto.count2,
-            problem: response.result.mathProblemDto.problem,
-            answer: response.result.mathProblemDto.answer,
-            wrongAnswer: response.result.mathProblemDto.wrongAnswers,
-          });
+          setUploadedProbInfo(response.result);
         }
       }
     }, 3000); // 3초마다 요청
@@ -75,7 +66,8 @@ export const UploadPage: React.FC = () => {
     }
 
     try {
-      await postUpload(formdata);
+      const response = await postImgGetType(formdata);
+      setUploadedProbInfo(response.result);
       setIsUpload(true);
     } catch (error) {
       alert("문제 업로드에 실패했습니다. 다시 시도해주세요.");
@@ -130,13 +122,13 @@ export const UploadPage: React.FC = () => {
         disabled={!isUpload}
         onClick={() => {
           if (uploadedProbInfo) {
-            navigate("/hands-tracker", {
-              state: { probInfo: uploadedProbInfo },
+            navigate("/select-template", {
+              state: { mathId: uploadedProbInfo.mathId, type_name: uploadedProbInfo.mathTypeDto.type_name },
             });
           }
         }}
       >
-        문제 풀러 가기
+        풀이 선택 하기
       </Button>
     </div>
   );

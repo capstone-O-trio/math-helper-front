@@ -1,12 +1,12 @@
 export type probInfoType = {
   mathId: number;
-  probType: string;
-  entity: string;
-  count1: number;
-  count2: number;
-  problem: string;
-  answer: number;
-  wrongAnswer: number[];
+  image: string;
+  mathTypeDto: {
+    problem: string;
+    type_name: string;
+    answer: string;
+    extractedImage: string;
+  };
 };
 
 export type templateInfoType = {

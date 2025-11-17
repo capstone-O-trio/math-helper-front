@@ -2,9 +2,9 @@ import { ACCESS_TOKEN_KEY } from "../../utils/keys";
 import { instance } from "../instance";
 import { NewMathInfoResponse } from "../type";
 
-//사진 업로드 api
-export const postUpload = async (formData: FormData) => {
-  const response = await instance.post("/maths/images", formData, {
+//유형분류 api
+export const postImgGetType = async (formData: FormData) => {
+  const response = await instance.post("/maths/types", formData, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN_KEY) || ""}`,
       "Content-Type": "multipart/form-data",

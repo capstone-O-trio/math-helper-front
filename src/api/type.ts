@@ -1,4 +1,4 @@
-import { templateInfoType } from "type/type";
+import { probInfoType, templateInfoType } from "type/type";
 
 export interface UserInfo {
   name: string;
@@ -17,18 +17,7 @@ export interface NewMathInfoResponse {
   isSuccess: boolean;
   code: string;
   message: string;
-  result: {
-    mathId: number;
-    image: string; //사진url
-    mathProblemDto: {
-      problem: string; //3+4
-      entity: string; //apple
-      count1: number; //3
-      count2: number; //4
-      answer: number; //7
-      wrongAnswers: number[]; //[5,9,8]
-    };
-  };
+  result: probInfoType;
 }
 
 export type TemplateListResponse = {

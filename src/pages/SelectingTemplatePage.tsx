@@ -3,7 +3,7 @@ import { BackButton } from "components/common/BackButton";
 import { Heading } from "components/common/Heading";
 import { TemplateCard } from "components/selectTemplate/TemplateCard";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { templateInfoType } from "type/type";
 
 const defaultList: templateInfoType[] = [
@@ -12,21 +12,26 @@ const defaultList: templateInfoType[] = [
     templateName: "풀이 불가능!",
     isPossible: false,
     templateImage: "/asset/temExample.png",
-  }
+  },
 ];
 
 export const SelectingTemplatePage = () => {
   const navigate = useNavigate();
   const [temList, setTemList] = useState(defaultList);
 
+  const location = useLocation();
+  const mathProbId = (location.state as { mathId?: number })?.mathId || 0;
+  const probTypeName =
+    (location.state as { type_name?: string })?.type_name || "?";
+
   useEffect(() => {
     async function fetch() {
-      const data = await getTemplateList("한자리수 덧셈");
+      const data = await getTemplateList(probTypeName);
       const temList: templateInfoType[] = data.result.templates;
       setTemList(temList);
     }
     fetch();
-  }, []);
+  }, [probTypeName]);
 
   return (
     <div className="h-full flex justify-center items-center">
@@ -50,7 +55,7 @@ export const SelectingTemplatePage = () => {
     `}
       >
         {temList.map((template) => (
-          <TemplateCard temInfo={template} />
+          <TemplateCard temInfo={template} mathId={mathProbId} />
         ))}
       </div>
     </div>
