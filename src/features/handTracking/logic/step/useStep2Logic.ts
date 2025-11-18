@@ -243,8 +243,8 @@ export function getStep2ObjectsInfo(
             src: '/asset/button/button-check-answer.png',
             isObj: false, // 객체 아님
             value: 1, // 버튼
-            width: obj_width,
-            height: obj_height,
+            width: button_width,
+            height: button_height,
         }
     );
 
