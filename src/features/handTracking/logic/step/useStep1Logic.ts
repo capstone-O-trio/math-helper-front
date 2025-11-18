@@ -57,20 +57,13 @@ export const useStep1Logic = ({
         });
     }
 
-    // 버튼 객체 추가
-    const buttonObjects = getButtonObjects();
-
     return {
-        objects: [
-            ...templatesResult.objects, // 템플릿 객체들
-            ...buttonObjects            // 공통 버튼 객체들
-        ],
+        objects: templatesResult.objects, // 템플릿 객체들
         onResults: templatesResult.onResults
     };
 }
 
-function getButtonObjects(
-
+export function getButtonObjects(
 ): Obj[] {
 
     // 버튼 객체

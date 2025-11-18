@@ -8,6 +8,7 @@ import { probEntityType } from "../../types/problemTypes";
 import { isInDropZone } from "../../utils/solveProblem";
 import { handleHandActions } from "../../utils/handAction";
 import { drawDropZone } from "../../utils/draw";
+import { getButtonObjects } from "../step/useStep1Logic";
 
 // 기본 객체 크기
 const obj_width = 50;
@@ -27,13 +28,20 @@ export const useAdditionTemplate = ({
     const dh = 400;
 
     /* 필요한 객체 */
-    const [objects, setObjects] = useState(
-        getAdditionTemplateObjects( // 덧셈 템플릿에 필요한 객체 가져오기
-            mathProbInfo.entityList[0] ?? null, // 왼쪽 엔티티들
-            mathProbInfo.entityList[1] ?? null, // 오른쪽 엔티티들
-            0
-        )
+    const baseObjects = getAdditionTemplateObjects( // 덧셈 템플릿에 필요한 객체 가져오기
+        mathProbInfo.entityList[0] ?? null, // 왼쪽 엔티티들
+        mathProbInfo.entityList[1] ?? null, // 오른쪽 엔티티들
+        0
     );
+
+    const buttonObjects = getButtonObjects(); // 버튼 불러오기
+
+    const initialObjects: Obj[] = [
+        ...baseObjects,
+        ...buttonObjects,
+    ];
+
+    const [objects, setObjects] = useState<Obj[]>(initialObjects);
     const objectsRef = useRef(objects);
 
     /* 초기 드롭존 표시 */
