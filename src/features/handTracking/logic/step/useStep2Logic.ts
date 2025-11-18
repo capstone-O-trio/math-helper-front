@@ -234,7 +234,7 @@ export function getStep2ObjectsInfo(
         }
     );
 
-    // 문제 맞추기 버튼
+    // 정답인지 확인하기 버튼
     answerInfo.push(
         {
             id: 'button-check-answer',
