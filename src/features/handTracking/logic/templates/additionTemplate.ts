@@ -13,6 +13,10 @@ import { drawDropZone } from "../../utils/draw";
 const obj_width = 50;
 const obj_height = 50;
 
+// 버튼 크기
+const button_width = 100;
+const button_height = 100;
+
 export const useAdditionTemplate = ({
     mathProbInfo, canvasRef, camRatioRef,
     setStep, setComment,
@@ -210,17 +214,45 @@ function getAdditionTemplateObjects(
         );
     }
 
+    // 되돌아가기 버튼
+    objectsInfo.push(
+        {
+            id: 'button-back',
+            x: 100,
+            y: 100,
+            src: '/asset/button/button-back.png',
+            isObj: false, // 객체 아님
+            value: 1, // 버튼
+            width: button_width,
+            height: button_height,
+        }
+    );
+
     // 정답 맞추러 가기 버튼
     objectsInfo.push(
         {
-            id: 'button-answer',
+            id: 'button-next',
             x: 1500,
-            y: 800,
-            src: `/asset/button-1.png`,
+            y: 100,
+            src: '/asset/button/button-next.png',
             isObj: false, // 객체 아님
             value: 1, // 버튼
-            width: obj_width,
-            height: obj_height,
+            width: button_width,
+            height: button_height,
+        }
+    );
+
+    // 제스처 알아보기 버튼
+    objectsInfo.push(
+        {
+            id: 'button-gesture-info',
+            x: 100,
+            y: 800,
+            src: `/asset/button/button-gesture-info.png`,
+            isObj: false, // 객체 아님
+            value: 1, // 버튼
+            width: button_width,
+            height: button_height,
         }
     );
 
