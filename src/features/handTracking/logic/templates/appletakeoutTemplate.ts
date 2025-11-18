@@ -234,20 +234,6 @@ function getAppletakeoutTemplateObjects(
         });
     }
 
-    // 정답 맞추러 가기 버튼
-    objectsInfo.push(
-        {
-            id: 'button-answer',
-            x: 1500,
-            y: 800,
-            src: `/asset/button-1.png`,
-            isObj: false, // 객체 아님
-            value: 1, // 버튼
-            width: obj_width,
-            height: obj_height,
-        }
-    );
-
     // 나무 아래 객체의 총합을 나타내는 숫자
     objectsInfo.push(
         {
