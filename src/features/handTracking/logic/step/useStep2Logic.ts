@@ -21,7 +21,7 @@ export const useStep2Logic = ({
     stepRef,
     mathProbInfo, canvasRef, camRatioRef,
     setStep, setComment,
-    selectAnswer,
+    selectAnswer, setSelectAnswer, selectAnswerRef,
     navigate
 }: any) => {
     // 드롭존 좌표
@@ -59,6 +59,53 @@ export const useStep2Logic = ({
         objectsRef.current = objects;
     }, [objects]);
 
+    // selectAnswer 변경되면 업데이트
+    useEffect(() => {
+        selectAnswerRef.current = selectAnswer;
+    }, [selectAnswer, selectAnswerRef]);
+
+    // 고른 정답이 변경되면 업데이트
+    useEffect(() => {
+        selectAnswerRef.current = selectAnswer;
+        // 고른 정답의 정답 여부에 따라 이미지 업데이트
+        setObjects(prev =>
+            prev.map(obj => {
+                // 말풍선 업데이트
+                if (obj.id === "mention") {
+                    let mention_image = '/asset/check-answer/init-mention.png';
+                    if (selectAnswer) {
+                        if (selectAnswer === mathProbInfo.answer)
+                            mention_image = '/asset/check-answer/correct-mention.png';
+                        else
+                            mention_image = '/asset/check-answer/incorrect-mention.png';
+                    }
+                    return {
+                        ...obj,
+                        src: mention_image
+                    };
+                }
+
+                // 곰 이미지 업데이트
+                if (obj.id === "bear") {
+                    let bear_image = '/asset/check-answer/init-bear.png';
+                    if (selectAnswer) {
+                        if (selectAnswer === mathProbInfo.answer)
+                            bear_image = '/asset/check-answer/correct-bear.png';
+                        else
+                            bear_image = '/asset/check-answer/incorrect-bear.png';
+                    }
+                    return {
+                        ...obj,
+                        src: bear_image
+                    };
+                }
+
+                // 아무 조건에도 해당되지 않으면 그대로 유지
+                return obj;
+            })
+        );
+    }, [mathProbInfo.answer, selectAnswer, selectAnswerRef]);
+
     /* Mediapipe 관련 로직 */
     function onResults(results: any) {
         const canvas = canvasRef.current;
@@ -81,7 +128,7 @@ export const useStep2Logic = ({
             const ox = x;
             const oy = y;
             if (isInDropZone(ratio, dx, dy, dw, dh, ox, oy, isObj)) { // 객체가 드롭존 안에 있다면
-                selectAnswer = value;
+                setSelectAnswer(value);
             }
         });
         // console.log("selectAnswer: " + selectAnswer)
@@ -178,7 +225,7 @@ export function getStep2ObjectsInfo(
     // 말풍선
     answerInfo.push(
         {
-            id: 'init-mention',
+            id: 'mention',
             x: 1450,
             y: 350,
             src: '/asset/check-answer/init-mention.png',
@@ -192,7 +239,7 @@ export function getStep2ObjectsInfo(
     // 캐릭터
     answerInfo.push(
         {
-            id: 'init-bear',
+            id: 'bear',
             x: 1450,
             y: 650,
             src: '/asset/check-answer/init-bear.png',

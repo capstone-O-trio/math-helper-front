@@ -6,7 +6,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useStep1Logic } from "./step/useStep1Logic";
 import { useStep2Logic } from "./step/useStep2Logic";
 
-
 export const useHandLogic = ({
     mathProbInfo, canvasRef, navigate
 }: any) => {
@@ -17,7 +16,13 @@ export const useHandLogic = ({
     const [camRatio, setCamRatio] = useState(1);
     const stepRef = useRef(step); // 최신 step
 
-    let selectAnswer: null | number = null; // 고른 정답
+    const [selectAnswer, setSelectAnswer] = useState(0); // 고른 정답
+    const selectAnswerRef = useRef(selectAnswer);
+
+    // 고른 정답이 변경되면 업데이트
+    useEffect(() => {
+        selectAnswerRef.current = selectAnswer;
+    }, [selectAnswer]);
 
     const updateRatio = useCallback(() => {
         const el = canvasRef.current;
@@ -52,7 +57,7 @@ export const useHandLogic = ({
         stepRef,
         mathProbInfo, canvasRef, camRatioRef,
         setStep, setComment,
-        selectAnswer,
+        selectAnswer, setSelectAnswer, selectAnswerRef,
         navigate
     });
 
