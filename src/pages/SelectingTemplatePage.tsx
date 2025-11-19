@@ -56,7 +56,7 @@ export const SelectingTemplatePage = () => {
       >
         {temList.length === 0 && <div>{"가능한 풀이가 없습니다."}</div>}
         {temList.map((template) => (
-          <TemplateCard temInfo={template} mathId={mathProbId} />
+          <TemplateCard key={template.templateId} temInfo={template} mathId={mathProbId} />
         ))}
       </div>
     </div>
