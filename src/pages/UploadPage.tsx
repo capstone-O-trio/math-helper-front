@@ -68,7 +68,6 @@ export const UploadPage: React.FC = () => {
     try {
       const response = await postImgGetType(formdata);
       setUploadedProbInfo(response.result);
-      console.log("지금 이 문제는 이런 문제 맞아?",response.result)
       setIsUpload(true);
     } catch (error) {
       alert("문제 업로드에 실패했습니다. 다시 시도해주세요.");
