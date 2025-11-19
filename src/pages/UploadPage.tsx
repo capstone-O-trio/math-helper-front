@@ -6,6 +6,7 @@ import { getNewMaths, postImgGetType } from "../api/upload";
 import { probInfoType } from "../type/type";
 import { useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN_KEY } from "../utils/keys";
+import TypeCheckModal from "components/common/TypeCheckModal";
 
 export const UploadPage: React.FC = () => {
   const navigate = useNavigate();
@@ -19,6 +20,9 @@ export const UploadPage: React.FC = () => {
     null
   );
 
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [modalComment, setModalComment] = useState("");
+
   useEffect(() => {
     const interval = setInterval(async () => {
       //엑세스토큰 없으면 로그인 페이지로 이동
@@ -30,7 +34,7 @@ export const UploadPage: React.FC = () => {
         //새로운 문제 확인 api
         const response = await getNewMaths();
 
-        if (selectedFile == null && response.result !== null ) {
+        if (selectedFile == null && response.result !== null) {
           setIsUpload(true);
           setPreviewUrl(response.result.image);
 
@@ -69,6 +73,9 @@ export const UploadPage: React.FC = () => {
       const response = await postImgGetType(formdata);
       setUploadedProbInfo(response.result);
       setIsUpload(true);
+      //이 시점에서 모달 이 뜨도록해야함
+      setIsOpenModal(true);
+      setModalComment(`이 문제가 ${response.result.mathTypeDto.type_name} 유형이 맞나요?`)
     } catch (error) {
       alert("문제 업로드에 실패했습니다. 다시 시도해주세요.");
       return;
@@ -123,13 +130,28 @@ export const UploadPage: React.FC = () => {
         onClick={() => {
           if (uploadedProbInfo) {
             navigate("/select-template", {
-              state: { mathId: uploadedProbInfo.mathId, type_name: uploadedProbInfo.mathTypeDto.type_name },
+              state: {
+                mathId: uploadedProbInfo.mathId,
+                type_name: uploadedProbInfo.mathTypeDto.type_name,
+              },
             });
           }
         }}
       >
         풀이 선택 하기
       </Button>
+      <TypeCheckModal
+        isOpenModal={isOpenModal}
+        contentString={modalComment}
+        onTypeChecked={() => {
+          console.log("맞다는데요?");
+          setIsOpenModal(false);
+        }}
+        onTypeWrong={() => {
+          console.log("틀렷다는데요");
+          setIsOpenModal(false);
+        }}
+      />
     </div>
   );
 };
