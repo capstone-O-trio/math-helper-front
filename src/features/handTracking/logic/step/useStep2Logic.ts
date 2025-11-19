@@ -9,9 +9,9 @@ import { handleHandActions } from "../../utils/handAction";
 import { probEntityType } from "../../types/problemTypes";
 import { drawDropZone } from "../../utils/draw";
 
-// 기본 객체 크기
-const obj_width = 50;
-const obj_height = 50;
+// 선택지 카드 크기
+const card_width = 150;
+const card_height = 200;
 
 // 버튼 크기
 const button_width = 100;
@@ -25,9 +25,9 @@ export const useStep2Logic = ({
     navigate
 }: any) => {
     // 드롭존 좌표
-    const dx = 1100; // 왼쪽 위 x좌표
-    const dy = 100; // 왼쪽 위 y좌표
-    const dw = 400; // 가로 길이
+    const dx = 800; // 왼쪽 위 x좌표
+    const dy = 450; // 왼쪽 위 y좌표
+    const dw = 500; // 가로 길이
     const dh = 400; // 세로 길이
 
     /* 필요한 객체 */
@@ -119,107 +119,6 @@ export function getStep2ObjectsInfo(
         // 처음엔 아무것도 없음
     ];
 
-    // 첫번째 숫자
-    answerInfo.push(
-        {
-            id: 'count1',
-            x: 500,
-            y: 300,
-            src: `/asset/number/${count1}.png`,
-            isObj: false, // 객체 아님
-            value: count1,
-            width: obj_width,
-            height: obj_height,
-        }
-    );
-
-    // 두번째 숫자
-    answerInfo.push(
-        {
-            id: 'count2',
-            x: 800,
-            y: 300,
-            src: `/asset/number/${count2}.png`,
-            isObj: false, // 객체 아님
-            value: count2,
-            width: obj_width,
-            height: obj_height,
-        }
-    );
-
-    // + 기호
-    answerInfo.push(
-        {
-            id: 'plus',
-            x: 650,
-            y: 300,
-            src: '/asset/plus.png',
-            isObj: false, // 객체 아님. 기호임
-            value: null,
-            width: obj_width,
-            height: obj_height,
-        }
-    );
-
-    // = 기호
-    answerInfo.push(
-        {
-            id: 'equal',
-            x: 950,
-            y: 300,
-            src: '/asset/equal.png',
-            isObj: false, // 객체 아님. 기호임
-            value: null,
-            width: obj_width,
-            height: obj_height,
-        }
-    );
-
-    const choices: number[] = choiceOptions;
-    choices.sort(); // 오름차순으로 정렬
-
-    // 선택지 1
-    answerInfo.push(
-        {
-            id: 'choice1',
-            x: 500,
-            y: 600,
-            src: `/asset/number/${choices[0]}.png`,
-            isObj: true, // 객체임
-            value: choices[0],
-            width: obj_width,
-            height: obj_height,
-        }
-    );
-
-    // 선택지 2
-    answerInfo.push(
-        {
-            id: 'choice2',
-            x: 800,
-            y: 600,
-            src: `/asset/number/${choices[1]}.png`,
-            isObj: true, // 객체임
-            value: choices[1],
-            width: obj_width,
-            height: obj_height,
-        }
-    );
-
-    // 선택지 3
-    answerInfo.push(
-        {
-            id: 'choice3',
-            x: 1100,
-            y: 600,
-            src: `/asset/number/${choices[2]}.png`,
-            isObj: true, // 객체임
-            value: choices[2],
-            width: obj_width,
-            height: obj_height,
-        }
-    );
-
     // 다른 문제 풀러가기 버튼
     answerInfo.push(
         {
@@ -245,6 +144,107 @@ export function getStep2ObjectsInfo(
             value: 1, // 버튼
             width: button_width,
             height: button_height,
+        }
+    );
+
+    // 문제 놓을 박스
+    answerInfo.push(
+        {
+            id: 'prob-box',
+            x: 800,
+            y: 250,
+            src: '/asset/check-answer/prob-box.png',
+            isObj: false, // 객체 아님
+            value: null,
+            width: 600,
+            height: 300,
+        }
+    );
+
+    // 선택지 놓을 드롭박스
+    answerInfo.push(
+        {
+            id: 'select-box',
+            x: 1050,
+            y: 650,
+            src: '/asset/check-answer/select-box.png',
+            isObj: false, // 객체 아님
+            value: null,
+            width: 400,
+            height: 300,
+        }
+    );
+
+    // 말풍선
+    answerInfo.push(
+        {
+            id: 'init-mention',
+            x: 1450,
+            y: 350,
+            src: '/asset/check-answer/init-mention.png',
+            isObj: false, // 객체 아님
+            value: null,
+            width: 200,
+            height: 150,
+        }
+    );
+
+    // 캐릭터
+    answerInfo.push(
+        {
+            id: 'init-bear',
+            x: 1450,
+            y: 650,
+            src: '/asset/check-answer/init-bear.png',
+            isObj: false, // 객체 아님
+            value: null,
+            width: 200,
+            height: 300,
+        }
+    );
+
+    const choices: number[] = choiceOptions;
+    choices.sort(); // 오름차순으로 정렬
+
+    // 선택지 1
+    answerInfo.push(
+        {
+            id: 'choice1',
+            x: 200,
+            y: 650,
+            src: 'asset/check-answer/card.png',
+            isObj: true, // 객체임
+            value: choices[0],
+            width: card_width,
+            height: card_height,
+        }
+    );
+
+    // 선택지 2
+    answerInfo.push(
+        {
+            id: 'choice2',
+            x: 400,
+            y: 650,
+            src: 'asset/check-answer/card.png',
+            isObj: true, // 객체임
+            value: choices[1],
+            width: card_width,
+            height: card_height,
+        }
+    );
+
+    // 선택지 3
+    answerInfo.push(
+        {
+            id: 'choice3',
+            x: 600,
+            y: 650,
+            src: 'asset/check-answer/card.png',
+            isObj: true, // 객체임
+            value: choices[2],
+            width: card_width,
+            height: card_height,
         }
     );
 
