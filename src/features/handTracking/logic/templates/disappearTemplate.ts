@@ -262,7 +262,7 @@ function getDisappearTemplateObjects(
     id: "numOfEntity",
     x: 150,
     y: 400,
-    src: `/asset/${numOfEntity}.png`,
+    src: `/asset/number/${numOfEntity}.png`,
     isObj: false, // 객체 아님. 총합을 나타내는 숫자임
     value: null,
     width: 80,

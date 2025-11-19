@@ -248,7 +248,7 @@ function getAppletakeoutTemplateObjects(
             id: 'treeTotalNumber',
             x: 500,
             y: 800,
-            src: `/asset/${treeTotalNumber}.png`,
+            src: `/asset/number/${treeTotalNumber}.png`,
             isObj: false, // 객체 아님. 총합을 나타내는 숫자임
             value: null,
             width: 80,
@@ -262,7 +262,7 @@ function getAppletakeoutTemplateObjects(
             id: 'boxTotalNumber',
             x: 1200,
             y: 200,
-            src: `/asset/${boxTotalNumber}.png`,
+            src: `/asset/number/${boxTotalNumber}.png`,
             isObj: false, // 객체 아님. 총합을 나타내는 숫자임
             value: null,
             width: 80,

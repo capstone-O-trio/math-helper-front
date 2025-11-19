@@ -224,7 +224,7 @@ function getAdditionTemplateObjects(
             id: 'totalNumber',
             x: 1300,
             y: 150,
-            src: `/asset/${totalNumber}.png`,
+            src: `/asset/number/${totalNumber}.png`,
             isObj: false, // 객체 아님. 총합을 나타내는 숫자임
             value: null,
             width: obj_width,

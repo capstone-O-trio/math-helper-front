@@ -125,7 +125,7 @@ export function getStep2ObjectsInfo(
             id: 'count1',
             x: 500,
             y: 300,
-            src: `/asset/${count1}.png`,
+            src: `/asset/number/${count1}.png`,
             isObj: false, // 객체 아님
             value: count1,
             width: obj_width,
@@ -139,7 +139,7 @@ export function getStep2ObjectsInfo(
             id: 'count2',
             x: 800,
             y: 300,
-            src: `/asset/${count2}.png`,
+            src: `/asset/number/${count2}.png`,
             isObj: false, // 객체 아님
             value: count2,
             width: obj_width,
@@ -184,7 +184,7 @@ export function getStep2ObjectsInfo(
             id: 'choice1',
             x: 500,
             y: 600,
-            src: `/asset/${choices[0]}.png`,
+            src: `/asset/number/${choices[0]}.png`,
             isObj: true, // 객체임
             value: choices[0],
             width: obj_width,
@@ -198,7 +198,7 @@ export function getStep2ObjectsInfo(
             id: 'choice2',
             x: 800,
             y: 600,
-            src: `/asset/${choices[1]}.png`,
+            src: `/asset/number/${choices[1]}.png`,
             isObj: true, // 객체임
             value: choices[1],
             width: obj_width,
@@ -212,7 +212,7 @@ export function getStep2ObjectsInfo(
             id: 'choice3',
             x: 1100,
             y: 600,
-            src: `/asset/${choices[2]}.png`,
+            src: `/asset/number/${choices[2]}.png`,
             isObj: true, // 객체임
             value: choices[2],
             width: obj_width,
