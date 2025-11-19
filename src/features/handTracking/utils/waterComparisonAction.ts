@@ -71,16 +71,16 @@ export function waterComparisonAction(
 
         setObjects((prev) => {
             let changed = false;
+            let extraObj: WaterComparision.SceneObject | null = null;
+            const cupB = prev.find((o) => o.kind === "cupB");
 
             const next = prev.map((obj) => {
                 const ox = obj.x * ratio;
                 const oy = obj.y * ratio;
 
-                const baseHitRange = 70;
-                const hitRange = baseHitRange * ratio;
+                const hitRange = 75 * ratio;
 
                 // 1. 컵 제어
-
                 if (obj.isObj === true && obj.kind === "cupA") {
                     const inRange =
                         hand_x > ox - hitRange &&
@@ -144,9 +144,8 @@ export function waterComparisonAction(
                 }
 
                 // 2. 버튼 선택 (잡고 있을 땐 동작 안 함)
-                // - 현재 비활성화
-
                 if (state === "indexUp" && movingObjId === null) {
+                    // 현재 object X
                     if (obj.isObj === false && obj.value === 1) {
                         if (
                             index_x > ox - hitRange &&
@@ -176,6 +175,25 @@ export function waterComparisonAction(
                                 if (selectedButtonId === "button-other") {
                                     navigate("/upload");
                                 }
+                                if (selectedButtonId === "reset_1") {
+                                    const cupB = prev.find(
+                                        (obj) => obj.kind === "cupB"
+                                    );
+                                    if (cupB && cupB.water) {
+                                        extraObj = {
+                                            id: Date.toString(),
+                                            kind: "fillRatio",
+                                            src: "",
+                                            x: 0,
+                                            y: 0,
+                                            width: 0,
+                                            height: 0,
+                                            value:
+                                                cupB.water!.volume /
+                                                cupB.water!.capacity,
+                                        };
+                                    }
+                                }
                             }
                             selectedButtonId = null;
                         }
@@ -184,6 +202,16 @@ export function waterComparisonAction(
 
                 return obj;
             });
+            if (extraObj) {
+                changed = true;
+
+                // cupB.volume 초기화
+                if (cupB && cupB.water) {
+                    cupB.water.volume = 0;
+                }
+
+                return [...next, extraObj];
+            }
 
             return changed ? next : prev;
         });

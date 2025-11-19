@@ -17,7 +17,7 @@ export const useWaterComparisonTemplate = ({
     );
 
     const objectsRef = useRef(objects);
-    const streamRef = useRef<WaterComparision.StreamInfo | null>(null);
+    const streamsRef = useRef<WaterComparision.StreamInfo[] | null>(null);
 
     useEffect(() => {
         objectsRef.current = objects;
@@ -51,22 +51,25 @@ export const useWaterComparisonTemplate = ({
         );
 
         // 떨어지는 물 draw.
-        const stream = streamRef.current;
-        if (stream && stream.active) {
-            const sx = stream.x * ratio;
-            const sy = stream.y * ratio;
-            const sy2 = sy + stream.length * ratio - 7;
+        const streams = streamsRef.current;
+        if (streams)
+            for (const stream of streams) {
+                if (stream && stream.active) {
+                    const sx = stream.x * ratio;
+                    const sy = stream.y * ratio;
+                    const sy2 = sy + stream.length * ratio - 7;
 
-            ctx.beginPath();
-            ctx.moveTo(sx, sy);
-            ctx.lineTo(sx, sy2);
-            ctx.lineWidth = stream.thickness;
-            ctx.lineCap = "round";
-            ctx.strokeStyle = "rgba(80,160,255,0.6)";
-            ctx.stroke();
-        }
+                    ctx.beginPath();
+                    ctx.moveTo(sx, sy);
+                    ctx.lineTo(sx, sy2);
+                    ctx.lineWidth = stream.thickness;
+                    ctx.lineCap = "round";
+                    ctx.strokeStyle = "rgba(80,160,255,0.6)";
+                    ctx.stroke();
+                }
 
-        ctx.restore();
+                ctx.restore();
+            }
     }
 
     useEffect(() => {
@@ -86,19 +89,23 @@ export const useWaterComparisonTemplate = ({
                 }));
 
                 const changed = applyWaterTransfer(next, dt, (info) => {
-                    streamRef.current = info;
+                    streamsRef.current = info;
                 });
 
                 if (!changed) {
                     // 떨어지는 물 없는 상태도 ref에 저장
-                    if (!streamRef.current || streamRef.current.active) {
-                        streamRef.current = {
-                            x: 0,
-                            y: 0,
-                            length: 0,
-                            thickness: 0,
-                            active: false,
-                        };
+                    if (
+                        !streamsRef.current /* || streamsRef.current.active */
+                    ) {
+                        streamsRef.current = [
+                            {
+                                x: 0,
+                                y: 0,
+                                length: 0,
+                                thickness: 0,
+                                active: false,
+                            },
+                        ];
                     }
                 }
 
@@ -121,19 +128,42 @@ function createWaterComparisonObjects(): any[] {
 
     // 컵 A (source)
     objects.push({
-        id: "cupA",
+        id: "cupA_1",
         kind: "cupA",
-        x: 1100,
-        y: 798,
+        x: 1300,
+        y: 698,
         isObj: true,
         value: null,
         width: 200,
+        height: 400,
+        rotation: 0,
+        water: {
+            capacity: 200,
+            volume: 190,
+            innerWidth: 200,
+            innerHeight: 400,
+            tiltStartRad: (20 * Math.PI) / 180,
+            tiltMaxRad: (80 * Math.PI) / 180,
+            maxFlowPerSec: 50,
+            role: "source",
+        },
+    });
+
+    // 컵 A (source)
+    objects.push({
+        id: "cupA_2",
+        kind: "cupA",
+        x: 950,
+        y: 798,
+        isObj: true,
+        value: null,
+        width: 300,
         height: 200,
         rotation: 0,
         water: {
-            capacity: 100,
-            volume: 90,
-            innerWidth: 200,
+            capacity: 150,
+            volume: 140,
+            innerWidth: 300,
             innerHeight: 200,
             tiltStartRad: (20 * Math.PI) / 180,
             tiltMaxRad: (80 * Math.PI) / 180,
@@ -146,7 +176,7 @@ function createWaterComparisonObjects(): any[] {
     objects.push({
         id: "cupB",
         kind: "cupB",
-        x: 600,
+        x: 500,
         y: 698,
         isObj: false,
         value: null,
@@ -160,6 +190,16 @@ function createWaterComparisonObjects(): any[] {
             innerHeight: 400,
             role: "target",
         },
+    });
+
+    objects.push({
+        id: "reset_1",
+        kind: "resetCupB",
+        x: 150,     // ⬅ 왼쪽 아래로 변경
+        y: 400,  
+        isObj: false,
+        value: 1,
+        rotation: 0,
     });
 
     return objects;

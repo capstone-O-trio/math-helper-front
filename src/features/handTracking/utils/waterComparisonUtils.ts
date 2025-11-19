@@ -100,76 +100,79 @@ function transferToCupB(
 export function applyWaterTransfer(
     objects: any[],
     dt: number,
-    onStream?: (info: WaterComparision.StreamInfo) => void
+    onStream?: (info: WaterComparision.StreamInfo[]) => void
 ): boolean {
     const waterObjs = objects.filter((o) => o && o.water);
     if (waterObjs.length < 2) {
-        onStream?.({ x: 0, y: 0, length: 0, active: false, thickness: 0 });
+        onStream?.([{ x: 0, y: 0, length: 0, active: false, thickness: 0 }]);
         return false;
     }
 
-    const cupA: any =
-        waterObjs.find((o) => o.water.role === "source") ?? waterObjs[0];
+    const cupAs: any = waterObjs.filter((o) => o.water.role === "source");
     const cupB: any =
-        waterObjs.find((o) => o.water.role === "target") ??
-        waterObjs.find((o) => o !== cupA) ??
-        waterObjs[1];
+        waterObjs.find((o) => o.water.role === "target") ?? waterObjs[1];
 
-    if (!cupA || !cupB || cupA === cupB) {
-        onStream?.({ x: 0, y: 0, length: 0, active: false, thickness: 0 });
+    if (cupAs.length < 1 || !cupB) {
+        onStream?.([]);
         return false;
     }
 
-    const poured = computeOutflow(cupA, dt);
-    if (poured <= 0) {
-        onStream?.({ x: 0, y: 0, length: 0, active: false, thickness: 0 });
-        return false;
+    const results: WaterComparision.StreamInfo[] = [];
+
+    for (const cupA of cupAs) {
+        const poured = computeOutflow(cupA, dt);
+        if (poured <= 0) {
+            continue;
+        }
+
+        const origin = getPourOriginWorld(cupA);
+
+        // 기본 스트림 길이 (충분히 크게)
+        const streamLength = 3000;
+
+        // 실제 물 이동 계산 (컵 B에 얼마나 들어갔는지)
+        const received = transferToCupB(cupB, origin, streamLength, poured);
+
+        // 렌더용 물줄기 길이
+        let visualLength = streamLength;
+
+        if (received > 0) {
+            // 컵 B 내부 기준 바닥 y 좌표 계산
+            const waterB = getWater(cupB);
+            const innerHeightB = waterB?.innerHeight ?? cupB.height;
+            const bottomB = cupB.y + innerHeightB / 2;
+
+            // 컵 B 바닥까지만 보이게 클램프
+            const maxVisualLength = bottomB - origin.y;
+            visualLength = Math.max(0, Math.min(streamLength, maxVisualLength));
+        }
+
+        // 흐름량에 비례한 두께 계산
+        const waterA = getWater(cupA);
+        const maxFlowPerSec = waterA?.maxFlowPerSec ?? 50;
+
+        const flowPerSecApprox = poured / Math.max(dt, 1e-6); // 이번 프레임 유량 근사
+        const flowRatio = Math.max(
+            0,
+            Math.min(1, flowPerSecApprox / maxFlowPerSec)
+        ); // 0~1
+
+        const minThickness = 2; // 최소 두께
+        const maxThickness = 16; // 최대 두께
+        const thickness =
+            minThickness + (maxThickness - minThickness) * flowRatio;
+
+        results.push({
+            x: origin.x,
+            y: origin.y,
+            length: visualLength,
+            active: visualLength > 0,
+            thickness,
+        });
     }
 
-    const origin = getPourOriginWorld(cupA);
-
-    // 기본 스트림 길이 (충분히 크게)
-    const streamLength = 3000;
-
-    // 실제 물 이동 계산 (컵 B에 얼마나 들어갔는지)
-    const received = transferToCupB(cupB, origin, streamLength, poured);
-
-    // 렌더용 물줄기 길이
-    let visualLength = streamLength;
-
-    if (received > 0) {
-        // 컵 B 내부 기준 바닥 y 좌표 계산
-        const waterB = getWater(cupB);
-        const innerHeightB = waterB?.innerHeight ?? cupB.height;
-        const bottomB = cupB.y + innerHeightB / 2;
-
-        // 컵 B 바닥까지만 보이게 클램프
-        const maxVisualLength = bottomB - origin.y;
-        visualLength = Math.max(0, Math.min(streamLength, maxVisualLength));
-    }
-
-    // 흐름량에 비례한 두께 계산
-    const waterA = getWater(cupA);
-    const maxFlowPerSec = waterA?.maxFlowPerSec ?? 50;
-
-    const flowPerSecApprox = poured / Math.max(dt, 1e-6); // 이번 프레임 유량 근사
-    const flowRatio = Math.max(
-        0,
-        Math.min(1, flowPerSecApprox / maxFlowPerSec)
-    ); // 0~1
-
-    const minThickness = 2; // 최소 두께
-    const maxThickness = 16; // 최대 두께
-    const thickness = minThickness + (maxThickness - minThickness) * flowRatio;
-
-    onStream?.({
-        x: origin.x,
-        y: origin.y,
-        length: visualLength,
-        active: visualLength > 0,
-        thickness,
-    });
+    onStream?.(results);
 
     // 물이 떨어졌는지만 전달
-    return visualLength > 0;
+    return results.length > 0;
 }

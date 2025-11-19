@@ -1,5 +1,5 @@
 declare namespace WaterComparision {
-    export type ObjectKind = "cupA" | "cupB" | "other";
+    export type ObjectKind = "cupA" | "cupB" | "other" | "fillRatio";
 
     export interface WaterState {
         capacity: number;
