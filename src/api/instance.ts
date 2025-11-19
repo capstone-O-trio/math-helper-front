@@ -17,7 +17,6 @@ instance.interceptors.request.use((config) => {
 instance.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.log(error)
     const status = error.response?.status;
     if (status === 401) {
       localStorage.removeItem(ACCESS_TOKEN_KEY);
