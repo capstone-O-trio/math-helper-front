@@ -129,7 +129,7 @@ export const useStep2Logic = ({
             const oy = y;
             if (isInDropZone(ratio, dx, dy, dw, dh, ox, oy, isObj)) { // 객체가 드롭존 안에 있다면
                 setSelectAnswer(value);
-            }
+            } else setSelectAnswer(null);
         });
         // console.log("selectAnswer: " + selectAnswer)
 
