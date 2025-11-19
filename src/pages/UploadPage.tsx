@@ -7,6 +7,7 @@ import { probInfoType } from "../type/type";
 import { useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN_KEY } from "../utils/keys";
 import TypeCheckModal from "components/common/TypeCheckModal";
+import { toast } from "react-toastify";
 
 export const UploadPage: React.FC = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ export const UploadPage: React.FC = () => {
     null
   );
 
+  //type check modal
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [modalComment, setModalComment] = useState("");
 
@@ -71,14 +73,26 @@ export const UploadPage: React.FC = () => {
 
     try {
       const response = await postImgGetType(formdata);
+
       setUploadedProbInfo(response.result);
       setIsUpload(true);
-      //이 시점에서 모달 이 뜨도록해야함
+
       setIsOpenModal(true);
-      setModalComment(`이 문제가 ${response.result.mathTypeDto.type_name} 유형이 맞나요?`)
+      setModalComment(response.result.mathTypeDto.type_name);
     } catch (error) {
-      alert("문제 업로드에 실패했습니다. 다시 시도해주세요.");
+      alert("지원되지 않는 수학 문제 유형이야. 히히 미안해!");
       return;
+    }
+  };
+
+  const navigateToNextPage = () => {
+    if (uploadedProbInfo) {
+      navigate("/select-template", {
+        state: {
+          mathId: uploadedProbInfo.mathId,
+          type_name: uploadedProbInfo.mathTypeDto.type_name,
+        },
+      });
     }
   };
 
@@ -127,16 +141,7 @@ export const UploadPage: React.FC = () => {
       <Button
         className="fixed bottom-16 right-10"
         disabled={!isUpload}
-        onClick={() => {
-          if (uploadedProbInfo) {
-            navigate("/select-template", {
-              state: {
-                mathId: uploadedProbInfo.mathId,
-                type_name: uploadedProbInfo.mathTypeDto.type_name,
-              },
-            });
-          }
-        }}
+        onClick={navigateToNextPage}
       >
         풀이 선택 하기
       </Button>
@@ -144,12 +149,13 @@ export const UploadPage: React.FC = () => {
         isOpenModal={isOpenModal}
         contentString={modalComment}
         onTypeChecked={() => {
-          console.log("맞다는데요?");
           setIsOpenModal(false);
+          navigateToNextPage();
         }}
         onTypeWrong={() => {
-          console.log("틀렷다는데요");
           setIsOpenModal(false);
+          setIsUpload(false); //업로드 버튼 취소
+          toast.error("어라.. 그러면 다시 업로드 해보세요!");
         }}
       />
     </div>
