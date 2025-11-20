@@ -35,7 +35,7 @@ export const useStep2Logic = ({
 
     const [objects, setObjects] = useState(
         getStep2ObjectsInfo( // 정답 맞추기 단계에서 필요한 객체들
-            mathProbInfo.image,
+            mathProbInfo.probImage,
             choiceOptions
         )
     );
