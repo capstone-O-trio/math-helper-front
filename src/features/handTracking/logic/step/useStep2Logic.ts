@@ -173,19 +173,19 @@ export function getStep2ObjectsInfo(
         }
     );
 
-    // 정답인지 확인하기 버튼
-    answerInfo.push(
-        {
-            id: 'button-check-answer',
-            x: 1500,
-            y: 100,
-            src: '/asset/button/button-check-answer.png',
-            isObj: false, // 객체 아님
-            value: 1, // 버튼
-            width: button_width,
-            height: button_height,
-        }
-    );
+    // // 정답인지 확인하기 버튼
+    // answerInfo.push(
+    //     {
+    //         id: 'button-check-answer',
+    //         x: 1500,
+    //         y: 100,
+    //         src: '/asset/button/button-check-answer.png',
+    //         isObj: false, // 객체 아님
+    //         value: 1, // 버튼
+    //         width: button_width,
+    //         height: button_height,
+    //     }
+    // );
 
     // 문제 놓을 박스
     answerInfo.push(
