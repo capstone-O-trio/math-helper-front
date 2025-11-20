@@ -267,7 +267,7 @@ export function getStep2ObjectsInfo(
             id: 'choice1',
             x: 200,
             y: 650,
-            src: 'asset/check-answer/card.png',
+            src: `/asset/check-answer/card/${choices[0]}.png`,
             isObj: true, // 객체임
             value: choices[0],
             width: card_width,
@@ -281,7 +281,7 @@ export function getStep2ObjectsInfo(
             id: 'choice2',
             x: 400,
             y: 650,
-            src: 'asset/check-answer/card.png',
+            src: `/asset/check-answer/card/${choices[1]}.png`,
             isObj: true, // 객체임
             value: choices[1],
             width: card_width,
@@ -295,7 +295,7 @@ export function getStep2ObjectsInfo(
             id: 'choice3',
             x: 600,
             y: 650,
-            src: 'asset/check-answer/card.png',
+            src: `/asset/check-answer/card/${choices[2]}.png`,
             isObj: true, // 객체임
             value: choices[2],
             width: card_width,
