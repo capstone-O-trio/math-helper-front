@@ -10,8 +10,8 @@ import { probEntityType } from "../../types/problemTypes";
 import { drawDropZone } from "../../utils/draw";
 
 // 선택지 카드 크기
-const card_width = 150;
-const card_height = 200;
+const card_width = 120;
+const card_height = 170;
 
 // 버튼 크기
 const button_width = 100;
@@ -36,9 +36,7 @@ export const useStep2Logic = ({
 
     const [objects, setObjects] = useState(
         getStep2ObjectsInfo( // 정답 맞추기 단계에서 필요한 객체들
-            mathProbInfo.entityList[0],
-            mathProbInfo.entityList[1],
-            mathProbInfo.answer,
+            mathProbInfo.image,
             choiceOptions
         )
     );
@@ -154,14 +152,9 @@ export const useStep2Logic = ({
 
 /* 1600 x 900을 기준으로 배치 */
 export function getStep2ObjectsInfo(
-    entity1: probEntityType,
-    entity2: probEntityType,
-    answer: number,
+    prob_image: string,
     choiceOptions: number[]
 ): Obj[] {
-
-    const count1 = entity1.count;
-    const count2 = entity2.count;
 
     const answerInfo: Obj[] = [ // 정답 맞추기 위한 객체
         // 처음엔 아무것도 없음
@@ -206,6 +199,20 @@ export function getStep2ObjectsInfo(
             value: null,
             width: 600,
             height: 300,
+        }
+    );
+
+    // 문제 사진
+    answerInfo.push(
+        {
+            id: 'prob-image',
+            x: 800,
+            y: 250,
+            src: prob_image,
+            isObj: false, // 객체 아님
+            value: null,
+            width: 580,
+            height: 280,
         }
     );
 
