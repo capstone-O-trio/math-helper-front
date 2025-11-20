@@ -6,7 +6,6 @@ import { useEffect, useRef, useState } from "react";
 import { Obj } from "../../types/objectTypes";
 import { isInDropZone, makeChoicesOptions } from "../../utils/solveProblem";
 import { handleHandActions } from "../../utils/handAction";
-import { probEntityType } from "../../types/problemTypes";
 import { drawDropZone } from "../../utils/draw";
 
 // 선택지 카드 크기
