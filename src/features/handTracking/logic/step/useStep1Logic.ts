@@ -89,7 +89,7 @@ export function getButtonObjects(
             id: 'button-next',
             x: 1500,
             y: 100,
-            src: '/asset/button/button-next.png',
+            src: '/asset/button/button-check-answer.png',
             isObj: false, // 객체 아님
             value: 1, // 버튼
             width: button_width,
