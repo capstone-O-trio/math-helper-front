@@ -124,12 +124,13 @@ export const useStep2Logic = ({
         drawDropZone(ctx, camRatioRef.current, dx, dy, dw, dh);
 
         // 드롭존 안에 선택지가 있는지 확인
+        setSelectAnswer(null);
         objectsRef.current.forEach(({ x, y, isObj, value }) => {
             const ox = x;
             const oy = y;
             if (isInDropZone(ratio, dx, dy, dw, dh, ox, oy, isObj)) { // 객체가 드롭존 안에 있다면
                 setSelectAnswer(value);
-            } else setSelectAnswer(null);
+            }
         });
         // console.log("selectAnswer: " + selectAnswer)
 

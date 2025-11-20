@@ -190,9 +190,9 @@ export function handleHandActions(
                                     // 정답 확인
                                     // if (selectAnswer !== null) {
                                     //     if (selectAnswer === mathProbInfo.answer) {
-                                    //         // setComment("정답입니다! 짝짝짝!");
+                                    //         setComment("정답입니다! 짝짝짝!");
                                     //     } else {
-                                    //         // setComment("오답입니다.. ㅠㅠ");
+                                    //         setComment("오답입니다.. ㅠㅠ");
                                     //     }
                                     // } else {
                                     //     setComment("선택한 답이 없습니다..!");
