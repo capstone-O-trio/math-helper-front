@@ -2,10 +2,12 @@ import { useCallback, useEffect, useState } from "react";
 import { Button } from "../components/common/Button";
 import { Heading } from "../components/common/Heading";
 import { Text } from "../components/common/Text";
-import { getNewMaths, postUpload } from "../api/upload";
+import { getNewMaths, postImgGetType } from "../api/upload";
 import { probInfoType } from "../type/type";
 import { useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN_KEY } from "../utils/keys";
+import TypeCheckModal from "components/common/TypeCheckModal";
+import { toast } from "react-toastify";
 
 export const UploadPage: React.FC = () => {
   const navigate = useNavigate();
@@ -19,6 +21,10 @@ export const UploadPage: React.FC = () => {
     null
   );
 
+  //type check modal
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [modalComment, setModalComment] = useState("");
+
   useEffect(() => {
     const interval = setInterval(async () => {
       //엑세스토큰 없으면 로그인 페이지로 이동
@@ -30,21 +36,12 @@ export const UploadPage: React.FC = () => {
         //새로운 문제 확인 api
         const response = await getNewMaths();
 
-        if (selectedFile == null && response.result !== null ) {
+        if (selectedFile == null && response.result !== null) {
           setIsUpload(true);
           setPreviewUrl(response.result.image);
 
           //new 문제 정보 저장
-          setUploadedProbInfo({
-            mathId: response.result.mathId,
-            probType: response.result.mathProblemDto.problem,
-            entity: response.result.mathProblemDto.entity,
-            count1: response.result.mathProblemDto.count1,
-            count2: response.result.mathProblemDto.count2,
-            problem: response.result.mathProblemDto.problem,
-            answer: response.result.mathProblemDto.answer,
-            wrongAnswer: response.result.mathProblemDto.wrongAnswers,
-          });
+          setUploadedProbInfo(response.result);
         }
       }
     }, 3000); // 3초마다 요청
@@ -75,11 +72,27 @@ export const UploadPage: React.FC = () => {
     }
 
     try {
-      await postUpload(formdata);
+      const response = await postImgGetType(formdata);
+
+      setUploadedProbInfo(response.result);
       setIsUpload(true);
+
+      setIsOpenModal(true);
+      setModalComment(response.result.mathTypeDto.type_name);
     } catch (error) {
-      alert("문제 업로드에 실패했습니다. 다시 시도해주세요.");
+      alert("지원되지 않는 수학 문제 유형이야. 히히 미안해!");
       return;
+    }
+  };
+
+  const navigateToNextPage = () => {
+    if (uploadedProbInfo) {
+      navigate("/select-template", {
+        state: {
+          mathId: uploadedProbInfo.mathId,
+          type_name: uploadedProbInfo.mathTypeDto.type_name,
+        },
+      });
     }
   };
 
@@ -128,16 +141,23 @@ export const UploadPage: React.FC = () => {
       <Button
         className="fixed bottom-16 right-10"
         disabled={!isUpload}
-        onClick={() => {
-          if (uploadedProbInfo) {
-            navigate("/hands-tracker", {
-              state: { probInfo: uploadedProbInfo },
-            });
-          }
-        }}
+        onClick={navigateToNextPage}
       >
-        문제 풀러 가기
+        풀이 선택 하기
       </Button>
+      <TypeCheckModal
+        isOpenModal={isOpenModal}
+        contentString={modalComment}
+        onTypeChecked={() => {
+          setIsOpenModal(false);
+          navigateToNextPage();
+        }}
+        onTypeWrong={() => {
+          setIsOpenModal(false);
+          setIsUpload(false); //업로드 버튼 취소
+          toast.error("어라.. 그러면 다시 업로드 해보세요!");
+        }}
+      />
     </div>
   );
 };
