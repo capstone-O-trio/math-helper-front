@@ -13,6 +13,10 @@ import { drawDropZone } from "../../utils/draw";
 const obj_width = 50;
 const obj_height = 50;
 
+// 버튼 크기
+const button_width = 100;
+const button_height = 100;
+
 export const useStep2Logic = ({
     stepRef,
     mathProbInfo, canvasRef, camRatioRef,
@@ -219,24 +223,24 @@ export function getStep2ObjectsInfo(
     // 다른 문제 풀러가기 버튼
     answerInfo.push(
         {
-            id: 'button-other',
+            id: 'button-home',
             x: 100,
-            y: 800,
-            src: `/asset/button-2.png`,
+            y: 100,
+            src: '/asset/button/button-home.png',
             isObj: false, // 객체 아님
             value: 1, // 버튼
-            width: obj_width,
-            height: obj_height,
+            width: button_width,
+            height: button_height,
         }
     );
 
-    // 문제 맞추기 버튼
+    // 정답인지 확인하기 버튼
     answerInfo.push(
         {
-            id: 'button-select',
+            id: 'button-check-answer',
             x: 1500,
-            y: 800,
-            src: `/asset/button-3.png`,
+            y: 100,
+            src: '/asset/button/button-check-answer.png',
             isObj: false, // 객체 아님
             value: 1, // 버튼
             width: obj_width,

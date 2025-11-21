@@ -401,17 +401,5 @@ function getCompareAppleTemplateObjects(
     height: 80,
   });
 
-  // 정답 확인 버튼
-  objectsInfo.push({
-    id: "button-answer",
-    x: 1500,
-    y: 800,
-    src: `/asset/button-1.png`,
-    isObj: false, // 객체 아님
-    value: 1, // 버튼
-    width: obj_width,
-    height: obj_height,
-  });
-
   return objectsInfo;
 }

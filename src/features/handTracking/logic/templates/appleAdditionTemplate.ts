@@ -24,14 +24,14 @@ const GOAL_IMAGE_H = 200;
 const GOAL_IMAGE_W = 400;
 
 export const useAppleAdditionTemplate = ({
-    mathProbInfo, 
-    canvasRef, 
+    mathProbInfo,
+    canvasRef,
     camRatioRef,
-    setStep, 
+    setStep,
     setComment,
     selectAnswer,
     navigate
-    }: any) => {
+}: any) => {
 
     /* 필요한 객체 */
     const [objects, setObjects] = useState(
@@ -184,7 +184,7 @@ function getAdditionTemplateObjects(
             height: obj_height,
         }
     );
-    
+
     objectsInfo.push(
         {
             id: 'bowl',
@@ -229,21 +229,6 @@ function getAdditionTemplateObjects(
             }
         );
     }
-
-
-    // 정답 맞추러 가기 버튼
-    objectsInfo.push(
-        {
-            id: 'button-answer',
-            x: 1500,
-            y: 800,
-            src: `/asset/button-1.png`,
-            isObj: false, // 객체 아님
-            value: 1, // 버튼
-            width: obj_width,
-            height: obj_height,
-        }
-    );
 
     // 드롭존 위 객체의 총합을 나타내는 숫자
     objectsInfo.push(
