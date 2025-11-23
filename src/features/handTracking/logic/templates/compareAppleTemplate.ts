@@ -4,9 +4,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Obj } from "../../types/objectTypes";
-import { probEntityType } from "../../types/problemTypes";
 import { isInDropZone } from "../../utils/solveProblem";
-import { handleHandActions } from "../../utils/handAction";
+import { HandleHandActions } from "../../utils/HandleHandActions";
 import { getButtonObjects } from "../step/useStep1Logic";
 
 // 기본 객체 크기
@@ -26,29 +25,24 @@ const right_dw = 400;
 const right_dh = 300;
 
 export const useCompareAppleTemplate = ({
-  mathProbInfo,
+  entityList, //{entity1: number, entity2: number, object_type: 'apple'}
   canvasRef,
   camRatioRef,
-  setStep,
-  setComment,
-  selectAnswer,
   navigate
 }: any) => {
+  
   /* 필요한 객체 */
   const baseObjects = getCompareAppleTemplateObjects(
     // 템플릿에 필요한 객체 가져오기
-    mathProbInfo.entityList[0], // 왼쪽 엔티티들
-    mathProbInfo.entityList[1], // 오른쪽 엔티티들
-    mathProbInfo.entityList[0].count,
-    mathProbInfo.entityList[1].count
+    entityList.entity1, // 왼쪽 엔티티들
+    entityList.entity2, // 오른쪽 엔티티들
+    entityList.entity1, // 왼쪽 엔티티들
+    entityList.entity2
   );
 
   const buttonObjects = getButtonObjects(); // 버튼 불러오기
 
-  const initialObjects: Obj[] = [
-    ...baseObjects,
-    ...buttonObjects,
-  ];
+  const initialObjects: Obj[] = [...baseObjects, ...buttonObjects];
 
   const [objects, setObjects] = useState<Obj[]>(initialObjects);
   const objectsRef = useRef(objects);
@@ -59,6 +53,7 @@ export const useCompareAppleTemplate = ({
 
   /* 초기 드롭존 표시 */
   useEffect(() => {
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -222,19 +217,7 @@ export const useCompareAppleTemplate = ({
     leftTotalNumRef.current = newLeftTotalNum;
     rightTotalNumRef.current = newRightTotalNum;
 
-    handleHandActions(
-      results,
-      ctx,
-      ratio,
-      dispW,
-      dispH,
-      mathProbInfo,
-      selectAnswer,
-      setObjects,
-      setStep,
-      setComment,
-      navigate
-    );
+    HandleHandActions(results, ctx, ratio, dispW, dispH, setObjects, navigate);
   }
 
   return { objects, onResults };
@@ -261,8 +244,8 @@ function drawYardDropZone(
 }
 
 function getCompareAppleTemplateObjects(
-  entity1: probEntityType,
-  entity2: probEntityType,
+  entity1: number,
+  entity2: number,
   leftTotalNum: number,
   rightTotalNum: number
 ): Obj[] {
@@ -281,7 +264,7 @@ function getCompareAppleTemplateObjects(
     value: null,
     width: 144,
     height: 163,
-  })
+  });
 
   //말풍선 객체
   objectsInfo.push({
@@ -321,7 +304,7 @@ function getCompareAppleTemplateObjects(
 
   // 왼쪽 사과 배치
   const leftxMiddle = (left_dx + left_dx + left_dw) / 2;
-  const leftCount = entity1.count;
+  const leftCount = entity1;
   const half = Math.ceil(leftCount / 2); // 반 나누기
   const xOffset = 80; // 중앙에서 양쪽으로 퍼질 거리 단위
 
@@ -355,13 +338,15 @@ function getCompareAppleTemplateObjects(
 
   // 오른쪽 사과 배치
   const rightxMiddle = (right_dx + right_dx + right_dw) / 2;
-  const rightCount = entity2.count;
+  const rightCount = entity2;
   const rhalf = Math.ceil(rightCount / 2); // 반 나누기
 
   for (let i = 0; i < rightCount; i++) {
     const isTop = i < rhalf; // 절반까지는 위쪽, 나머지는 아래쪽
     const rowIndex = isTop ? i : i - rhalf; // 각 행 내에서의 인덱스
-    const y = isTop ? right_dy + right_dh / 2 - 60 : right_dy + right_dh / 2 + 40;
+    const y = isTop
+      ? right_dy + right_dh / 2 - 60
+      : right_dy + right_dh / 2 + 40;
 
     let x;
     if (rhalf === 1) {
