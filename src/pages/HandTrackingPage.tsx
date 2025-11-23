@@ -23,6 +23,7 @@ const entity2: probEntityType = {
 const DEFAULT_PROB_INFO: mathProbInfoType = {
   mathId: 0,
   probText: "2+3",
+  probImage: "https://png.pngtree.com/element_pic/17/02/26/ba677482544e4f21bac3a5f335e13ee0.jpg", // 임시 문제 사진
   answer: 8,
   probType: "addition",
   probTemplate: "appleAddition",

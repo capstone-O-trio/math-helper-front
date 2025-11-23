@@ -8,6 +8,7 @@ import { probEntityType } from "../../types/problemTypes";
 import { isInDropZone } from "../../utils/solveProblem";
 import { handleHandActions } from "../../utils/handAction";
 import { drawDropZone } from "../../utils/draw";
+import { getButtonObjects } from "../step/useStep1Logic";
 
 // 기본 객체 크기
 const obj_width = 100;
@@ -36,10 +37,16 @@ export const useScaleTemplate = ({
 
     /* 필요한 객체 */
     const { objectsInfo, objWeightInfo } = getScaleTemplateObjects(mathProbInfo.entityList);
-    const [objects, setObjects] = useState(
-        // 템플릿에 필요한 객체 가져오기
-        objectsInfo
-    );
+    const baseObjects = objectsInfo; // 템플릿에 필요한 객체 가져오기
+
+    const buttonObjects = getButtonObjects(); // 버튼 불러오기
+
+    const initialObjects: Obj[] = [
+        ...baseObjects,
+        ...buttonObjects,
+    ];
+
+    const [objects, setObjects] = useState<Obj[]>(initialObjects);
     const objectsRef = useRef(objects);
 
     /* 초기 드롭존 표시 */
