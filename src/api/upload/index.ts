@@ -23,18 +23,6 @@ export const getNewMaths = async () => {
   return response.data;
 };
 
-//정오답 보기 받기 api
-export const getChoice = async (mathId: number) => {
-  const response = await instance.get(`/maths/images/${mathId}}`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN_KEY) || ""}`,
-    },
-  });
-  return response.data;
-};
-
-//문제풀기 api - 문제정보 받아옴
-//사진확인 api - 사진 url 받아옴
 //정답확인 api
 export const getAnswer = async (mathId: number, answer: number) => {
   const response = await instance.get(
@@ -47,3 +35,13 @@ export const getAnswer = async (mathId: number, answer: number) => {
   );
   return response.data;
 };
+
+//정오답 보기 api
+export const getMathResult = async (mathId: number) => {
+  const response = await instance.get(`/maths/randoms/${mathId}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN_KEY) || ""}`,
+    },
+  });
+  return response.data;
+}
