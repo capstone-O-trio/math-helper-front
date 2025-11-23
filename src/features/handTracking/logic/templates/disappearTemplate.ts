@@ -4,13 +4,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { movingObj } from "../../types/objectTypes";
-import { probEntityType } from "../../types/problemTypes";
 import { HandleHandActions } from "../../utils/HandleHandActions";
-import { mathProbInfoType } from "../../types/problemTypes";
 
 // Props 인터페이스 정의
 interface UseDisappearTemplateProps {
-  mathProbInfo: mathProbInfoType; // 여기가 핵심입니다!
+  entityList: { entity1: number; entity_type: string };
   canvasRef: React.RefObject<HTMLCanvasElement>;
   camRatioRef: React.RefObject<number>;
   navigate: (path: string) => void;
@@ -26,19 +24,17 @@ const MOVE_SPEED = 0.07;
 const ARRIVAL_THRESHOLD = 1;
 
 export const useDisappearTemplate = ({
-  mathProbInfo,
+  entityList,
   canvasRef,
   camRatioRef,
-  navigate
+  navigate,
 }: UseDisappearTemplateProps) => {
   /* 필요한 객체 */
-  const initialNumOfEntity = mathProbInfo.entityList[0]
-    ? mathProbInfo.entityList[0].count
-    : 0;
+  const initialNumOfEntity = entityList.entity1;
   const [objects, setObjects] = useState(
     getDisappearTemplateObjects(
       // 덧셈 템플릿에 필요한 객체 가져오기
-      mathProbInfo.entityList[0] ?? null,
+      entityList,
       initialNumOfEntity
     )
   );
@@ -177,17 +173,17 @@ export const useDisappearTemplate = ({
 
 /* 1600 x 900을 기준으로 배치 */
 function getDisappearTemplateObjects(
-  entity1: probEntityType,
+  entityList: { entity1: number; entity_type: string },
   numOfEntity: number
 ): movingObj[] {
   const objectsInfo: movingObj[] = [
     // 문제 풀이를 위한 객체
   ];
 
-  if (entity1 === null) return objectsInfo;
+  if (entityList === null) return objectsInfo;
 
   let objImage1 = "/asset/사과.png"; // 객체로 넣을 이미지
-  if (entity1.kind === "apple") objImage1 = "/asset/사과.png";
+  if (entityList.entity_type === "apple") objImage1 = "/asset/사과.png";
 
   //window
   objectsInfo.push({
@@ -216,7 +212,7 @@ function getDisappearTemplateObjects(
   // 객체 배치 계산
   const xMiddle = 400;
   const yMiddle = 650;
-  const count = entity1.count;
+  const count = entityList.entity1;
   const half = Math.ceil(count / 2); // 반 나누기
   const xOffset = 120; // 중앙에서 양쪽으로 퍼질 거리 단위
 

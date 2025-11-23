@@ -70,7 +70,6 @@ export const HandTrackingPage: React.FC = () => {
   if (type === "solve") {
     return <SolveTemContent templateId={templateId} entityList={entityList} />;
   } else if (type === "check") {
-    //체크면 체크 가져오기
     return (
       <CheckTemContent
         probImage={answerProps?.probImage}

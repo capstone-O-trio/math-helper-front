@@ -25,7 +25,7 @@ const right_dw = 400;
 const right_dh = 300;
 
 export const useCompareAppleTemplate = ({
-  entityList, //{entity1: number, entity2: number, object_type: 'apple'}
+  entityList, // {entity1: number, entity2: number, object_type: 'apple'}
   canvasRef,
   camRatioRef,
   navigate

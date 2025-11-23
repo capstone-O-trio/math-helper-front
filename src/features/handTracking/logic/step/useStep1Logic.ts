@@ -22,7 +22,7 @@ export const useStep1Logic = ({
   canvasRef,
   camRatioRef,
 }: any): OBJ_RESULT_TYPE => {
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
   // 템플릿 결과
   let templatesResult: OBJ_RESULT_TYPE = {
@@ -36,40 +36,44 @@ const navigate = useNavigate();
       entityList,
       canvasRef,
       camRatioRef,
-      navigate
+      navigate,
     });
   } else if (templateId === 2) {
     templatesResult = useCompareAppleTemplate({
       entityList,
       canvasRef,
       camRatioRef,
-      navigate
+      navigate,
     });
-  } /*else if (templateId === 8) {
+  } else if (templateId === 8) {
     templatesResult = useAppletakeoutTemplate({
-      mathProbInfo,
+      entityList,
       canvasRef,
       camRatioRef,
+      navigate,
     });
   } else if (templateId === 10) {
     templatesResult = useScaleTemplate({
-      mathProbInfo,
+      entityList,
       canvasRef,
       camRatioRef,
+      navigate,
     });
   } else if (templateId === 9) {
     templatesResult = useDisappearTemplate({
-      mathProbInfo,
+      entityList,
       canvasRef,
       camRatioRef,
+      navigate,
     });
   } else if (templateId === 1) {
     templatesResult = useAppleAdditionTemplate({
-      mathProbInfo,
+      entityList,
       canvasRef,
       camRatioRef,
+      navigate,
     });
-  }*/
+  }
 
   return {
     objects: templatesResult.objects, // 템플릿 객체들
