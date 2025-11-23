@@ -5,7 +5,7 @@
 import { useEffect, useRef, useState } from "react";
 import { movingObj } from "../../types/objectTypes";
 import { probEntityType } from "../../types/problemTypes";
-import { handleHandActions } from "../../utils/handAction";
+import { HandleHandActions } from "../../utils/HandleHandActions";
 import { mathProbInfoType } from "../../types/problemTypes";
 
 // Props 인터페이스 정의
@@ -13,9 +13,6 @@ interface UseDisappearTemplateProps {
   mathProbInfo: mathProbInfoType; // 여기가 핵심입니다!
   canvasRef: React.RefObject<HTMLCanvasElement>;
   camRatioRef: React.RefObject<number>;
-  setStep: (step: number) => void;
-  setComment: (msg: string) => void;
-  selectAnswer: number | null;
   navigate: (path: string) => void;
 }
 
@@ -32,10 +29,7 @@ export const useDisappearTemplate = ({
   mathProbInfo,
   canvasRef,
   camRatioRef,
-  setStep,
-  setComment,
-  selectAnswer,
-  navigate,
+  navigate
 }: UseDisappearTemplateProps) => {
   /* 필요한 객체 */
   const initialNumOfEntity = mathProbInfo.entityList[0]
@@ -166,17 +160,13 @@ export const useDisappearTemplate = ({
     ctx.save();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    handleHandActions(
+    HandleHandActions(
       results,
       ctx,
       ratio,
       dispW,
       dispH,
-      mathProbInfo,
-      selectAnswer,
       setObjects,
-      setStep,
-      setComment,
       navigate,
       objectsRef
     );
