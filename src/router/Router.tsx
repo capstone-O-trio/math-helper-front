@@ -5,6 +5,7 @@ import { HandTrackingPage } from "../pages/HandTrackingPage";
 import { LoginPage } from "../pages/LoginPage";
 import { SignupPage } from "../pages/SignupPage";
 import { UploadPage } from "../pages/UploadPage";
+import { SelectingTemplatePage } from "pages/SelectingTemplatePage";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
       {
         path: "/signup",
         element: <SignupPage />,
+      },
+      {
+        path: "/select-template",
+        element: <SelectingTemplatePage />,
       },
       {
         path: "/upload",

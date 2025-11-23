@@ -19,10 +19,10 @@ const DISAPPEAR_TARGET_Y = 300;
 
 //이전 프레임 손상태저장 - 튕기기 제스쳐를 위함
 let lastKnownState: {
-    [handIndex: number]:{
+    [handIndex: number]: {
         state: HandState,
-        indexTip: {x:number, y:number},
-        pinchPoint: {x:number, y:number},
+        indexTip: { x: number, y: number },
+        pinchPoint: { x: number, y: number },
         timestamp: number //감지 시간
     };
 } = {};
@@ -76,7 +76,7 @@ export function handleHandActions(
         // 튕기기 제스쳐 감지
         const currentTime = performance.now();
         const lastState = lastKnownState[index]
-        let flickToApply: {x: number, y: number} | null = null;
+        let flickToApply: { x: number, y: number } | null = null;
 
         if (currentTime - lastFlickSuccessTime > FLICK_COOLDOWN) {
             if (lastState) {
@@ -85,13 +85,12 @@ export function handleHandActions(
                 //1. 매우 짧은시간 안에 동작이 일어났는지 확인
                 if (timeDiff > 0 && timeDiff < FLICK_TIME_THRESHOLD) {
                     //2 상태가 일단은 fist에서 open또는 indexUp로 바뀌었는지 확인
-                    if((lastState.state === "okay") && (state === "open" || state === "indexUp"))
-                        {
+                    if ((lastState.state === "okay") && (state === "open" || state === "indexUp")) {
                         //3. 검지끝이 임계값 이상으로 빠르게 이동했는지 확인
                         const dist = Math.hypot(index_x - lastState.indexTip.x, index_y - lastState.indexTip.y);
-                        if (dist > FLICK_VELOCITY_THRESHOLD){
+                        if (dist > FLICK_VELOCITY_THRESHOLD) {
                             flickToApply = {
-                                x: lastState.pinchPoint.x, 
+                                x: lastState.pinchPoint.x,
                                 y: lastState.pinchPoint.y
                             };
                             //튕기기 후 쿨다다운
@@ -104,8 +103,8 @@ export function handleHandActions(
         // 현재 프레임의 손 상태 저장
         lastKnownState[index] = {
             state: state,
-            indexTip: {x: index_x, y: index_y},
-            pinchPoint: {x: pinch_x, y: pinch_y}, 
+            indexTip: { x: index_x, y: index_y },
+            pinchPoint: { x: pinch_x, y: pinch_y },
             timestamp: currentTime
         };
 
@@ -117,14 +116,14 @@ export function handleHandActions(
             if (flickToApply && objectsRef && objectsRef.current) {
                 let minDist = Infinity;
                 objectsRef.current.forEach(obj => {
-                    if (!obj.isObj) return; 
+                    if (!obj.isObj) return;
 
-                    const ox = obj.x * ratio; 
-                    const oy = obj.y * ratio; 
-                    
+                    const ox = obj.x * ratio;
+                    const oy = obj.y * ratio;
+
                     const distance = Math.hypot(ox - flickToApply!.x, oy - flickToApply!.y);
                     // 튕긴 지점 반경 내 가장 가까운 객체
-                    if (distance < minDist && distance < 200 * ratio) { 
+                    if (distance < minDist && distance < 200 * ratio) {
                         minDist = distance;
                         flickedObjectId = obj.id;
                     }
@@ -135,7 +134,7 @@ export function handleHandActions(
                 // 2. 튕기기 상태 적용
                 if (obj.id === flickedObjectId && flickToApply) {
                     changed = true;
-                    movingObjId = null; 
+                    movingObjId = null;
                     return {
                         ...obj,
                         isDisappearing: true,      // 사라지기 시작!
@@ -182,25 +181,29 @@ export function handleHandActions(
                         } else { // 버튼 클릭하지 않음
                             if (selectedButtonId !== null) {
                                 // 원래 버튼을 누르고 있었다가 뗀 경우
-                                if (selectedButtonId === "button-answer") {
-                                    // '정답 맞추러 가기' 버튼을 누르다가 뗀 경우
+                                if (selectedButtonId === 'button-next') {
+                                    // '정답 맞추러 가기 버튼'을 누르다가 뗀 경우
                                     setStep(2); // 다음 단계로
                                 }
-                                if (selectedButtonId === "button-select") {
-                                    // '문제 맞추기' 버튼을 누르다가 뗀 경우
+                                if (selectedButtonId === 'button-check-answer') {
+                                    // '정답인지 확인하기 버튼'을 누르다가 뗀 경우
                                     // 정답 확인
-                                    if (selectAnswer !== null) {
-                                        if (selectAnswer === mathProbInfo.answer) {
-                                            setComment("정답입니다! 짝짝짝!");
-                                        } else {
-                                            setComment("오답입니다.. ㅠㅠ");
-                                        }
-                                    } else {
-                                        setComment("선택한 답이 없습니다..!");
-                                    }
+                                    // if (selectAnswer !== null) {
+                                    //     if (selectAnswer === mathProbInfo.answer) {
+                                    //         setComment("정답입니다! 짝짝짝!");
+                                    //     } else {
+                                    //         setComment("오답입니다.. ㅠㅠ");
+                                    //     }
+                                    // } else {
+                                    //     setComment("선택한 답이 없습니다..!");
+                                    // }
                                 }
-                                if (selectedButtonId === "button-other") {
-                                    // '다른 문제 풀러 가기' 버튼을 누르다가 뗀 경우
+                                if (selectedButtonId === 'button-back') {
+                                    // '되돌아가기 버튼'을 누르다가 뗀 경우
+                                    navigate("/upload"); // 이동
+                                }
+                                if (selectedButtonId === 'button-home') {
+                                    // '다른 문제 풀러 가기 버튼'을 누르다가 뗀 경우
                                     navigate("/upload"); // 이동
                                 }
                             }

@@ -8,6 +8,7 @@ import { probEntityType } from "../../types/problemTypes";
 import { isInDropZone } from "../../utils/solveProblem";
 import { handleHandActions } from "../../utils/handAction";
 import { drawDropZone } from "../../utils/draw";
+import { getButtonObjects } from "../step/useStep1Logic";
 
 // 기본 객체 크기
 const obj_width = 60;
@@ -33,13 +34,20 @@ export const useAppletakeoutTemplate = ({
 }: any) => {
 
     /* 필요한 객체 */
-    const [objects, setObjects] = useState(
-        getAppletakeoutTemplateObjects( // 템플릿에 필요한 객체 가져오기
-            mathProbInfo.entityList[0] ?? null, // 나무에 있는 엔티티들
-            mathProbInfo.entityList[0]?.count ?? 0, // 나무에 있는 객체의 개수
-            0
-        )
+    const baseObjects = getAppletakeoutTemplateObjects( // 템플릿에 필요한 객체 가져오기
+        mathProbInfo.entityList[0] ?? null, // 나무에 있는 엔티티들
+        mathProbInfo.entityList[0]?.count ?? 0, // 나무에 있는 객체의 개수
+        0
     );
+
+    const buttonObjects = getButtonObjects(); // 버튼 불러오기
+
+    const initialObjects: Obj[] = [
+        ...baseObjects,
+        ...buttonObjects,
+    ];
+
+    const [objects, setObjects] = useState<Obj[]>(initialObjects);
     const objectsRef = useRef(objects);
 
     /* 초기 드롭존 표시 */
@@ -234,27 +242,13 @@ function getAppletakeoutTemplateObjects(
         });
     }
 
-    // 정답 맞추러 가기 버튼
-    objectsInfo.push(
-        {
-            id: 'button-answer',
-            x: 1500,
-            y: 800,
-            src: `/asset/button-1.png`,
-            isObj: false, // 객체 아님
-            value: 1, // 버튼
-            width: obj_width,
-            height: obj_height,
-        }
-    );
-
     // 나무 아래 객체의 총합을 나타내는 숫자
     objectsInfo.push(
         {
             id: 'treeTotalNumber',
             x: 500,
             y: 800,
-            src: `/asset/${treeTotalNumber}.png`,
+            src: `/asset/number/${treeTotalNumber}.png`,
             isObj: false, // 객체 아님. 총합을 나타내는 숫자임
             value: null,
             width: 80,
@@ -268,7 +262,7 @@ function getAppletakeoutTemplateObjects(
             id: 'boxTotalNumber',
             x: 1200,
             y: 200,
-            src: `/asset/${boxTotalNumber}.png`,
+            src: `/asset/number/${boxTotalNumber}.png`,
             isObj: false, // 객체 아님. 총합을 나타내는 숫자임
             value: null,
             width: 80,

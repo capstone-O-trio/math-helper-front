@@ -7,6 +7,7 @@ import { Obj } from "../../types/objectTypes";
 import { probEntityType } from "../../types/problemTypes";
 import { isInDropZone } from "../../utils/solveProblem";
 import { handleHandActions } from "../../utils/handAction";
+import { getButtonObjects } from "../step/useStep1Logic";
 
 // 기본 객체 크기
 const obj_width = 50;
@@ -31,19 +32,27 @@ export const useCompareAppleTemplate = ({
   setStep,
   setComment,
   selectAnswer,
-  navigate,
+  navigate
 }: any) => {
   /* 필요한 객체 */
-  const [objects, setObjects] = useState(
-    getCompareAppleTemplateObjects(
-      // 템플릿에 필요한 객체 가져오기
-      mathProbInfo.entityList[0], // 왼쪽 엔티티들
-      mathProbInfo.entityList[1], // 오른쪽 엔티티들
-      mathProbInfo.entityList[0].count,
-      mathProbInfo.entityList[1].count
-    )
+  const baseObjects = getCompareAppleTemplateObjects(
+    // 템플릿에 필요한 객체 가져오기
+    mathProbInfo.entityList[0], // 왼쪽 엔티티들
+    mathProbInfo.entityList[1], // 오른쪽 엔티티들
+    mathProbInfo.entityList[0].count,
+    mathProbInfo.entityList[1].count
   );
+
+  const buttonObjects = getButtonObjects(); // 버튼 불러오기
+
+  const initialObjects: Obj[] = [
+    ...baseObjects,
+    ...buttonObjects,
+  ];
+
+  const [objects, setObjects] = useState<Obj[]>(initialObjects);
   const objectsRef = useRef(objects);
+
   const [effects, setEffects] = useState<
     { id: string; side: "left" | "right" }[]
   >([]);
@@ -382,7 +391,7 @@ function getCompareAppleTemplateObjects(
     id: "leftTotalNumber",
     x: 520,
     y: 700,
-    src: `/asset/${leftTotalNum}.png`,
+    src: `/asset/number/${leftTotalNum}.png`,
     isObj: false,
     value: null,
     width: 80,
@@ -394,23 +403,11 @@ function getCompareAppleTemplateObjects(
     id: "rightTotalNumber",
     x: 1080,
     y: 700,
-    src: `/asset/${rightTotalNum}.png`,
+    src: `/asset/number/${rightTotalNum}.png`,
     isObj: false,
     value: null,
     width: 80,
     height: 80,
-  });
-
-  // 정답 확인 버튼
-  objectsInfo.push({
-    id: "button-answer",
-    x: 1500,
-    y: 800,
-    src: `/asset/button-1.png`,
-    isObj: false, // 객체 아님
-    value: 1, // 버튼
-    width: obj_width,
-    height: obj_height,
   });
 
   return objectsInfo;

@@ -7,6 +7,7 @@ import { Obj } from "../../types/objectTypes";
 import { probEntityType } from "../../types/problemTypes";
 import { isInDropZone } from "../../utils/solveProblem";
 import { handleHandActions } from "../../utils/handAction";
+import { getButtonObjects } from "../step/useStep1Logic";
 
 // 기본 객체 크기
 const obj_width = 80;
@@ -24,23 +25,30 @@ const GOAL_IMAGE_H = 200;
 const GOAL_IMAGE_W = 400;
 
 export const useAppleAdditionTemplate = ({
-    mathProbInfo, 
-    canvasRef, 
+    mathProbInfo,
+    canvasRef,
     camRatioRef,
-    setStep, 
+    setStep,
     setComment,
     selectAnswer,
     navigate
-    }: any) => {
+}: any) => {
 
     /* 필요한 객체 */
-    const [objects, setObjects] = useState(
-        getAdditionTemplateObjects( // 덧셈 템플릿에 필요한 객체 가져오기
-            mathProbInfo.entityList[0] ?? null, // 왼쪽 엔티티들
-            mathProbInfo.entityList[1] ?? null, // 오른쪽 엔티티들
-            0
-        )
+    const baseObjects = getAdditionTemplateObjects( // 덧셈 템플릿에 필요한 객체 가져오기
+        mathProbInfo.entityList[0] ?? null, // 왼쪽 엔티티들
+        mathProbInfo.entityList[1] ?? null, // 오른쪽 엔티티들
+        0
     );
+
+    const buttonObjects = getButtonObjects(); // 버튼 불러오기
+
+    const initialObjects: Obj[] = [
+        ...baseObjects,
+        ...buttonObjects,
+    ];
+
+    const [objects, setObjects] = useState<Obj[]>(initialObjects);
     const objectsRef = useRef(objects);
 
     /* 초기 드롭존 표시 */
@@ -184,7 +192,7 @@ function getAdditionTemplateObjects(
             height: obj_height,
         }
     );
-    
+
     objectsInfo.push(
         {
             id: 'bowl',
@@ -230,28 +238,13 @@ function getAdditionTemplateObjects(
         );
     }
 
-
-    // 정답 맞추러 가기 버튼
-    objectsInfo.push(
-        {
-            id: 'button-answer',
-            x: 1500,
-            y: 800,
-            src: `/asset/button-1.png`,
-            isObj: false, // 객체 아님
-            value: 1, // 버튼
-            width: obj_width,
-            height: obj_height,
-        }
-    );
-
     // 드롭존 위 객체의 총합을 나타내는 숫자
     objectsInfo.push(
         {
             id: 'totalNumber',
             x: 1350,
             y: 330,
-            src: `/asset/${totalNumber}.png`,
+            src: `/asset/number/${totalNumber}.png`,
             isObj: false, // 객체 아님. 총합을 나타내는 숫자임
             value: null,
             width: obj_width,

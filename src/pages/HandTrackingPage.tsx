@@ -4,23 +4,25 @@ import { mathProbInfoType, probEntityType } from "../features/handTracking/types
 import { WaterComparisonTracker } from "features/handTracking/components/WaterComparisonTracker";
 
 // 임시 데이터 -> 이후 수정해야 함
-const entity1:probEntityType = {
+const entity1: probEntityType = {
   kind: "apple",
   count: 2,
   image: null
 }
-const entity2:probEntityType = {
+const entity2: probEntityType = {
   kind: "apple",
   count: 6,
   image: null
 }
 
 const DEFAULT_PROB_INFO: mathProbInfoType = {
-  mathId:0,
-  probText:"2+3",
+  mathId: 0,
+  probText: "2+3",
+  probImage: "https://png.pngtree.com/element_pic/17/02/26/ba677482544e4f21bac3a5f335e13ee0.jpg", // 임시 문제 사진
   answer: 8,
-  probType:"addition",
-  probTemplate:"waterComparison",
+  probType: "addition",
+  probTemplate: "appleAddition",
+
   entityList: [entity1, entity2]
 };
 
@@ -37,6 +39,7 @@ export const HandTrackingPage: React.FC = () => {
       {mathProbInfo.probTemplate  ==='waterComparison'?<WaterComparisonTracker
         mathId={mathProbInfo.mathId}
         probText={mathProbInfo.probText}
+        probImage={mathProbInfo.probImage}
         answer={mathProbInfo.answer}
         probType={mathProbInfo.probType}
         probTemplate={mathProbInfo.probTemplate}
@@ -44,6 +47,7 @@ export const HandTrackingPage: React.FC = () => {
       />:<HandTracker
         mathId={mathProbInfo.mathId}
         probText={mathProbInfo.probText}
+        probImage={mathProbInfo.probImage}
         answer={mathProbInfo.answer}
         probType={mathProbInfo.probType}
         probTemplate={mathProbInfo.probTemplate}
