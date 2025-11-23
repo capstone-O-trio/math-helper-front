@@ -6,6 +6,7 @@
 export type mathProbInfoType = {
   mathId: number;
   probText: string; // 문제 텍스트
+  probImage: string; // 문제 이미지 URL
   answer: number; // 정답
   probType: string; // 문제 유형
   probTemplate: string; // 문제 템플릿
