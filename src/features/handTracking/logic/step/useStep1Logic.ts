@@ -9,107 +9,116 @@ import { useAdditionTemplate } from "../templates/additionTemplate";
 import { useAppletakeoutTemplate } from "../templates/appletakeoutTemplate";
 import { useAppleAdditionTemplate } from "../templates/appleAdditionTemplate";
 import { useScaleTemplate } from "../templates/scaleTemplate";
-import { Obj } from "features/handTracking/types/objectTypes";
+import { Obj, OBJ_RESULT_TYPE } from "features/handTracking/types/objectTypes";
+import { useEffect, useState } from "react";
+import { postTemplateParam } from "api/template";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 // 버튼 크기
 const button_width = 100;
 const button_height = 100;
 
 export const useStep1Logic = ({
-    stepRef, mathProbInfo, canvasRef, camRatioRef,
-    setStep, setComment, selectAnswer, navigate
-}: any) => {
-    // 템플릿 결과
-    let templatesResult: { objects: Obj[]; onResults: (r: any) => void } = {
-        objects: [],
-        onResults: () => { },
-    };
+  templateId,
+  entityList,
+  canvasRef,
+  camRatioRef,
+}: any): OBJ_RESULT_TYPE => {
+const navigate = useNavigate();
 
-    // 필요한 템플릿만 반환 (조건부 반환은 OK)
-    if (mathProbInfo.probTemplate === "addition") {
-        templatesResult = useAdditionTemplate({
-            mathProbInfo, canvasRef, camRatioRef, setStep, setComment, selectAnswer, navigate
-        });
-    }
-    else if (mathProbInfo.probTemplate === "appletakeout") {
-        templatesResult = useAppletakeoutTemplate({
-            mathProbInfo, canvasRef, camRatioRef, setStep, setComment, selectAnswer, navigate
-        });
-    }
-    else if (mathProbInfo.probTemplate === "scale") {
-        templatesResult = useScaleTemplate({
-            mathProbInfo, canvasRef, camRatioRef, setStep, setComment, selectAnswer, navigate
-        });
-    }
-    else if (mathProbInfo.probTemplate === "compareApple") {
-        templatesResult = useCompareAppleTemplate({
-            mathProbInfo, canvasRef, camRatioRef, setStep, setComment, selectAnswer, navigate
-        });
-    }
-    else if (mathProbInfo.probTemplate === "disappear") {
-        templatesResult = useDisappearTemplate({
-            mathProbInfo, canvasRef, camRatioRef, setStep, setComment, selectAnswer, navigate
-        });
-    }
-    else if (mathProbInfo.probTemplate === "appleAddition") {
-        templatesResult = useAppleAdditionTemplate({
-            mathProbInfo, canvasRef, camRatioRef, setStep, setComment, selectAnswer, navigate
-        });
-    }
+  // 템플릿 결과
+  let templatesResult: OBJ_RESULT_TYPE = {
+    objects: [],
+    onResults: () => {},
+  };
 
-    return {
-        objects: templatesResult.objects, // 템플릿 객체들
-        onResults: templatesResult.onResults
-    };
-}
+  // 필요한 템플릿만 반환 (조건부 반환은 OK)
+  if (templateId === 1) {
+    templatesResult = useAdditionTemplate({
+      entityList,
+      canvasRef,
+      camRatioRef,
+      navigate
+    });
+  } else if (templateId === 2) {
+    templatesResult = useCompareAppleTemplate({
+      entityList,
+      canvasRef,
+      camRatioRef,
+      navigate
+    });
+  } /*else if (templateId === 8) {
+    templatesResult = useAppletakeoutTemplate({
+      mathProbInfo,
+      canvasRef,
+      camRatioRef,
+    });
+  } else if (templateId === 10) {
+    templatesResult = useScaleTemplate({
+      mathProbInfo,
+      canvasRef,
+      camRatioRef,
+    });
+  } else if (templateId === 9) {
+    templatesResult = useDisappearTemplate({
+      mathProbInfo,
+      canvasRef,
+      camRatioRef,
+    });
+  } else if (templateId === 1) {
+    templatesResult = useAppleAdditionTemplate({
+      mathProbInfo,
+      canvasRef,
+      camRatioRef,
+    });
+  }*/
 
-export function getButtonObjects(
-): Obj[] {
+  return {
+    objects: templatesResult.objects, // 템플릿 객체들
+    onResults: templatesResult.onResults,
+  };
+};
 
-    // 버튼 객체
-    const objectsInfo: Obj[] = [];
+export function getButtonObjects(): Obj[] {
+  // 버튼 객체
+  const objectsInfo: Obj[] = [];
 
-    // 되돌아가기 버튼
-    objectsInfo.push(
-        {
-            id: 'button-back',
-            x: 100,
-            y: 100,
-            src: '/asset/button/button-back.png',
-            isObj: false, // 객체 아님
-            value: 1, // 버튼
-            width: button_width,
-            height: button_height,
-        }
-    );
+  // 되돌아가기 버튼
+  objectsInfo.push({
+    id: "button-back",
+    x: 100,
+    y: 100,
+    src: "/asset/button/button-back.png",
+    isObj: false, // 객체 아님
+    value: 1, // 버튼
+    width: button_width,
+    height: button_height,
+  });
 
-    // 정답 맞추러 가기 버튼
-    objectsInfo.push(
-        {
-            id: 'button-next',
-            x: 1500,
-            y: 100,
-            src: '/asset/button/button-check-answer.png',
-            isObj: false, // 객체 아님
-            value: 1, // 버튼
-            width: button_width,
-            height: button_height,
-        }
-    );
+  // 정답 맞추러 가기 버튼
+  objectsInfo.push({
+    id: "button-next",
+    x: 1500,
+    y: 100,
+    src: "/asset/button/button-check-answer.png",
+    isObj: false, // 객체 아님
+    value: 1, // 버튼
+    width: button_width,
+    height: button_height,
+  });
 
-    // 제스처 알아보기 버튼
-    objectsInfo.push(
-        {
-            id: 'button-gesture-info',
-            x: 100,
-            y: 800,
-            src: `/asset/button/button-gesture-info.png`,
-            isObj: false, // 객체 아님
-            value: 1, // 버튼
-            width: button_width,
-            height: button_height,
-        }
-    );
+  // 제스처 알아보기 버튼
+  objectsInfo.push({
+    id: "button-gesture-info",
+    x: 100,
+    y: 800,
+    src: `/asset/button/button-gesture-info.png`,
+    isObj: false, // 객체 아님
+    value: 1, // 버튼
+    width: button_width,
+    height: button_height,
+  });
 
-    return objectsInfo
+  return objectsInfo;
 }
