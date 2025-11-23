@@ -1,5 +1,7 @@
 import { Text } from "components/common/Text";
 import { useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
+import { mathTemplateState } from "store/mathTemplateState";
 import { templateInfoType } from "type/type";
 
 type TemplatePropsType = {
@@ -9,12 +11,12 @@ type TemplatePropsType = {
 
 export const TemplateCard = ({ temInfo, mathId }: TemplatePropsType) => {
   const navigate = useNavigate();
+  const setMathTemplate = useSetRecoilState(mathTemplateState);
 
   const handleClickTemplate = () => {
-    //템플릿 id랑 문제 id를 템플릿 페이지로 보내기
-    navigate("/hands-tracker", {
-      state: { mathId: mathId, templateId: temInfo.templateId },
-    });
+    // Recoil 전역변수 -  선택한 템플릿 정보 저장
+    setMathTemplate({ mathId: mathId, templateId: temInfo.templateId });
+    navigate("/hands-tracker/solve");
   };
 
   return (
