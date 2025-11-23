@@ -1,6 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { HandTracker } from "../features/handTracking/components/HandTracker";
 import { mathProbInfoType, probEntityType } from "../features/handTracking/types/problemTypes";
+import { WaterComparisonTracker } from "features/handTracking/components/WaterComparisonTracker";
 
 // 임시 데이터 -> 이후 수정해야 함
 const entity1: probEntityType = {
@@ -21,6 +22,7 @@ const DEFAULT_PROB_INFO: mathProbInfoType = {
   answer: 8,
   probType: "addition",
   probTemplate: "appleAddition",
+
   entityList: [entity1, entity2]
 };
 
@@ -34,7 +36,7 @@ export const HandTrackingPage: React.FC = () => {
 
   return (
     <div>
-      <HandTracker
+      {mathProbInfo.probTemplate  ==='waterComparison'?<WaterComparisonTracker
         mathId={mathProbInfo.mathId}
         probText={mathProbInfo.probText}
         probImage={mathProbInfo.probImage}
@@ -42,7 +44,15 @@ export const HandTrackingPage: React.FC = () => {
         probType={mathProbInfo.probType}
         probTemplate={mathProbInfo.probTemplate}
         entityList={mathProbInfo.entityList}
-      />
+      />:<HandTracker
+        mathId={mathProbInfo.mathId}
+        probText={mathProbInfo.probText}
+        probImage={mathProbInfo.probImage}
+        answer={mathProbInfo.answer}
+        probType={mathProbInfo.probType}
+        probTemplate={mathProbInfo.probTemplate}
+        entityList={mathProbInfo.entityList}
+      />}
     </div>
   );
 };

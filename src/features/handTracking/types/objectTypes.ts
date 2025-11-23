@@ -4,6 +4,7 @@
 
 // 객체 타입
 export type Obj = {
+
     id: string; x: number; y: number; src: string,
     isObj: boolean, // 객체인지
     value: null | number, // 숫자라면 값이 있음
@@ -25,3 +26,4 @@ export type movingObj = {
     targetX?: number;         // 이동할 목표 X
     targetY?: number;         // 이동할 목표 Y
 }
+

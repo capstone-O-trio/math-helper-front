@@ -7,6 +7,7 @@ import { useCompareAppleTemplate } from "features/handTracking/logic/templates/c
 import { useDisappearTemplate } from "features/handTracking/logic/templates/disappearTemplate";
 import { useAdditionTemplate } from "../templates/additionTemplate";
 import { useAppletakeoutTemplate } from "../templates/appletakeoutTemplate";
+import { useWaterComparisonTemplate } from "../templates/waterComparisonTemplate";
 import { useAppleAdditionTemplate } from "../templates/appleAdditionTemplate";
 import { useScaleTemplate } from "../templates/scaleTemplate";
 import { Obj } from "features/handTracking/types/objectTypes";
@@ -32,10 +33,15 @@ export const useStep1Logic = ({
         });
     }
     else if (mathProbInfo.probTemplate === "appletakeout") {
-        templatesResult = useAppletakeoutTemplate({
-            mathProbInfo, canvasRef, camRatioRef, setStep, setComment, selectAnswer, navigate
-        });
-    }
+        return useAppletakeoutTemplate({
+        mathProbInfo, canvasRef, camRatioRef, setStep, setComment, selectAnswer, navigate
+    });
+    } 
+    else if (mathProbInfo.probTemplate === "waterComparison") {
+        return useWaterComparisonTemplate({
+        mathProbInfo, canvasRef, camRatioRef, setStep, setComment, selectAnswer, navigate
+    });
+    } 
     else if (mathProbInfo.probTemplate === "scale") {
         templatesResult = useScaleTemplate({
             mathProbInfo, canvasRef, camRatioRef, setStep, setComment, selectAnswer, navigate
