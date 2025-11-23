@@ -6,8 +6,6 @@ import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
 import { HAND_CONNECTIONS } from "@mediapipe/hands";
 import { getHandState, type HandState } from "./handState";
 import { Obj } from "features/handTracking/types/objectTypes";
-import { useNavigate } from "react-router-dom";
-import path from "path";
 
 let movingObjId: string | null = null;
 let selectedButtonId: string | null = null;

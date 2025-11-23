@@ -10,9 +10,6 @@ import { useAppletakeoutTemplate } from "../templates/appletakeoutTemplate";
 import { useAppleAdditionTemplate } from "../templates/appleAdditionTemplate";
 import { useScaleTemplate } from "../templates/scaleTemplate";
 import { Obj, OBJ_RESULT_TYPE } from "features/handTracking/types/objectTypes";
-import { useEffect, useState } from "react";
-import { postTemplateParam } from "api/template";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 // 버튼 크기
