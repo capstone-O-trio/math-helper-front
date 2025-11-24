@@ -38,10 +38,15 @@ export const useStep2Logic = ({
   useEffect(() => {
     if (!probImage) return;
 
-    // 원래 10이 아니라 실제 정답이 들어가야하는데 지금 string값이라 임시로 10넣음
-    const choiceOptions: number[] = makeChoicesOptions(10);
+    // 선택지 추가
+    let choiceOptions: number[] = [];
+    choiceOptions.push(Number(answer));
+    for (const wrong of wrongList) {
+      choiceOptions.push(Number(wrong));
+    }
+    choiceOptions = Array.from(choiceOptions).sort((a, b) => a - b);
     setObjects(getStep2ObjectsInfo(probImage, choiceOptions));
-  }, [probImage]);
+  }, [answer, probImage, wrongList]);
 
   const objectsRef = useRef(objects);
 
