@@ -51,11 +51,14 @@ export const HandTrackingPage: React.FC = () => {
         const response = await getMathResult(mathId);
         if (!response) return;
         setAnswerProps({
-          probImage: response.problemImage,
-          answer: response.answer,
-          wrongList: response.wrongAnswers,
+          probImage: response.result.image,
+          answer: response.result.answer,
+          wrongList: [
+            response.result.wrongAnswer1,
+            response.result.wrongAnswer2 || "",
+          ],
         });
-        console.log("정오답 결과: ", response.result);
+        console.log("IMAGE:: ", response.result.image);
       } catch (error) {
         alert(error);
       }

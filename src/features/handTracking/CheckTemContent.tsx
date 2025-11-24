@@ -29,7 +29,7 @@ export const CheckTemContent = ({
   const step2Result = useStep2Logic({
     probImage,
     answer,
-    wrongList,
+    wrongList, //string배열, [ wrongAnswer1, wrongAnswer2 ] 인데 wrongAnswer2은 optional
     canvasRef,
     camRatioRef,
   });
