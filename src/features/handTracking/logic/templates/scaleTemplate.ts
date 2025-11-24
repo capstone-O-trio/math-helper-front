@@ -29,14 +29,14 @@ const right_dw = 300;
 const right_dh = 300;
 
 export const useScaleTemplate = ({
-  mathProbInfo,
+  entityList, // "{ \"entityList\": [ { \"kind\": \"lion\", \"weight\": 190 }, { \"kind\": \"rabbit\", \"weight\": 1 }, { \"kind\": \"mouse\", \"weight\": 0.3 } ] }”
   canvasRef,
   camRatioRef,
   navigate
 }: any) => {
   /* 필요한 객체 */
   const { objectsInfo, objWeightInfo } = getScaleTemplateObjects(
-    mathProbInfo.entityList
+    entityList.entityList
   );
   const baseObjects = objectsInfo; // 템플릿에 필요한 객체 가져오기
 
