@@ -7,7 +7,7 @@ import { Obj, objWeight } from "../../types/objectTypes";
 import { probEntityType } from "../../types/problemTypes";
 import { isInDropZone } from "../../utils/solveProblem";
 import { HandleHandActions } from "../../utils/HandleHandActions";
-import { drawDropZone } from "../../utils/draw";
+// import { drawDropZone } from "../../utils/draw";
 import { getButtonObjects } from "../step/useStep1Logic";
 
 // 기본 객체 크기
@@ -47,22 +47,22 @@ export const useScaleTemplate = ({
   const [objects, setObjects] = useState<Obj[]>(initialObjects);
   const objectsRef = useRef(objects);
 
-  /* 초기 드롭존 표시 */
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    drawDropZone(ctx, camRatioRef.current, left_dx, left_dy, left_dw, left_dh);
-    drawDropZone(
-      ctx,
-      camRatioRef.current,
-      right_dx,
-      right_dy,
-      right_dw,
-      right_dh
-    );
-  }, [camRatioRef, canvasRef]);
+  // /* 초기 드롭존 표시 */
+  // useEffect(() => {
+  //   const canvas = canvasRef.current;
+  //   if (!canvas) return;
+  //   const ctx = canvas.getContext("2d");
+  //   if (!ctx) return;
+  //   drawDropZone(ctx, camRatioRef.current, left_dx, left_dy, left_dw, left_dh);
+  //   drawDropZone(
+  //     ctx,
+  //     camRatioRef.current,
+  //     right_dx,
+  //     right_dy,
+  //     right_dw,
+  //     right_dh
+  //   );
+  // }, [camRatioRef, canvasRef]);
 
   /* 템플릿 로직 */
   // object 변경되면 업데이트
@@ -146,15 +146,15 @@ export const useScaleTemplate = ({
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // 드롭존 다시 그리기
-    drawDropZone(ctx, camRatioRef.current, left_dx, left_dy, left_dw, left_dh);
-    drawDropZone(
-      ctx,
-      camRatioRef.current,
-      right_dx,
-      right_dy,
-      right_dw,
-      right_dh
-    );
+    // drawDropZone(ctx, camRatioRef.current, left_dx, left_dy, left_dw, left_dh);
+    // drawDropZone(
+    //   ctx,
+    //   camRatioRef.current,
+    //   right_dx,
+    //   right_dy,
+    //   right_dw,
+    //   right_dh
+    // );
 
     // 드롭존 안 객체가 추가될 때 추가된 객체 찾기
     let left_weight = 0; // 저울 왼쪽 무게
