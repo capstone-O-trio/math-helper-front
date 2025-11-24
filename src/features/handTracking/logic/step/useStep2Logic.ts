@@ -80,7 +80,7 @@ export const useStep2Logic = ({
         if (obj.id === "mention") {
           let mention_image = "/asset/check-answer/init-mention.png";
           if (selectAnswer) {
-            if (selectAnswer === answer)
+            if (selectAnswer === Number(answer))
               mention_image = "/asset/check-answer/correct-mention.png";
             else mention_image = "/asset/check-answer/incorrect-mention.png";
           }
@@ -94,7 +94,7 @@ export const useStep2Logic = ({
         if (obj.id === "bear") {
           let bear_image = "/asset/check-answer/init-bear.png";
           if (selectAnswer) {
-            if (selectAnswer === answer)
+            if (selectAnswer === Number(answer))
               bear_image = "/asset/check-answer/correct-bear.png";
             else bear_image = "/asset/check-answer/incorrect-bear.png";
           }
