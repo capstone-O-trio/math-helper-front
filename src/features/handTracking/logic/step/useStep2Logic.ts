@@ -228,10 +228,14 @@ export function getStep2ObjectsInfo(
   const choices: number[] = choiceOptions;
   choices.sort(); // 오름차순으로 정렬
 
+  const start_x = 200;
+  let gap = 200;
+  if (choices.length < 3) gap = 400;
+
   // 선택지 1
   answerInfo.push({
     id: "choice1",
-    x: 200,
+    x: start_x,
     y: 650,
     src: `/asset/check-answer/card/${choices[0]}.png`,
     isObj: true, // 객체임
@@ -243,7 +247,7 @@ export function getStep2ObjectsInfo(
   // 선택지 2
   answerInfo.push({
     id: "choice2",
-    x: 400,
+    x: start_x + gap,
     y: 650,
     src: `/asset/check-answer/card/${choices[1]}.png`,
     isObj: true, // 객체임
@@ -253,16 +257,18 @@ export function getStep2ObjectsInfo(
   });
 
   // 선택지 3
-  answerInfo.push({
-    id: "choice3",
-    x: 600,
-    y: 650,
-    src: `/asset/check-answer/card/${choices[2]}.png`,
-    isObj: true, // 객체임
-    value: choices[2],
-    width: card_width,
-    height: card_height,
-  });
+  if (choices.length >= 3) {
+    answerInfo.push({
+      id: "choice3",
+      x: start_x + gap + gap,
+      y: 650,
+      src: `/asset/check-answer/card/${choices[2]}.png`,
+      isObj: true, // 객체임
+      value: choices[2],
+      width: card_width,
+      height: card_height,
+    });
+  }
 
   return answerInfo;
 }
