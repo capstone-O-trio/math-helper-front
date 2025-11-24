@@ -17,11 +17,11 @@ const card_height = 170;
 const button_width = 100;
 const button_height = 100;
 
-  // 드롭존 좌표
-  const dx = 800; // 왼쪽 위 x좌표
-  const dy = 450; // 왼쪽 위 y좌표
-  const dw = 500; // 가로 길이
-  const dh = 400; // 세로 길이
+// 드롭존 좌표
+const dx = 800; // 왼쪽 위 x좌표
+const dy = 450; // 왼쪽 위 y좌표
+const dw = 500; // 가로 길이
+const dh = 400; // 세로 길이
 
 export const useStep2Logic = ({
   probImage,
@@ -30,20 +30,19 @@ export const useStep2Logic = ({
   canvasRef,
   camRatioRef,
 }: any) => {
-  const choiceOptions: number[] = makeChoicesOptions(10);
-
   const navigate = useNavigate();
-
   const selectAnswerRef = useRef<number | null>(null);
   const [selectAnswer, setSelectAnswer] = useState<number | null>(null);
-  
-  const [objects, setObjects] = useState(
-    getStep2ObjectsInfo(
-      // 정답 맞추기 단계에서 필요한 객체들
-      probImage,
-      choiceOptions
-    )
-  );
+
+  const [objects, setObjects] = useState<Obj[]>([]);
+  useEffect(() => {
+    if (!probImage) return;
+
+    // 원래 10이 아니라 실제 정답이 들어가야하는데 지금 string값이라 임시로 10넣음
+    const choiceOptions: number[] = makeChoicesOptions(10);
+    setObjects(getStep2ObjectsInfo(probImage, choiceOptions));
+  }, [probImage]);
+
   const objectsRef = useRef(objects);
 
   /* 초기 드롭존 표시 */
