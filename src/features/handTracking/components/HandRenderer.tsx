@@ -33,6 +33,7 @@ export const HandRenderer = ({ objects, camRatio, canvasRef }: any) => (
                     pointerEvents: "none",
                     zIndex: 3,
                 }}
+                crossOrigin="anonymous"
             />
         ))}
     </>
