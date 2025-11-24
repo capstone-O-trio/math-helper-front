@@ -4,6 +4,7 @@ import { WebCamera } from "features/webcam/WebCamera";
 import { HandRenderer } from "features/handTracking/components/HandRenderer";
 import { OBJ_RESULT_TYPE } from "features/handTracking/types/objectTypes";
 import { useStep1Logic } from "features/handTracking/logic/step/useStep1Logic";
+import { WaterComparisonRenderer } from "features/handTracking/components/WaterComparisonRenderer";
 
 interface SolveTemContentProps {
   templateId: number;
@@ -63,11 +64,19 @@ export const SolveTemContent = ({
           onResults={objResults.onResults}
           setCamRatio={setCamRatio}
         />
-        <HandRenderer
-          objects={objResults.objects}
-          camRatio={camRatio}
-          canvasRef={canvasRef}
-        />
+        {templateId === 11 ? (
+          <WaterComparisonRenderer
+            objects={objResults.objects}
+            camRatio={camRatio}
+            canvasRef={canvasRef}
+          />
+        ) : (
+          <HandRenderer
+            objects={objResults.objects}
+            camRatio={camRatio}
+            canvasRef={canvasRef}
+          />
+        )}
       </div>
     </div>
   );
