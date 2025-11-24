@@ -17,7 +17,7 @@ const router = createBrowserRouter([
         element: <OnboardingPage />,
       },
       {
-        path: "/hands-tracker",
+        path: "/hands-tracker/:type",
         element: <HandTrackingPage />,
       },
       {

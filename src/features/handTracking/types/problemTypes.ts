@@ -20,3 +20,9 @@ export type probEntityType = {
   image: null | string; // 추출 이미지가 있다면
   weight?: null | number; // 무게 필드가 있다면
 }
+
+export type MathProbSolveType = {
+  probImage: string; // 문제 이미지 URL
+  answer: string;
+  wrongList: string[]; // 오답 리스트
+};

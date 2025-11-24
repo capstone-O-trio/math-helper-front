@@ -1,58 +1,86 @@
-import { useLocation } from "react-router-dom";
-import { HandTracker } from "../features/handTracking/components/HandTracker";
-import { mathProbInfoType, probEntityType } from "../features/handTracking/types/problemTypes";
-import { WaterComparisonTracker } from "features/handTracking/components/WaterComparisonTracker";
-
-// 임시 데이터 -> 이후 수정해야 함
-const entity1: probEntityType = {
-  kind: "apple",
-  count: 2,
-  image: null
-}
-const entity2: probEntityType = {
-  kind: "apple",
-  count: 6,
-  image: null
-}
-
-const DEFAULT_PROB_INFO: mathProbInfoType = {
-  mathId: 0,
-  probText: "2+3",
-  probImage: "https://png.pngtree.com/element_pic/17/02/26/ba677482544e4f21bac3a5f335e13ee0.jpg", // 임시 문제 사진
-  answer: 8,
-  probType: "addition",
-  probTemplate: "appleAddition",
-
-  entityList: [entity1, entity2]
-};
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { postTemplateParam } from "api/template";
+import { CheckTemContent } from "features/handTracking/CheckTemContent";
+import { SolveTemContent } from "features/handTracking/SolveTemContent";
+import { getMathResult } from "api/upload";
+import { MathProbSolveType } from "features/handTracking/types/problemTypes";
+import { useRecoilValue } from "recoil";
+import { mathTemplateState } from "store/mathTemplateState";
 
 export const HandTrackingPage: React.FC = () => {
-  const location = useLocation();
-  const mathProbInfo: mathProbInfoType = (location.state as { mathProbInfo?: mathProbInfoType })?.mathProbInfo || DEFAULT_PROB_INFO;
+  const navigate = useNavigate();
 
-  if (!mathProbInfo) {
-    return <div>문제 정보가 없습니다.</div>;
+  const { mathId, templateId } = useRecoilValue(mathTemplateState);
+
+  //type = solve or check
+  const type = useParams().type;
+
+  const [entityList, setEntityList] = useState();
+  const [answerProps, setAnswerProps] = useState<MathProbSolveType>({
+    probImage: "",
+    answer: "",
+    wrongList: [],
+  });
+
+  useEffect(() => {
+    if (mathId === 0 || templateId === 0) {
+      toast.error("템플릿을 불러오는데 에러가 발생했습니다. 다시 시도해주세요");
+      navigate("/upload");
+      return;
+    }
+
+    //템플릿 파라미터 가져오기
+    async function getParams() {
+      if (type !== "solve") return;
+      try {
+        const response = await postTemplateParam(mathId, templateId);
+        const jsonResponse = JSON.parse(response.result.deploy);
+        setEntityList(jsonResponse);
+      } catch (error) {
+        alert(error);
+      }
+    }
+    getParams();
+
+    //정오답 결과 가져오기
+    async function getAnswers() {
+      if (type !== "check") return;
+      try {
+        const response = await getMathResult(mathId);
+        if (!response) return;
+        setAnswerProps({
+          probImage: response.result.image,
+          answer: response.result.answer,
+          wrongList: [
+            response.result.wrongAnswer1,
+            response.result.wrongAnswer2 || "",
+          ],
+        });
+        console.log("IMAGE:: ", response.result.image);
+      } catch (error) {
+        alert(error);
+      }
+    }
+    getAnswers();
+  }, [mathId, navigate, templateId, type]);
+
+  if (!entityList) {
+    return <div>잠시만 기다려봐</div>;
   }
 
-  return (
-    <div>
-      {mathProbInfo.probTemplate  ==='waterComparison'?<WaterComparisonTracker
-        mathId={mathProbInfo.mathId}
-        probText={mathProbInfo.probText}
-        probImage={mathProbInfo.probImage}
-        answer={mathProbInfo.answer}
-        probType={mathProbInfo.probType}
-        probTemplate={mathProbInfo.probTemplate}
-        entityList={mathProbInfo.entityList}
-      />:<HandTracker
-        mathId={mathProbInfo.mathId}
-        probText={mathProbInfo.probText}
-        probImage={mathProbInfo.probImage}
-        answer={mathProbInfo.answer}
-        probType={mathProbInfo.probType}
-        probTemplate={mathProbInfo.probTemplate}
-        entityList={mathProbInfo.entityList}
-      />}
-    </div>
-  );
+  if (type === "solve") {
+    return <SolveTemContent templateId={templateId} entityList={entityList} />;
+  } else if (type === "check") {
+    return (
+      <CheckTemContent
+        probImage={answerProps?.probImage}
+        answer={answerProps?.answer}
+        wrongList={answerProps?.wrongList}
+      />
+    );
+  } else {
+    return <div>잘못된 접근입니다.</div>;
+  }
 };

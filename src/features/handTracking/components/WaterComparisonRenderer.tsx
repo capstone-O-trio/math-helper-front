@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 function getWaterFillRatio(obj: any): number {
     if (!obj.water) return 0;
     const { volume, capacity } = obj.water;

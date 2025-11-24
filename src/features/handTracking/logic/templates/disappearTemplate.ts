@@ -4,18 +4,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import { movingObj } from "../../types/objectTypes";
-import { probEntityType } from "../../types/problemTypes";
-import { handleHandActions } from "../../utils/handAction";
-import { mathProbInfoType } from "../../types/problemTypes";
+import { HandleHandActions } from "../../utils/HandleHandActions";
+import { getButtonObjects } from "features/handTracking/logic/step/useStep1Logic";
 
 // Props 인터페이스 정의
 interface UseDisappearTemplateProps {
-  mathProbInfo: mathProbInfoType; // 여기가 핵심입니다!
+  entityList: { entity1: number; entity_type: string };
   canvasRef: React.RefObject<HTMLCanvasElement>;
   camRatioRef: React.RefObject<number>;
-  setStep: (step: number) => void;
-  setComment: (msg: string) => void;
-  selectAnswer: number | null;
   navigate: (path: string) => void;
 }
 
@@ -29,30 +25,28 @@ const MOVE_SPEED = 0.07;
 const ARRIVAL_THRESHOLD = 1;
 
 export const useDisappearTemplate = ({
-  mathProbInfo,
+  entityList,
   canvasRef,
   camRatioRef,
-  setStep,
-  setComment,
-  selectAnswer,
   navigate,
 }: UseDisappearTemplateProps) => {
+  const buttonObjects = getButtonObjects(); // 버튼 불러오기
   /* 필요한 객체 */
-  const initialNumOfEntity = mathProbInfo.entityList[0]
-    ? mathProbInfo.entityList[0].count
-    : 0;
-  const [objects, setObjects] = useState(
-    getDisappearTemplateObjects(
+  const initialNumOfEntity = entityList.entity1;
+  const initialObjects: movingObj[] = [
+    ...buttonObjects,
+    ...getDisappearTemplateObjects(
       // 덧셈 템플릿에 필요한 객체 가져오기
-      mathProbInfo.entityList[0] ?? null,
+      entityList,
       initialNumOfEntity
-    )
-  );
+    ),
+  ];
+  const [objects, setObjects] = useState(initialObjects);
   const objectsRef = useRef(objects);
+
   const animationFrameRef = useRef<number | null>(null);
 
   /* 템플릿 로직 */
-
   const [entityCount, setEntitiyCount] = useState(initialNumOfEntity); //  객체의 총 개수
 
   // objects 변경되면 entityCount 업데이트
@@ -72,7 +66,7 @@ export const useDisappearTemplate = ({
       prev.map(
         (obj) =>
           obj.id === "numOfEntity"
-            ? { ...obj, src: `/asset/${entityCount}.png` }
+            ? { ...obj, src: `/asset/number/${entityCount}.png` }
             : obj // 아니라면 그대로 유지
       )
     );
@@ -166,17 +160,13 @@ export const useDisappearTemplate = ({
     ctx.save();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    handleHandActions(
+    HandleHandActions(
       results,
       ctx,
       ratio,
       dispW,
       dispH,
-      mathProbInfo,
-      selectAnswer,
       setObjects,
-      setStep,
-      setComment,
       navigate,
       objectsRef
     );
@@ -187,35 +177,35 @@ export const useDisappearTemplate = ({
 
 /* 1600 x 900을 기준으로 배치 */
 function getDisappearTemplateObjects(
-  entity1: probEntityType,
+  entityList: { entity1: number; entity_type: string },
   numOfEntity: number
 ): movingObj[] {
   const objectsInfo: movingObj[] = [
     // 문제 풀이를 위한 객체
   ];
 
-  if (entity1 === null) return objectsInfo;
+  if (entityList === null) return objectsInfo;
 
   let objImage1 = "/asset/사과.png"; // 객체로 넣을 이미지
-  if (entity1.kind === "apple") objImage1 = "/asset/사과.png";
+  if (entityList.entity_type === "apple") objImage1 = "/asset/사과.png";
 
   //window
   objectsInfo.push({
     id: "window",
     x: 1200,
-    y: 300,
+    y: 350,
     src: "/asset/window.png",
     isObj: false,
     value: null,
-    width: 600,
-    height: 400,
+    width: 450,
+    height: 300,
   });
 
   //speechbubble
   objectsInfo.push({
     id: "disappear-talk",
-    x: 300,
-    y: 150,
+    x: 450,
+    y: 200,
     src: "/asset/talk_disappear.png",
     isObj: false,
     value: null,
@@ -226,7 +216,7 @@ function getDisappearTemplateObjects(
   // 객체 배치 계산
   const xMiddle = 400;
   const yMiddle = 650;
-  const count = entity1.count;
+  const count = entityList.entity1;
   const half = Math.ceil(count / 2); // 반 나누기
   const xOffset = 120; // 중앙에서 양쪽으로 퍼질 거리 단위
 

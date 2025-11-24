@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN_KEY } from "../utils/keys";
 import TypeCheckModal from "components/common/TypeCheckModal";
 import { toast } from "react-toastify";
+import { useSetRecoilState } from "recoil";
+import { mathTypeState } from "store/mathTypeState";
 
 export const UploadPage: React.FC = () => {
   const navigate = useNavigate();
@@ -84,15 +86,12 @@ export const UploadPage: React.FC = () => {
       return;
     }
   };
-
+  
+  const setMathType = useSetRecoilState(mathTypeState);
   const navigateToNextPage = () => {
     if (uploadedProbInfo) {
-      navigate("/select-template", {
-        state: {
-          mathId: uploadedProbInfo.mathId,
-          type_name: uploadedProbInfo.mathTypeDto.type_name,
-        },
-      });
+      setMathType({mathId: uploadedProbInfo.mathId, typeName: uploadedProbInfo.mathTypeDto.type_name});
+      navigate("/select-template");
     }
   };
 
