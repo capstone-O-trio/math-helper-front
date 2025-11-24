@@ -85,9 +85,9 @@ export const useAppletakeoutTemplate = ({
     setObjects((prev) =>
       prev.map((obj) => {
         if (obj.id === "treeTotalNumber") {
-          return { ...obj, src: `/asset/${treeTotalNum}.png` };
+          return { ...obj, src: `/asset/number/${treeTotalNum}.png` };
         } else if (obj.id === "boxTotalNumber") {
-          return { ...obj, src: `/asset/${boxTotalNum}.png` };
+          return { ...obj, src: `/asset/number/${boxTotalNum}.png` };
         } else {
           return obj; // 아무 조건에도 해당 안 되면 그대로 반환
         }
