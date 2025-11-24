@@ -3,7 +3,9 @@ import { BackButton } from "components/common/BackButton";
 import { Heading } from "components/common/Heading";
 import { TemplateCard } from "components/selectTemplate/TemplateCard";
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { mathTypeState } from "store/mathTypeState";
 import { templateInfoType } from "type/type";
 
 const defaultList: templateInfoType[] = [
@@ -19,19 +21,16 @@ export const SelectingTemplatePage = () => {
   const navigate = useNavigate();
   const [temList, setTemList] = useState(defaultList);
 
-  const location = useLocation();
-  const mathProbId = (location.state as { mathId?: number })?.mathId || 0;
-  const probTypeName =
-    (location.state as { type_name?: string })?.type_name || "?";
+  const { mathId, typeName } = useRecoilValue(mathTypeState);
 
   useEffect(() => {
     async function fetch() {
-      const data = await getTemplateList(probTypeName);
+      const data = await getTemplateList(typeName);
       const temList: templateInfoType[] = data.result.templates;
       setTemList(temList);
     }
     fetch();
-  }, [probTypeName]);
+  }, [typeName]);
 
   return (
     <div className="h-full flex justify-center items-center">
@@ -56,7 +55,11 @@ export const SelectingTemplatePage = () => {
       >
         {temList.length === 0 && <div>{"가능한 풀이가 없습니다."}</div>}
         {temList.map((template) => (
-          <TemplateCard key={template.templateId} temInfo={template} mathId={mathProbId} />
+          <TemplateCard
+            key={template.templateId}
+            temInfo={template}
+            mathId={mathId}
+          />
         ))}
       </div>
     </div>
