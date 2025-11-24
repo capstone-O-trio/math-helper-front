@@ -39,12 +39,11 @@ export const useStep2Logic = ({
     if (!probImage) return;
 
     // 선택지 추가
-    let choiceOptions: number[] = [];
+    const choiceOptions: number[] = [];
     choiceOptions.push(Number(answer));
     for (const wrong of wrongList) {
       choiceOptions.push(Number(wrong));
     }
-    choiceOptions = Array.from(choiceOptions).sort((a, b) => a - b);
     setObjects(getStep2ObjectsInfo(probImage, choiceOptions));
   }, [answer, probImage, wrongList]);
 
