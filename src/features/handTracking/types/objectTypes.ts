@@ -37,4 +37,4 @@ export type movingObj = {
 export interface OBJ_RESULT_TYPE {
   objects: Obj[];
   onResults: (r: any) => void;
-};
+}

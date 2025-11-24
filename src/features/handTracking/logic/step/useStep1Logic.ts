@@ -7,6 +7,7 @@ import { useCompareAppleTemplate } from "features/handTracking/logic/templates/c
 import { useDisappearTemplate } from "features/handTracking/logic/templates/disappearTemplate";
 import { useAdditionTemplate } from "../templates/additionTemplate";
 import { useAppletakeoutTemplate } from "../templates/appletakeoutTemplate";
+import { useWaterComparisonTemplate } from "../templates/waterComparisonTemplate";
 import { useAppleAdditionTemplate } from "../templates/appleAdditionTemplate";
 import { useScaleTemplate } from "../templates/scaleTemplate";
 import { Obj, OBJ_RESULT_TYPE } from "features/handTracking/types/objectTypes";
@@ -68,6 +69,13 @@ export const useStep1Logic = ({
     });
   } else if (templateId === 1) {
     templatesResult = useAppleAdditionTemplate({
+      entityList,
+      canvasRef,
+      camRatioRef,
+      navigate,
+    });
+  } else if (templateId === 11) {
+    templatesResult = useWaterComparisonTemplate({
       entityList,
       canvasRef,
       camRatioRef,
