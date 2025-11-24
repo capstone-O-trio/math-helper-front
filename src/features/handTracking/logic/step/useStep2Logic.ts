@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { Obj } from "../../types/objectTypes";
 import { isInDropZone } from "../../utils/solveProblem";
 import { HandleHandActions } from "../../utils/HandleHandActions";
-import { drawDropZone } from "../../utils/draw";
+// import { drawDropZone } from "../../utils/draw";
 import { useNavigate } from "react-router-dom";
 
 // 선택지 카드 크기
@@ -50,14 +50,14 @@ export const useStep2Logic = ({
 
   const objectsRef = useRef(objects);
 
-  /* 초기 드롭존 표시 */
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    drawDropZone(ctx, camRatioRef.current, dx, dy, dw, dh);
-  }, [camRatioRef, canvasRef]);
+  // /* 초기 드롭존 표시 */
+  // useEffect(() => {
+  //   const canvas = canvasRef.current;
+  //   if (!canvas) return;
+  //   const ctx = canvas.getContext("2d");
+  //   if (!ctx) return;
+  //   drawDropZone(ctx, camRatioRef.current, dx, dy, dw, dh);
+  // }, [camRatioRef, canvasRef]);
 
   /* 템플릿 로직 */
   // object 변경되면 업데이트
@@ -125,7 +125,7 @@ export const useStep2Logic = ({
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // 드롭존 다시 그리기
-    drawDropZone(ctx, camRatioRef.current, dx, dy, dw, dh);
+    // drawDropZone(ctx, camRatioRef.current, dx, dy, dw, dh);
 
     // 드롭존 안에 선택지가 있는지 확인
     setSelectAnswer(null);
