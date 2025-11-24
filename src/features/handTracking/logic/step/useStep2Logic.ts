@@ -4,7 +4,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Obj } from "../../types/objectTypes";
-import { isInDropZone, makeChoicesOptions } from "../../utils/solveProblem";
+import { isInDropZone } from "../../utils/solveProblem";
 import { HandleHandActions } from "../../utils/HandleHandActions";
 import { drawDropZone } from "../../utils/draw";
 import { useNavigate } from "react-router-dom";
