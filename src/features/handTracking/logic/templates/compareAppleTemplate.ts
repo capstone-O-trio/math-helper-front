@@ -104,9 +104,9 @@ export const useCompareAppleTemplate = ({
     setObjects((prev) =>
       prev.map((obj) => {
         if (obj.id === "leftTotalNumber") {
-          return { ...obj, src: `/asset/${leftTotalNum}.png` };
+          return { ...obj, src: `/asset/number/${leftTotalNum}.png` };
         } else if (obj.id === "rightTotalNumber") {
-          return { ...obj, src: `/asset/${rightTotalNum}.png` };
+          return { ...obj, src: `/asset/number/${rightTotalNum}.png` };
         } else {
           return obj; // 아무 조건에도 해당 안 되면 그대로 반환
         }
@@ -257,7 +257,7 @@ function getCompareAppleTemplateObjects(
   //말하는 새 객체
   objectsInfo.push({
     id: "talking-bird",
-    x: 100,
+    x: 200,
     y: 200,
     src: "/asset/talkingBird.png",
     isObj: false,
@@ -269,7 +269,7 @@ function getCompareAppleTemplateObjects(
   //말풍선 객체
   objectsInfo.push({
     id: "speechbubble-applemove",
-    x: 400,
+    x: 450,
     y: 100,
     src: "/asset/talk-applemove.png",
     isObj: false,

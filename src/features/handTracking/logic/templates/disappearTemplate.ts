@@ -5,6 +5,7 @@
 import { useEffect, useRef, useState } from "react";
 import { movingObj } from "../../types/objectTypes";
 import { HandleHandActions } from "../../utils/HandleHandActions";
+import { getButtonObjects } from "features/handTracking/logic/step/useStep1Logic";
 
 // Props 인터페이스 정의
 interface UseDisappearTemplateProps {
@@ -29,20 +30,23 @@ export const useDisappearTemplate = ({
   camRatioRef,
   navigate,
 }: UseDisappearTemplateProps) => {
+  const buttonObjects = getButtonObjects(); // 버튼 불러오기
   /* 필요한 객체 */
   const initialNumOfEntity = entityList.entity1;
-  const [objects, setObjects] = useState(
-    getDisappearTemplateObjects(
+  const initialObjects: movingObj[] = [
+    ...buttonObjects,
+    ...getDisappearTemplateObjects(
       // 덧셈 템플릿에 필요한 객체 가져오기
       entityList,
       initialNumOfEntity
-    )
-  );
+    ),
+  ];
+  const [objects, setObjects] = useState(initialObjects);
   const objectsRef = useRef(objects);
+
   const animationFrameRef = useRef<number | null>(null);
 
   /* 템플릿 로직 */
-
   const [entityCount, setEntitiyCount] = useState(initialNumOfEntity); //  객체의 총 개수
 
   // objects 변경되면 entityCount 업데이트
@@ -62,7 +66,7 @@ export const useDisappearTemplate = ({
       prev.map(
         (obj) =>
           obj.id === "numOfEntity"
-            ? { ...obj, src: `/asset/${entityCount}.png` }
+            ? { ...obj, src: `/asset/number/${entityCount}.png` }
             : obj // 아니라면 그대로 유지
       )
     );
@@ -189,19 +193,19 @@ function getDisappearTemplateObjects(
   objectsInfo.push({
     id: "window",
     x: 1200,
-    y: 300,
+    y: 350,
     src: "/asset/window.png",
     isObj: false,
     value: null,
-    width: 600,
-    height: 400,
+    width: 450,
+    height: 300,
   });
 
   //speechbubble
   objectsInfo.push({
     id: "disappear-talk",
-    x: 300,
-    y: 150,
+    x: 450,
+    y: 200,
     src: "/asset/talk_disappear.png",
     isObj: false,
     value: null,
