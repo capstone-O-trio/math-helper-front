@@ -27,7 +27,7 @@ const box_dw = 400;
 const box_dh = 400;
 
 export const useAppletakeoutTemplate = ({
-  mathProbInfo,
+  entityList, // {entity1: number, entity2: number, entity_type: 'apple'}
   canvasRef,
   camRatioRef,
   navigate,
@@ -35,8 +35,8 @@ export const useAppletakeoutTemplate = ({
   /* 필요한 객체 */
   const baseObjects = getAppletakeoutTemplateObjects(
     // 템플릿에 필요한 객체 가져오기
-    mathProbInfo.entityList[0] ?? null, // 나무에 있는 엔티티들
-    mathProbInfo.entityList[0]?.count ?? 0, // 나무에 있는 객체의 개수
+    entityList.entity1 ?? null, // 나무에 있는 엔티티들
+    entityList.entity1?.count ?? 0, // 나무에 있는 객체의 개수
     0
   );
 
