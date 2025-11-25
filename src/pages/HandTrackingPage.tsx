@@ -8,6 +8,8 @@ import { getMathResult } from "api/upload";
 import { MathProbSolveType } from "features/handTracking/types/problemTypes";
 import { useRecoilValue } from "recoil";
 import { mathTemplateState } from "store/mathTemplateState";
+import { ClimbingBoxLoader } from "react-spinners";
+import { Text } from "components/common/Text";
 
 export const HandTrackingPage: React.FC = () => {
   const navigate = useNavigate();
@@ -58,7 +60,6 @@ export const HandTrackingPage: React.FC = () => {
             response.result.wrongAnswer2 || "",
           ],
         });
-        console.log("IMAGE:: ", response.result.image);
       } catch (error) {
         alert(error);
       }
@@ -67,7 +68,17 @@ export const HandTrackingPage: React.FC = () => {
   }, [mathId, navigate, templateId, type]);
 
   if (!entityList) {
-    return <div>잠시만 기다려봐</div>;
+    return (
+      <div className="flex flex-col h-full items-center justify-center gap-4">
+        <ClimbingBoxLoader
+          color="#84E1BC"
+          loading
+          size={25}
+          speedMultiplier={1.5}
+        />
+        <Text className=" font-normal">{"놀이터를 불러오고 있어!"}</Text>
+      </div>
+    );
   }
 
   if (type === "solve") {
