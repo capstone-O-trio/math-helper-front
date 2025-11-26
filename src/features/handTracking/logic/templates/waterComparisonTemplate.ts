@@ -171,6 +171,16 @@ function createWaterComparisonObjects(entityList: WaterComparision.Entity[]): an
             role: "target",
         },
     });
+    objects.push({
+        id: "speechbubble-applemove",
+        x: 500,
+        y: 180,
+        src: "/asset/talk-waterComparison.png",
+        isObj: false,
+        value: null,
+        //width: 300,
+        height: 250,
+    });
 
     objects.push({
         id: "reset_1",
