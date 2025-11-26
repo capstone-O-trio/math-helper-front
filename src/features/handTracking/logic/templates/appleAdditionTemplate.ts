@@ -226,12 +226,12 @@ function getAdditionTemplateObjects(
   }
   objectsInfo.push({
     id: "speechbubble-applemove",
-    x: 400,
+    x: 420,
     y: 160,
     src: "/asset/talk-appleAddition.png",
     isObj: false,
     value: null,
-    width: 370,
+    width: 480,
     height: 230,
   });
 
