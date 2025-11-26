@@ -2,8 +2,10 @@ import { useEffect, useRef, useState } from "react";
 
 import { applyWaterTransfer } from "features/handTracking/utils/waterComparisonUtils";
 import { waterComparisonAction } from "../../utils/waterComparisonAction";
+import { getButtonObjects } from "../step/useStep1Logic";
 
 export const useWaterComparisonTemplate = ({
+    entityList,
     mathProbInfo,
     canvasRef,
     camRatioRef,
@@ -12,9 +14,11 @@ export const useWaterComparisonTemplate = ({
     selectAnswer,
     navigate,
 }: any) => {
+    const entitiesRef = useRef(entityList as { cups: WaterComparision.Entity[] });
+
     const [objects, setObjects] = useState<any[]>(() =>
-        createWaterComparisonObjects()
-    );
+        createWaterComparisonObjects(entitiesRef.current.cups)
+  );
 
     const objectsRef = useRef(objects);
     const streamsRef = useRef<WaterComparision.StreamInfo[] | null>(null);
@@ -94,9 +98,7 @@ export const useWaterComparisonTemplate = ({
 
                 if (!changed) {
                     // 떨어지는 물 없는 상태도 ref에 저장
-                    if (
-                        !streamsRef.current /* || streamsRef.current.active */
-                    ) {
+                    if (!streamsRef.current /* || streamsRef.current.active */) {
                         streamsRef.current = [
                             {
                                 x: 0,
@@ -123,71 +125,49 @@ export const useWaterComparisonTemplate = ({
 };
 
 // 컵 init.
-function createWaterComparisonObjects(): any[] {
+function createWaterComparisonObjects(entityList: WaterComparision.Entity[]): any[] {
     const objects: any[] = [];
 
-    // 컵 A (source)
-    objects.push({
-        id: "cupA_1",
-        kind: "cupA",
-        x: 1300,
-        y: 698,
-        isObj: true,
-        value: null,
-        width: 200,
-        height: 400,
-        rotation: 0,
-        water: {
-            capacity: 200,
-            volume: 190,
-            innerWidth: 200,
-            innerHeight: 400,
-            tiltStartRad: (20 * Math.PI) / 180,
-            tiltMaxRad: (80 * Math.PI) / 180,
-            maxFlowPerSec: 50,
-            role: "source",
-        },
-    });
-
-    // 컵 A (source)
-    objects.push({
-        id: "cupA_2",
-        kind: "cupA",
-        x: 950,
-        y: 798,
-        isObj: true,
-        value: null,
-        width: 300,
-        height: 200,
-        rotation: 0,
-        water: {
-            capacity: 150,
-            volume: 140,
-            innerWidth: 300,
-            innerHeight: 200,
-            tiltStartRad: (20 * Math.PI) / 180,
-            tiltMaxRad: (80 * Math.PI) / 180,
-            maxFlowPerSec: 50,
-            role: "source",
-        },
+    entityList.forEach((entity, idx) => {
+        objects.push({
+            id: entity.cupName,
+            kind: "cupA",
+            x: 750 + idx * 220,
+            y: 898 - entity.cupHeight * 1.25,
+            isObj: true,
+            value: null,
+            width: entity.cupWidth * 2.5,
+            height: entity.cupHeight * 2.5,
+            rotation: 0,
+            water: {
+                capacity: (entity.cupWidth * 2.5 * entity.cupHeight * 2.5) / 100,
+                volume: (entity.cupWidth * 2.5 * entity.waterHeight * 2.5) / 100,
+                innerWidth: entity.cupWidth * 2.5,
+                innerHeight: entity.cupHeight * 2.5,
+                tiltStartRad: (20 * Math.PI) / 180,
+                tiltMaxRad: (80 * Math.PI) / 180,
+                maxFlowPerSec: 100,
+                role: "source",
+            },
+        });
     });
 
     // 컵 B (target)
     objects.push({
         id: "cupB",
         kind: "cupB",
-        x: 500,
-        y: 698,
+        x: 400,
+        y: 673,
         isObj: false,
         value: null,
-        width: 400,
-        height: 400,
+        width: 250,
+        height: 450,
         rotation: 0,
         water: {
-            capacity: 400,
+            capacity: (250 * 450) / 100,
             volume: 0,
-            innerWidth: 400,
-            innerHeight: 400,
+            innerWidth: 250,
+            innerHeight: 450,
             role: "target",
         },
     });
@@ -202,5 +182,7 @@ function createWaterComparisonObjects(): any[] {
         rotation: 0,
     });
 
-    return objects;
+    const buttonObjects = getButtonObjects(); // 버튼 불러오기
+
+    return [...objects, ...buttonObjects];
 }

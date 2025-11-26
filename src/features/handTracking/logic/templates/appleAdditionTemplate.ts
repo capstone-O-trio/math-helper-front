@@ -224,6 +224,16 @@ function getAdditionTemplateObjects(
       height: obj_height,
     });
   }
+  objectsInfo.push({
+    id: "speechbubble-applemove",
+    x: 450,
+    y: 160,
+    src: "/asset/talk_appleAddition.png",
+    isObj: false,
+    value: null,
+    width: 300,
+    height: 250,
+  });
 
   // 드롭존 위 객체의 총합을 나타내는 숫자
   objectsInfo.push({
