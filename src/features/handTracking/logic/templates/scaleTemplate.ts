@@ -258,7 +258,7 @@ function getScaleTemplateObjects(entityList: probEntityType[]): {
       id: card.kind,
       x: startX + i * gapX,
       y: baseY,
-      src: `/asset/number/${i + 1}.png`,
+      src: `/asset/scale-card/${card.kind}.png`,
       isObj: true, // 객체임
       value: null,
       width: obj_width,
