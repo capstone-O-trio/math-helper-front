@@ -4,7 +4,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Obj } from "../../types/objectTypes";
-import { probEntityType } from "../../types/problemTypes";
+// import { probEntityType } from "../../types/problemTypes";
 import { isInDropZone } from "../../utils/solveProblem";
 import { HandleHandActions } from "../../utils/HandleHandActions";
 // import { drawDropZone } from "../../utils/draw";
