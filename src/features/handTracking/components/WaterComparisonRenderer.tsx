@@ -34,7 +34,7 @@ const CupWithWater = ({
     camRatio: number;
     deforeFillRatios?: number[];
 }) => {
-    const { x, y, width, height, rotation = 0, water, kind } = obj;
+    const { x, y, width, height, rotation = 0, water, kind, id } = obj;
     const fillRatio = getWaterFillRatio(obj);
 
     const innerWidth = water?.innerWidth ?? width;
@@ -54,7 +54,8 @@ const CupWithWater = ({
                 top: y * camRatio,
                 width: displayWidth,
                 height: displayHeight,
-                transform: `translate(-50%, -50%) rotate(${rotation}rad)`,
+                // 위치만 정중앙 맞추기용 translate, 회전은 여기서 제거
+                transform: "translate(-50%, -50%)",
                 transformOrigin: "50% 50%",
                 pointerEvents: "none",
                 zIndex: 3,
@@ -69,6 +70,8 @@ const CupWithWater = ({
                     alignItems: "flex-end",
                     justifyContent: "center",
                     pointerEvents: "none",
+                    transform: `rotate(${rotation}rad)`,
+                    transformOrigin: "50% 50%",
                 }}
             >
                 {/* 컵 본체 */}
@@ -104,11 +107,13 @@ const CupWithWater = ({
                         style={{
                             position: "absolute",
                             top: `${(1 - fillRatio) * 100}%`,
-                            marginTop: -17,
-                            left: -38,
+                            marginTop: -4,
+                            left: -50,
                             transform: "translateY(-50%)",
                             color: "#f34848",
                             zIndex: 101,
+                            display: "flex",
+                            alignItems: "center",
                         }}
                     >
                         <span
@@ -116,16 +121,16 @@ const CupWithWater = ({
                                 width: 40,
                                 display: "flex",
                                 justifyContent: "center",
-                                fontSize: 20,
+                                fontSize: 17,
                                 fontWeight: "bold",
-                                marginBottom: -3,
+                                textShadow: "0 0 4px rgba(0,0,0,0.5)",
                             }}
                         >
-                            {Math.floor(fillRatio * 100)}
+                            {Math.floor(fillRatio * 100)}%
                         </span>
                         <div
                             style={{
-                                width: 60,
+                                width: 30,
                                 height: 4,
                                 background: "#f34848",
                                 borderRadius: 4,
@@ -143,11 +148,13 @@ const CupWithWater = ({
                                 style={{
                                     position: "absolute",
                                     top: `${(1 - fillRatio) * 100}%`,
-                                    marginTop: -17,
-                                    left: -38,
+                                    marginTop: -4,
+                                    left: -50,
                                     transform: "translateY(-50%)",
                                     color: waterColorFromRatio(fillRatio),
                                     zIndex: idx,
+                                    display: "flex",
+                                    alignItems: "center",
                                 }}
                             >
                                 <span
@@ -155,19 +162,18 @@ const CupWithWater = ({
                                         width: 40,
                                         display: "flex",
                                         justifyContent: "center",
-                                        fontSize: 20,
+                                        fontSize: 17,
                                         fontWeight: "bold",
-                                        marginBottom: -3,
+                                        textShadow: "0 0 4px rgba(0,0,0,0.5)",
                                     }}
                                 >
-                                    {Math.floor(fillRatio * 100)}
+                                    {Math.floor(fillRatio * 100)}%
                                 </span>
                                 <div
                                     style={{
-                                        width: 60,
+                                        width: 30,
                                         height: 4,
-                                        background:
-                                            waterColorFromRatio(fillRatio),
+                                        background: waterColorFromRatio(fillRatio),
                                         borderRadius: 4,
                                     }}
                                 />
@@ -175,6 +181,31 @@ const CupWithWater = ({
                         ) : null
                     )}
             </div>
+            {/* 컵 타이틀: 컵의 정가운데, 회전 영향 없음 */}
+            {!isTargetCup && (
+                <div
+                style={{
+                    position: "absolute",
+                    inset: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    pointerEvents: "none",
+                }}
+                >
+                <span
+                    style={{
+                    color: "#ffffff",
+                    fontSize: 18,
+                    fontWeight: "bold",
+                    textShadow: "0 0 4px rgba(0,0,0,0.7)",
+                    }}
+                >
+                    {id}
+                </span>
+                </div>
+            )}
+
         </div>
     );
 };
@@ -197,6 +228,29 @@ export const WaterComparisonRenderer = ({
                     zIndex: 2,
                 }}
             />
+
+            {objects.map(
+                ({ id, x, y, src, width, height, kind }: any) =>
+                    !kind && (
+                        <img
+                            key={id}
+                            src={src}
+                            alt={id}
+                            style={{
+                                position: "absolute",
+                                left: x * camRatio,
+                                top: y * camRatio,
+                                width: width,
+                                height: height,
+                                transform: "translate(-50%, -50%)",
+                                pointerEvents: "none",
+                                zIndex: 3,
+                            }}
+                            crossOrigin="anonymous"
+                        />
+                    )
+             )}
+
 
             {objects.map((obj: any) => {
                 const { id, kind } = obj;

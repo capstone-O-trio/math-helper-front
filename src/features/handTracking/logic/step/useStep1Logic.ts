@@ -33,7 +33,7 @@ export const useStep1Logic = ({
 
   // 필요한 템플릿만 반환 (조건부 반환은 OK)
   if (templateId === 1) {
-    templatesResult = useAdditionTemplate({
+    templatesResult = useAppleAdditionTemplate({
       entityList,
       canvasRef,
       camRatioRef,
@@ -62,13 +62,6 @@ export const useStep1Logic = ({
     });
   } else if (templateId === 9) {
     templatesResult = useDisappearTemplate({
-      entityList,
-      canvasRef,
-      camRatioRef,
-      navigate,
-    });
-  } else if (templateId === 1) {
-    templatesResult = useAppleAdditionTemplate({
       entityList,
       canvasRef,
       camRatioRef,

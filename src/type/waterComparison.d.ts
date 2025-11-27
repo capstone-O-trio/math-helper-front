@@ -43,4 +43,11 @@ declare namespace WaterComparision {
         active: boolean;
         thickness: number;
     }
+
+    export interface Entity {
+    cupHeight: number;
+    cupName: string;
+    cupWidth: number;
+    waterHeight: number;
+  }
 }
