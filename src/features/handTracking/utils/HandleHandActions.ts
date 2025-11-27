@@ -174,18 +174,21 @@ export const HandleHandActions = (
         } else if (state === "indexUp") {
           // 검지만 편 상태 ☝️
           if (obj.isObj === false && obj.value === 1) {
-            // 버튼인 경우
-            if (
+            // 버튼 위에 손이 있는지
+            const isOnButton =
               index_x > ox - hitRange &&
               index_x < ox + hitRange &&
               index_y > oy - hitRange &&
-              index_y < oy + hitRange
-            ) {
-              // 버튼 클릭
-              selectedButtonId = obj.id;
+              index_y < oy + hitRange;
+
+            if (isOnButton) {
+              // 버튼을 누른 순간 업데이트
+              if (selectedButtonId === null) {
+                selectedButtonId = obj.id;
+              }
             } else {
-              // 버튼 클릭하지 않음
-              if (selectedButtonId !== null) {
+              // 버튼에서 손을 뗐을 때 -> 클릭 처리
+              if (selectedButtonId === obj.id) {
                 // 원래 버튼을 누르고 있었다가 뗀 경우
                 if (selectedButtonId === "button-next") {
                   // '정답 맞추러 가기 버튼'을 누르다가 뗀 경우
@@ -213,8 +216,9 @@ export const HandleHandActions = (
                   // '다른 문제 풀러 가기 버튼'을 누르다가 뗀 경우
                   navigate("/upload"); // 이동
                 }
+                console.log(selectedButtonId)
+                selectedButtonId = null;
               }
-              selectedButtonId = null; // 버튼 선택 해제
             }
           }
         } else if (state === "open") {
