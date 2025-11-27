@@ -197,16 +197,6 @@ export const HandleHandActions = (
                 }
                 if (selectedButtonId === "button-check-answer") {
                   // '정답인지 확인하기 버튼'을 누르다가 뗀 경우
-                  // 정답 확인
-                  // if (selectAnswer !== null) {
-                  //     if (selectAnswer === mathProbInfo.answer) {
-                  //         setComment("정답입니다! 짝짝짝!");
-                  //     } else {
-                  //         setComment("오답입니다.. ㅠㅠ");
-                  //     }
-                  // } else {
-                  //     setComment("선택한 답이 없습니다..!");
-                  // }
                 }
                 if (selectedButtonId === "button-back") {
                   // '되돌아가기 버튼'을 누르다가 뗀 경우
