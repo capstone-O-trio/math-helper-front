@@ -39,21 +39,23 @@ export const SelectingTemplatePage = () => {
   };
 
   return (
-    <>
-      <div className="absolute top-6 w-full">
-        <BackButton onClick={goBack} className="absolute left-8 top-1" />
-        <Heading>{"풀이를 선택해봐yo!"}</Heading>
+    <div className="flex flex-col h-full w-full">
+      <div className="h-20">
+        <BackButton onClick={goBack} className="absolute left-8 top-5" />
+        <Heading>{"풀이를 선택해봐요!"}</Heading>
       </div>
-      <div className="absolute top-20 left-1/2 -translate-x-1/2 flex gap-2">
+      <div className="flex gap-2 justify-center items-center">
         <Text>{"이 문제는"}</Text>
         <Text className="font-bold">{typeName}</Text>
         <Text>{"유형이에요."}</Text>
-        <TextButton onClick={goBack}>{"아닌 것 같나요?!"}</TextButton>
+        <TextButton onClick={goBack}>
+          {"이 유형이 아닌 것 같나요?!"}
+        </TextButton>
       </div>
       <div className="h-full flex flex-col justify-center items-center">
         <div
           className={`
-      w-[80%] max-w-[1100px] max-h-[80%] overflow-auto p-1
+      w-[80%] max-w-[1100px] h-full overflow-auto p-5
       ${
         temList.length >= 2
           ? "grid grid-cols-2 gap-3"
@@ -71,6 +73,6 @@ export const SelectingTemplatePage = () => {
           ))}
         </div>
       </div>
-    </>
+    </div>
   );
 };
