@@ -110,11 +110,7 @@ export function waterComparisonAction(
                                 if (lastAngleRad == null) {
                                     lastAngleRad = angleNow;
                                 } else {
-                                    lastAngleRad = lerpAngle(
-                                        lastAngleRad,
-                                        angleNow,
-                                        0.25
-                                    );
+                                    lastAngleRad = lerpAngle(lastAngleRad, angleNow, 0.25);
                                 }
                                 rotation = mapAngle(lastAngleRad);
                             }
@@ -155,42 +151,34 @@ export function waterComparisonAction(
                         ) {
                             selectedButtonId = obj.id;
                         } else {
+                            // 버튼 클릭하지 않음
                             if (selectedButtonId !== null) {
-                                if (selectedButtonId === "button-answer") {
-                                    setStep(2);
+                                // 원래 버튼을 누르고 있었다가 뗀 경우
+                                if (selectedButtonId === "button-next") {
+                                    // '정답 맞추러 가기 버튼'을 누르다가 뗀 경우
+                                    //setStep(2); // 다음 단계로
+                                    navigate("/hands-tracker/check"); // 정답 맞추기 페이지로 이동
                                 }
-                                if (selectedButtonId === "button-select") {
-                                    if (selectAnswer !== null) {
-                                        if (
-                                            selectAnswer === mathProbInfo.answer
-                                        ) {
-                                            setComment("정답입니다! 짝짝짝!");
-                                        } else {
-                                            setComment("오답입니다.. ㅠㅠ");
-                                        }
-                                    } else {
-                                        setComment("선택한 답이 없습니다..!");
-                                    }
+                                if (selectedButtonId === "button-back") {
+                                    // '되돌아가기 버튼'을 누르다가 뗀 경우
+                                    navigate("/select-template"); // 이동
                                 }
-                                if (selectedButtonId === "button-other") {
-                                    navigate("/upload");
+                                if (selectedButtonId === "button-home") {
+                                    // '다른 문제 풀러 가기 버튼'을 누르다가 뗀 경우
+                                    navigate("/upload"); // 이동
                                 }
                                 if (selectedButtonId === "reset_1") {
-                                    const cupB = prev.find(
-                                        (obj) => obj.kind === "cupB"
-                                    );
+                                    const cupB = prev.find((obj) => obj.kind === "cupB");
                                     if (cupB && cupB.water) {
                                         extraObj = {
-                                            id: Date.toString(),
-                                            kind: "fillRatio",
-                                            src: "",
-                                            x: 0,
-                                            y: 0,
-                                            width: 0,
-                                            height: 0,
-                                            value:
-                                                cupB.water!.volume /
-                                                cupB.water!.capacity,
+                                        id: Date.toString(),
+                                        kind: "fillRatio",
+                                        src: "",
+                                        x: 0,
+                                        y: 0,
+                                        width: 0,
+                                        height: 0,
+                                        value: cupB.water!.volume / cupB.water!.capacity,
                                         };
                                     }
                                 }

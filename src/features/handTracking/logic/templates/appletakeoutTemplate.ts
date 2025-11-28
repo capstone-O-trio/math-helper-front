@@ -7,7 +7,7 @@ import { Obj } from "../../types/objectTypes";
 import { probEntityType } from "../../types/problemTypes";
 import { isInDropZone } from "../../utils/solveProblem";
 import { HandleHandActions } from "../../utils/HandleHandActions";
-import { drawDropZone } from "../../utils/draw";
+// import { drawDropZone } from "../../utils/draw";
 import { getButtonObjects } from "../step/useStep1Logic";
 
 // 기본 객체 크기
@@ -27,7 +27,7 @@ const box_dw = 400;
 const box_dh = 400;
 
 export const useAppletakeoutTemplate = ({
-  mathProbInfo,
+  entityList, // {entity1: number, entity2: number, entity_type: 'apple'}
   canvasRef,
   camRatioRef,
   navigate,
@@ -35,8 +35,8 @@ export const useAppletakeoutTemplate = ({
   /* 필요한 객체 */
   const baseObjects = getAppletakeoutTemplateObjects(
     // 템플릿에 필요한 객체 가져오기
-    mathProbInfo.entityList[0] ?? null, // 나무에 있는 엔티티들
-    mathProbInfo.entityList[0]?.count ?? 0, // 나무에 있는 객체의 개수
+    entityList.entity1 ?? null, // 나무에 있는 엔티티들
+    entityList.entity1?.count ?? 0, // 나무에 있는 객체의 개수
     0
   );
 
@@ -47,15 +47,15 @@ export const useAppletakeoutTemplate = ({
   const [objects, setObjects] = useState<Obj[]>(initialObjects);
   const objectsRef = useRef(objects);
 
-  /* 초기 드롭존 표시 */
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    drawDropZone(ctx, camRatioRef.current, tree_dx, tree_dy, tree_dw, tree_dh);
-    drawDropZone(ctx, camRatioRef.current, box_dx, box_dy, box_dw, box_dh);
-  }, [camRatioRef, canvasRef]);
+  // /* 초기 드롭존 표시 */
+  // useEffect(() => {
+  //   const canvas = canvasRef.current;
+  //   if (!canvas) return;
+  //   const ctx = canvas.getContext("2d");
+  //   if (!ctx) return;
+  //   drawDropZone(ctx, camRatioRef.current, tree_dx, tree_dy, tree_dw, tree_dh);
+  //   drawDropZone(ctx, camRatioRef.current, box_dx, box_dy, box_dw, box_dh);
+  // }, [camRatioRef, canvasRef]);
 
   /* 템플릿 로직 */
   // object 변경되면 업데이트
@@ -85,9 +85,9 @@ export const useAppletakeoutTemplate = ({
     setObjects((prev) =>
       prev.map((obj) => {
         if (obj.id === "treeTotalNumber") {
-          return { ...obj, src: `/asset/${treeTotalNum}.png` };
+          return { ...obj, src: `/asset/number/${treeTotalNum}.png` };
         } else if (obj.id === "boxTotalNumber") {
-          return { ...obj, src: `/asset/${boxTotalNum}.png` };
+          return { ...obj, src: `/asset/number/${boxTotalNum}.png` };
         } else {
           return obj; // 아무 조건에도 해당 안 되면 그대로 반환
         }
@@ -110,8 +110,8 @@ export const useAppletakeoutTemplate = ({
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // 드롭존 다시 그리기
-    drawDropZone(ctx, camRatioRef.current, tree_dx, tree_dy, tree_dw, tree_dh);
-    drawDropZone(ctx, camRatioRef.current, box_dx, box_dy, box_dw, box_dh);
+    // drawDropZone(ctx, camRatioRef.current, tree_dx, tree_dy, tree_dw, tree_dh);
+    // drawDropZone(ctx, camRatioRef.current, box_dx, box_dy, box_dw, box_dh);
 
     // 드롭존 안 객체가 추가될 때 총합 숫자 변경
     let newTreeTotalNum = 0; // 트리 안 객체의 총 갯수

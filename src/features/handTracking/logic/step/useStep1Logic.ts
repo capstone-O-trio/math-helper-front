@@ -28,7 +28,7 @@ export const useStep1Logic = ({
   // 템플릿 결과
   let templatesResult: OBJ_RESULT_TYPE = {
     objects: [],
-    onResults: () => {},
+    onResults: () => { },
   };
 
   // 필요한 템플릿만 반환 (조건부 반환은 OK)

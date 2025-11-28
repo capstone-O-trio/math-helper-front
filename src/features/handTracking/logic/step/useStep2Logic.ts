@@ -156,7 +156,7 @@ export function getStep2ObjectsInfo(
   // 다른 문제 풀러가기 버튼
   answerInfo.push({
     id: "button-home",
-    x: 100,
+    x: 1500,
     y: 100,
     src: "/asset/button/button-home.png",
     isObj: false, // 객체 아님
