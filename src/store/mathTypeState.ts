@@ -1,14 +1,18 @@
 import { atom } from "recoil";
+import { recoilPersist } from "recoil-persist";
+
+const { persistAtom } = recoilPersist();
 
 export interface MathTypeStateType {
-    mathId: number;
-    typeName: string;
+  mathId: number;
+  typeName: string;
 }
 
 export const mathTypeState = atom<MathTypeStateType>({
-    key: "mathTypeState",
-    default: {
-        mathId:0,
-        typeName: "",
-    }
-})
+  key: "mathTypeState",
+  default: {
+    mathId: 0,
+    typeName: "",
+  },
+  effects_UNSTABLE: [persistAtom],
+});
