@@ -187,8 +187,9 @@ function getDisappearTemplateObjects(
   if (entityList === null) return objectsInfo;
 
   let objImage1 = "/asset/apple.png"; // 객체로 넣을 이미지
-  if (entityList.entity_type === "apple") objImage1 = "/asset/apple.png";
-
+  if (entityList.entity_type !== null)
+    objImage1 = `/asset/${entityList.entity_type}.png`;
+  
   //window
   objectsInfo.push({
     id: "window",
