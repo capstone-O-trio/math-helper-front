@@ -1,6 +1,8 @@
 import { getTemplateList } from "api/template";
 import { BackButton } from "components/common/BackButton";
+import { Button } from "components/common/Button";
 import { Heading } from "components/common/Heading";
+import { Text } from "components/common/Text";
 import { TemplateCard } from "components/selectTemplate/TemplateCard";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -33,25 +35,29 @@ export const SelectingTemplatePage = () => {
   }, [typeName]);
 
   return (
-    <div className="h-full flex justify-center items-center">
-      <div className="absolute top-4 w-full">
+    <div className="h-full flex flex-col justify-center items-center">
+      <div className="absolute top-6 w-full">
         <BackButton
           onClick={() => {
             navigate(-1);
           }}
           className="absolute left-8 top-1"
         />
-        <Heading>풀이를 선택해봐!</Heading>
+        <Heading>{"풀이를 선택해봐!"}</Heading>
+      </div>
+      <div className="flex">
+        <Text>{"이게 맞는 유형인가요? 모달여기로 옮기기"}</Text>
+        <Button>{"아닌거같아요!"}</Button>
       </div>
       <div
         className={`
-      w-[80%] max-w-[1100px] max-h-[75%] overflow-auto p-1
+      w-[80%] max-w-[1100px] max-h-[80%] overflow-auto p-1
       ${
-        temList.length >= 3
-          ? "grid grid-cols-3 gap-9"
+        temList.length >= 2
+          ? "grid grid-cols-2 gap-3"
           : "flex items-center gap-6 w-full justify-center"
       }
-    `}
+      `}
       >
         {temList.length === 0 && <div>{"가능한 풀이가 없습니다."}</div>}
         {temList.map((template) => (

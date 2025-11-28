@@ -22,7 +22,7 @@ export const TemplateCard = ({ temInfo, mathId }: TemplatePropsType) => {
   return (
     <button
       onClick={handleClickTemplate}
-      className="relative w-full max-w-xs min-w-min h-64 shadow-md rounded-3xl flex flex-col justify-center items-center gap-3"
+      className="relative w-full max-w-[32rem] min-w-min h-80 shadow-md rounded-3xl flex flex-col justify-center items-center gap-3"
     >
       <img src={temInfo.templateImage} alt="template img" className="w-[80%]" />
       {!temInfo.isPossible && (
