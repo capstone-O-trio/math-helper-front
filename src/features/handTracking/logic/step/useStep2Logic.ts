@@ -153,6 +153,18 @@ export function getStep2ObjectsInfo(
     // 처음엔 아무것도 없음
   ];
 
+  // 되돌아가기 버튼
+  answerInfo.push({
+    id: "button-back-from-check",
+    x: 100,
+    y: 100,
+    src: "/asset/button/button-back.png",
+    isObj: false, // 객체 아님
+    value: 1, // 버튼
+    width: button_width,
+    height: button_height,
+  });
+
   // 다른 문제 풀러가기 버튼
   answerInfo.push({
     id: "button-home",
