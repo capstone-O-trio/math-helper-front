@@ -95,7 +95,7 @@ export function getButtonObjects(): Obj[] {
 
   // 되돌아가기 버튼
   objectsInfo.push({
-    id: "button-back",
+    id: "button-back-from-solve",
     x: 100,
     y: 100,
     src: "/asset/button/button-back.png",
