@@ -1,8 +1,8 @@
 import { getTemplateList } from "api/template";
 import { BackButton } from "components/common/BackButton";
-import { Button } from "components/common/Button";
 import { Heading } from "components/common/Heading";
 import { Text } from "components/common/Text";
+import { TextButton } from "components/common/TextButton";
 import { TemplateCard } from "components/selectTemplate/TemplateCard";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -34,23 +34,25 @@ export const SelectingTemplatePage = () => {
     fetch();
   }, [typeName]);
 
+  const goBack = () => {
+    navigate("/upload");
+  };
+
   return (
-    <div className="h-full flex flex-col justify-center items-center">
+    <>
       <div className="absolute top-6 w-full">
-        <BackButton
-          onClick={() => {
-            navigate(-1);
-          }}
-          className="absolute left-8 top-1"
-        />
-        <Heading>{"풀이를 선택해봐!"}</Heading>
+        <BackButton onClick={goBack} className="absolute left-8 top-1" />
+        <Heading>{"풀이를 선택해봐yo!"}</Heading>
       </div>
-      <div className="flex">
-        <Text>{"이게 맞는 유형인가요? 모달여기로 옮기기"}</Text>
-        <Button>{"아닌거같아요!"}</Button>
+      <div className="absolute top-20 left-1/2 -translate-x-1/2 flex gap-2">
+        <Text>{"이 문제는"}</Text>
+        <Text className="font-bold">{typeName}</Text>
+        <Text>{"유형이에요."}</Text>
+        <TextButton onClick={goBack}>{"아닌 것 같나요?!"}</TextButton>
       </div>
-      <div
-        className={`
+      <div className="h-full flex flex-col justify-center items-center">
+        <div
+          className={`
       w-[80%] max-w-[1100px] max-h-[80%] overflow-auto p-1
       ${
         temList.length >= 2
@@ -58,16 +60,17 @@ export const SelectingTemplatePage = () => {
           : "flex items-center gap-6 w-full justify-center"
       }
       `}
-      >
-        {temList.length === 0 && <div>{"가능한 풀이가 없습니다."}</div>}
-        {temList.map((template) => (
-          <TemplateCard
-            key={template.templateId}
-            temInfo={template}
-            mathId={mathId}
-          />
-        ))}
+        >
+          {temList.length === 0 && <div>{"가능한 풀이가 없습니다."}</div>}
+          {temList.map((template) => (
+            <TemplateCard
+              key={template.templateId}
+              temInfo={template}
+              mathId={mathId}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 };

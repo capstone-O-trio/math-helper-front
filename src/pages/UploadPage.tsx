@@ -6,8 +6,6 @@ import { getNewMaths, postImgGetType } from "../api/upload";
 import { probInfoType } from "../type/type";
 import { useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN_KEY } from "../utils/keys";
-import TypeCheckModal from "components/common/TypeCheckModal";
-import { toast } from "react-toastify";
 import { useSetRecoilState } from "recoil";
 import { mathTypeState } from "store/mathTypeState";
 
@@ -22,10 +20,6 @@ export const UploadPage: React.FC = () => {
   const [uploadedProbInfo, setUploadedProbInfo] = useState<probInfoType | null>(
     null
   );
-
-  //type check modal
-  const [isOpenModal, setIsOpenModal] = useState(false);
-  const [modalComment, setModalComment] = useState("");
 
   useEffect(() => {
     const interval = setInterval(async () => {
@@ -78,9 +72,6 @@ export const UploadPage: React.FC = () => {
 
       setUploadedProbInfo(response.result);
       setIsUpload(true);
-
-      setIsOpenModal(true);
-      setModalComment(response.result.mathTypeDto.type_name);
     } catch (error) {
       alert("지원되지 않는 수학 문제 유형이야. 히히 미안해!");
       return;
@@ -144,19 +135,6 @@ export const UploadPage: React.FC = () => {
       >
         풀이 선택 하기
       </Button>
-      <TypeCheckModal
-        isOpenModal={isOpenModal}
-        contentString={modalComment}
-        onTypeChecked={() => {
-          setIsOpenModal(false);
-          navigateToNextPage();
-        }}
-        onTypeWrong={() => {
-          setIsOpenModal(false);
-          setIsUpload(false); //업로드 버튼 취소
-          toast.error("어라.. 그러면 다시 업로드 해보세요!");
-        }}
-      />
     </div>
   );
 };
