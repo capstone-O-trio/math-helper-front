@@ -37,7 +37,8 @@ export const useCompareAppleTemplate = ({
     entityList.entity1, // 왼쪽 엔티티들
     entityList.entity2, // 오른쪽 엔티티들
     entityList.entity1, // 왼쪽 엔티티들
-    entityList.entity2
+    entityList.entity2,
+    entityList.object_type
   );
 
   const buttonObjects = getButtonObjects(); // 버튼 불러오기
@@ -247,12 +248,16 @@ function getCompareAppleTemplateObjects(
   entity1: number,
   entity2: number,
   leftTotalNum: number,
-  rightTotalNum: number
+  rightTotalNum: number,
+  entity_type: string
 ): Obj[] {
   const objectsInfo: Obj[] = [];
 
-  const objImage1 = "/asset/사과.png";
-  const objImage2 = "/asset/사과.png";
+  let objImage1 = "/asset/apple.png"; // 객체로 넣을 이미지
+  if (entity_type === "apple")
+    objImage1 = "/asset/apple.png";
+  else if (entity_type !== null)
+    objImage1 = `/asset/${entity_type}.png`
 
   //말하는 새 객체
   objectsInfo.push({
@@ -363,7 +368,7 @@ function getCompareAppleTemplateObjects(
       id: `right-apple-${i + 1}`,
       x,
       y,
-      src: objImage2,
+      src: objImage1,
       isObj: true,
       value: null,
       width: obj_width,

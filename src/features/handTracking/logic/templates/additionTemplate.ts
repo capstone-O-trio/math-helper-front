@@ -130,14 +130,14 @@ function getAdditionTemplateObjects(
   // 항상 모든 템플릿을 생성하기 때문에, null로 넘기는 경우가 있을 수 있음
   if (entity1 === null || entity2 === null) return objectsInfo;
 
-  let objImage1 = "/asset/사과.png"; // 객체로 넣을 이미지
-  let objImage2 = "/asset/사과.png"; // 객체로 넣을 이미지
+  let objImage1 = "/asset/apple.png"; // 객체로 넣을 이미지
+  let objImage2 = "/asset/apple.png"; // 객체로 넣을 이미지
   if (entity1.kind === "apple")
     // 현재는 사과 이미지만 가능
-    objImage1 = "/asset/사과.png";
+    objImage1 = "/asset/apple.png";
   if (entity2.kind === "apple")
     // 현재는 사과 이미지만 가능
-    objImage2 = "/asset/사과.png";
+    objImage2 = "/asset/apple.png";
 
   // 배치 기준 (화면 크기 가정)
   const baseY = 450; // 세로 중앙

@@ -186,8 +186,8 @@ function getDisappearTemplateObjects(
 
   if (entityList === null) return objectsInfo;
 
-  let objImage1 = "/asset/사과.png"; // 객체로 넣을 이미지
-  if (entityList.entity_type === "apple") objImage1 = "/asset/사과.png";
+  let objImage1 = "/asset/apple.png"; // 객체로 넣을 이미지
+  if (entityList.entity_type === "apple") objImage1 = "/asset/apple.png";
 
   //window
   objectsInfo.push({
