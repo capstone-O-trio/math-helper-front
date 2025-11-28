@@ -8,8 +8,9 @@ export const OnboardingPage: React.FC = () => {
   const naviagate = useNavigate();
   return (
     <>
-      <div className="w-full h-full flex items-center justify-center">
-        <Heading>쏙수학</Heading>
+      <div className="h-full pb-5 flex flex-col gap-2 items-center justify-center">
+        <img src="/asset/Logo/logo.png" alt="Logo"/>
+        <Heading className="h-12">쏙수학</Heading>
       </div>
       <div className="absolute bottom-8 right-10 flex flex-col gap-1 w-[12rem]">
         <Button
