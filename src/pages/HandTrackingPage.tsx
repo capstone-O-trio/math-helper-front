@@ -10,6 +10,7 @@ import { useRecoilValue } from "recoil";
 import { mathTemplateState } from "store/mathTemplateState";
 import { ClimbingBoxLoader } from "react-spinners";
 import { Text } from "components/common/Text";
+import { safeParse } from "utils/safeParser";
 
 export const HandTrackingPage: React.FC = () => {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ export const HandTrackingPage: React.FC = () => {
       if (type !== "solve") return;
       try {
         const response = await postTemplateParam(mathId, templateId);
-        const jsonResponse = JSON.parse(response.result.deploy);
+        let jsonResponse = safeParse(response.result.deploy);
         setEntityList(jsonResponse);
       } catch (error) {
         alert(error);
