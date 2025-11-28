@@ -1,5 +1,6 @@
 import { Text } from "components/common/Text";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { useSetRecoilState } from "recoil";
 import { mathTemplateState } from "store/mathTemplateState";
 import { templateInfoType } from "type/type";
@@ -21,7 +22,13 @@ export const TemplateCard = ({ temInfo, mathId }: TemplatePropsType) => {
 
   return (
     <button
-      onClick={handleClickTemplate}
+      onClick={
+        temInfo.isPossible
+          ? handleClickTemplate
+          : () => {
+              toast("준비중인 템플릿입니다!");
+            }
+      }
       className="relative w-full max-w-xs min-w-min h-64 shadow-md rounded-3xl flex flex-col justify-center items-center gap-3"
     >
       <img src={temInfo.templateImage} alt="template img" className="w-[80%]" />
