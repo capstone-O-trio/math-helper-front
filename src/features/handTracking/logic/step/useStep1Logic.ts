@@ -32,7 +32,7 @@ export const useStep1Logic = ({
 
   // 필요한 템플릿만 반환 (조건부 반환은 OK)
   if (templateId === 1) {
-    templatesResult = useAppleAdditionTemplate({
+    templatesResult = useAdditionTemplate({
       entityList,
       canvasRef,
       camRatioRef,
@@ -66,6 +66,13 @@ export const useStep1Logic = ({
       camRatioRef,
       navigate,
     });
+  } else if (templateId === 1) {
+    templatesResult = useAppleAdditionTemplate({
+      entityList,
+      canvasRef,
+      camRatioRef,
+      navigate,
+    });
   } else if (templateId === 11) {
     templatesResult = useWaterComparisonTemplate({
       entityList,
@@ -87,7 +94,7 @@ export function getButtonObjects(): Obj[] {
 
   // 되돌아가기 버튼
   objectsInfo.push({
-    id: "button-back",
+    id: "button-back-from-solve",
     x: 100,
     y: 100,
     src: "/asset/button/button-back.png",
