@@ -4,7 +4,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Obj } from "../../types/objectTypes";
-import { probEntityType } from "../../types/problemTypes";
+// import { probEntityType } from "../../types/problemTypes";
 import { isInDropZone } from "../../utils/solveProblem";
 import { HandleHandActions } from "../../utils/HandleHandActions";
 // import { drawDropZone } from "../../utils/draw";
@@ -35,8 +35,8 @@ export const useAppletakeoutTemplate = ({
   /* 필요한 객체 */
   const baseObjects = getAppletakeoutTemplateObjects(
     // 템플릿에 필요한 객체 가져오기
-    entityList.entity1 ?? null, // 나무에 있는 엔티티들
-    entityList.entity1?.count ?? 0, // 나무에 있는 객체의 개수
+    entityList.entity_type,
+    entityList.entity1 ?? null, // 나무에 있는 엔티티들 개수
     0
   );
 
@@ -154,7 +154,7 @@ export const useAppletakeoutTemplate = ({
 
 /* 1600 x 900을 기준으로 배치 */
 function getAppletakeoutTemplateObjects(
-  entity1: probEntityType,
+  entity_type: string,
   treeTotalNumber: number,
   boxTotalNumber: number
 ): Obj[] {
@@ -163,13 +163,11 @@ function getAppletakeoutTemplateObjects(
     // 처음엔 아무것도 없음
   ];
 
-  // 항상 모든 템플릿을 생성하기 때문에, null로 넘기는 경우가 있을 수 있음
-  if (entity1 === null) return objectsInfo;
-
-  let objImage1 = "/asset/사과.png"; // 객체로 넣을 이미지
-  if (entity1.kind === "apple")
-    // 현재는 사과 이미지만 가능
-    objImage1 = "/asset/사과.png";
+  let objImage1 = "/asset/apple.png"; // 객체로 넣을 이미지
+  if (entity_type === "apple")
+    objImage1 = "/asset/apple.png";
+  else if (entity_type !== null)
+    objImage1 = `/asset/${entity_type}.png`
 
   // 나무
   objectsInfo.push({
@@ -203,7 +201,7 @@ function getAppletakeoutTemplateObjects(
   const yTop = yMiddle - 100; // 위쪽 행 y좌표
   const yBottom = yMiddle + 40; // 아래쪽 행 y좌표
 
-  const count = entity1.count;
+  const count = treeTotalNumber;
   const half = Math.ceil(count / 2); // 반 나누기
   const xOffset = 100; // 중앙에서 양쪽으로 퍼질 거리 단위
 

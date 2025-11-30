@@ -5,7 +5,6 @@
 
 import { useCompareAppleTemplate } from "features/handTracking/logic/templates/compareAppleTemplate";
 import { useDisappearTemplate } from "features/handTracking/logic/templates/disappearTemplate";
-import { useAdditionTemplate } from "../templates/additionTemplate";
 import { useAppletakeoutTemplate } from "../templates/appletakeoutTemplate";
 import { useWaterComparisonTemplate } from "../templates/waterComparisonTemplate";
 import { useAppleAdditionTemplate } from "../templates/appleAdditionTemplate";
@@ -33,7 +32,7 @@ export const useStep1Logic = ({
 
   // 필요한 템플릿만 반환 (조건부 반환은 OK)
   if (templateId === 1) {
-    templatesResult = useAdditionTemplate({
+    templatesResult = useAppleAdditionTemplate({
       entityList,
       canvasRef,
       camRatioRef,

@@ -25,19 +25,19 @@ const right_dw = 400;
 const right_dh = 300;
 
 export const useCompareAppleTemplate = ({
-  entityList, // {entity1: number, entity2: number, object_type: 'apple'}
+  entityList, // {entity1: number, entity2: number, entity_type: 'apple'}
   canvasRef,
   camRatioRef,
-  navigate
+  navigate,
 }: any) => {
-  
   /* 필요한 객체 */
   const baseObjects = getCompareAppleTemplateObjects(
     // 템플릿에 필요한 객체 가져오기
     entityList.entity1, // 왼쪽 엔티티들
     entityList.entity2, // 오른쪽 엔티티들
     entityList.entity1, // 왼쪽 엔티티들
-    entityList.entity2
+    entityList.entity2,
+    entityList.entity_type
   );
 
   const buttonObjects = getButtonObjects(); // 버튼 불러오기
@@ -53,7 +53,6 @@ export const useCompareAppleTemplate = ({
 
   /* 초기 드롭존 표시 */
   useEffect(() => {
-
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -247,12 +246,15 @@ function getCompareAppleTemplateObjects(
   entity1: number,
   entity2: number,
   leftTotalNum: number,
-  rightTotalNum: number
+  rightTotalNum: number,
+  entity_type: string
 ): Obj[] {
   const objectsInfo: Obj[] = [];
 
-  const objImage1 = "/asset/사과.png";
-  const objImage2 = "/asset/사과.png";
+  let objImage1 = "/asset/apple.png"; // 객체로 넣을 이미지
+  console.log(entity_type);
+  
+  if (entity_type !== null) objImage1 = `/asset/${entity_type}.png`;
 
   //말하는 새 객체
   objectsInfo.push({
@@ -363,7 +365,7 @@ function getCompareAppleTemplateObjects(
       id: `right-apple-${i + 1}`,
       x,
       y,
-      src: objImage2,
+      src: objImage1,
       isObj: true,
       value: null,
       width: obj_width,
