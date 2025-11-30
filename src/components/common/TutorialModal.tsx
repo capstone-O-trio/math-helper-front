@@ -1,4 +1,5 @@
 import { Button } from "components/common/Button";
+import { Text } from "components/common/Text";
 import Modal from "react-modal";
 
 type MODAL_PROPS = {
@@ -18,8 +19,8 @@ const customModalStyles: ReactModal.Styles = {
     left: "0",
   },
   content: {
-    width: "360px",
-    height: "250px",
+    width: "750px", 
+    height: "500px",
     zIndex: "150",
     position: "absolute",
     top: "50%",
@@ -43,11 +44,12 @@ export const TutorialModal = (modalProps: MODAL_PROPS) => (
     className=" p-4 flex flex-col gap-3"
   >
     <div className=" flex flex-col items-center justify-center">
-      <img src={`/asset/tutorial/tem${modalProps.templateId}.gif`} alt="tutorial" />
+      <img src={`/asset/tutorial/tem${modalProps.templateId}.gif`} alt="tutorial" className="w-full"/>
     </div>
 
     <div className="flex justify-center items-center w-full gap-2">
-      <Button className=" font-normal text-lg" onClick={modalProps.onClose}>{"닫기"}</Button>
+      <Text>{"5초 후에 튜토리얼이 닫힙니다."}</Text>
+      <Button className=" font-normal text-lg w-20" onClick={modalProps.onClose}>{"닫기"}</Button>
     </div>
   </Modal>
 );
