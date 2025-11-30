@@ -34,18 +34,33 @@ export const useStep2Logic = ({
   const selectAnswerRef = useRef<number | null>(null);
   const [selectAnswer, setSelectAnswer] = useState<number | null>(null);
 
+  // 정답
+  let choiceAnswer = isNaN(Number(answer)) ? 1 : Number(answer);
+
   const [objects, setObjects] = useState<Obj[]>([]);
   useEffect(() => {
     if (!probImage) return;
 
     // 선택지 추가
+    let count = 1;
     const choiceOptions: number[] = [];
-    choiceOptions.push(Number(answer));
+    choiceOptions.push(choiceAnswer);
     for (const wrong of wrongList) {
-      choiceOptions.push(Number(wrong));
+      count += 1;
+      choiceOptions.push(
+        isNaN(Number(wrong)) ? count : Number(wrong)
+      );
     }
-    setObjects(getStep2ObjectsInfo(probImage, choiceOptions));
-  }, [answer, probImage, wrongList]);
+
+    // 선택지 이미지 추가
+    const choiceImages: string[] = [];
+    choiceImages.push(answer);
+    for (const wrong of wrongList) {
+      choiceImages.push(wrong);
+    }
+
+    setObjects(getStep2ObjectsInfo(probImage, choiceOptions, choiceImages));
+  }, [answer, choiceAnswer, probImage, wrongList]);
 
   const objectsRef = useRef(objects);
 
@@ -79,7 +94,7 @@ export const useStep2Logic = ({
         if (obj.id === "mention") {
           let mention_image = "/asset/check-answer/init-mention.png";
           if (selectAnswer) {
-            if (selectAnswer === Number(answer))
+            if (selectAnswer === choiceAnswer)
               mention_image = "/asset/check-answer/correct-mention.png";
             else mention_image = "/asset/check-answer/incorrect-mention.png";
           }
@@ -93,7 +108,7 @@ export const useStep2Logic = ({
         if (obj.id === "bear") {
           let bear_image = "/asset/check-answer/init-bear.png";
           if (selectAnswer) {
-            if (selectAnswer === Number(answer))
+            if (selectAnswer === choiceAnswer)
               bear_image = "/asset/check-answer/correct-bear.png";
             else bear_image = "/asset/check-answer/incorrect-bear.png";
           }
@@ -107,7 +122,7 @@ export const useStep2Logic = ({
         return obj;
       })
     );
-  }, [answer, selectAnswer, selectAnswerRef]);
+  }, [answer, choiceAnswer, selectAnswer, selectAnswerRef]);
 
   /* Mediapipe 관련 로직 */
   function onResults(results: any) {
@@ -146,7 +161,8 @@ export const useStep2Logic = ({
 /* 1600 x 900을 기준으로 배치 */
 export function getStep2ObjectsInfo(
   prob_image: string,
-  choiceOptions: number[]
+  choiceOptions: number[],
+  choiceImages: string[]
 ): Obj[] {
   const answerInfo: Obj[] = [
     // 정답 맞추기 위한 객체
@@ -239,6 +255,7 @@ export function getStep2ObjectsInfo(
 
   const choices: number[] = choiceOptions;
   choices.sort(); // 오름차순으로 정렬
+  choiceImages.sort() // 오름차순으로 정렬
 
   const start_x = 200;
   let gap = 200;
@@ -249,7 +266,7 @@ export function getStep2ObjectsInfo(
     id: "choice1",
     x: start_x,
     y: 650,
-    src: `/asset/check-answer/card/${choices[0]}.png`,
+    src: `/asset/check-answer/card/${choiceImages[0]}.png`,
     isObj: true, // 객체임
     value: choices[0],
     width: card_width,
@@ -261,7 +278,7 @@ export function getStep2ObjectsInfo(
     id: "choice2",
     x: start_x + gap,
     y: 650,
-    src: `/asset/check-answer/card/${choices[1]}.png`,
+    src: `/asset/check-answer/card/${choiceImages[1]}.png`,
     isObj: true, // 객체임
     value: choices[1],
     width: card_width,
@@ -274,7 +291,7 @@ export function getStep2ObjectsInfo(
       id: "choice3",
       x: start_x + gap + gap,
       y: 650,
-      src: `/asset/check-answer/card/${choices[2]}.png`,
+      src: `/asset/check-answer/card/${choiceImages[2]}.png`,
       isObj: true, // 객체임
       value: choices[2],
       width: card_width,
