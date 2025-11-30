@@ -166,9 +166,11 @@ function getAppletakeoutTemplateObjects(
     // 처음엔 아무것도 없음
   ];
 
-  let objImage1 = "/asset/사과.png"; // 객체로 넣을 이미지
-  if (entity_type === "apple") objImage1 = "/asset/사과.png";
-  else if (entity_type !== null) objImage1 = `/asset/${entity_type}.png`;
+  let objImage1 = "/asset/apple.png"; // 객체로 넣을 이미지
+  if (entity_type === "apple")
+    objImage1 = "/asset/apple.png";
+  else if (entity_type !== null)
+    objImage1 = `/asset/${entity_type}.png`
 
   // 나무
   objectsInfo.push({
