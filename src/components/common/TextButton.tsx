@@ -6,13 +6,14 @@ interface TextButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 export const TextButton: React.FC<TextButtonProps> = ({
   children,
-  className = "",
+  className,
   ...rest
 }) => {
   return (
+    
     <button
       type="button"
-      className="flex items-center justify-center w-full text-green-f underline hover:text-green-d  duration-300 "
+      className={`flex items-center justify-center text-green-f underline hover:text-green-d duration-300 ${className}`}
       {...rest}
     >
       {children}
