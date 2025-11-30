@@ -36,14 +36,11 @@ export function waterComparisonAction(
     ratio: number,
     dispW: number,
     dispH: number,
-    mathProbInfo: any,
-    selectAnswer: null | number,
     setObjects: React.Dispatch<
         React.SetStateAction<WaterComparision.SceneObject[]>
     >,
-    setStep: (step: number) => void,
-    setComment: (msg: string) => void,
-    navigate: (path: string) => void
+    navigate: (path: string) => void,
+    onOpenModal?: () => void
 ) {
     const hands = results.multiHandLandmarks || [];
     if (!hands.length) {
@@ -166,6 +163,12 @@ export function waterComparisonAction(
                                 if (selectedButtonId === "button-home") {
                                     // '다른 문제 풀러 가기 버튼'을 누르다가 뗀 경우
                                     navigate("/upload"); // 이동
+                                }
+                                if (selectedButtonId === "button-gesture-info") {
+                                    // '제스처 알아보기 버튼'
+                                    if (onOpenModal) {
+                                        onOpenModal();
+                                    }
                                 }
                                 if (selectedButtonId === "reset_1") {
                                     const cupB = prev.find((obj) => obj.kind === "cupB");

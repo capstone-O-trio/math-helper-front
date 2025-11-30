@@ -5,6 +5,7 @@ import { HandRenderer } from "features/handTracking/components/HandRenderer";
 import { OBJ_RESULT_TYPE } from "features/handTracking/types/objectTypes";
 import { useStep1Logic } from "features/handTracking/logic/step/useStep1Logic";
 import { WaterComparisonRenderer } from "features/handTracking/components/WaterComparisonRenderer";
+import TutorialModal from "components/common/TutorialModal";
 
 interface SolveTemContentProps {
   templateId: number;
@@ -20,6 +21,17 @@ export const SolveTemContent = ({
   const camRatioRef = useRef(1);
   const [camRatio, setCamRatio] = useState(1);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleOpenModal = useCallback(() => {
+    // 이미 열려있지 않을 때만 실행 (중복 실행 방지)
+    if (!isModalOpen) {
+      setIsModalOpen(true);
+      setTimeout(() => {
+        setIsModalOpen(false);
+      }, 5000);
+    }
+  }, [isModalOpen]);
+
   let objResults: OBJ_RESULT_TYPE = {
     objects: [],
     onResults: () => {},
@@ -30,6 +42,7 @@ export const SolveTemContent = ({
     entityList,
     canvasRef,
     camRatioRef,
+    onOpenModal: handleOpenModal,
   });
   objResults = step1Result;
 
@@ -78,6 +91,11 @@ export const SolveTemContent = ({
           />
         )}
       </div>
+      <TutorialModal
+        isOpenModal={isModalOpen}
+        templateId={templateId}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };
