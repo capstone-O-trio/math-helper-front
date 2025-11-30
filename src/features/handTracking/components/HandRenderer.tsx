@@ -35,6 +35,9 @@ export const HandRenderer = ({ objects, camRatio, canvasRef }: any) => (
                     zIndex: 3,
                 }}
                 crossOrigin="anonymous"
+                onError={(e) => {
+                    e.currentTarget.src = "/asset/berry.png";
+                }}
             />
         ))}
     </>
