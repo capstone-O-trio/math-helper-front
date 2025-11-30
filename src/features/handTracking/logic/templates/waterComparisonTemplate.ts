@@ -6,13 +6,10 @@ import { getButtonObjects } from "../step/useStep1Logic";
 
 export const useWaterComparisonTemplate = ({
     entityList,
-    mathProbInfo,
     canvasRef,
     camRatioRef,
-    setStep,
-    setComment,
-    selectAnswer,
     navigate,
+    onOpenModal
 }: any) => {
     const entitiesRef = useRef(entityList as { cups: WaterComparision.Entity[] });
 
@@ -46,12 +43,9 @@ export const useWaterComparisonTemplate = ({
             ratio,
             dispW,
             dispH,
-            mathProbInfo,
-            selectAnswer,
             setObjects,
-            setStep,
-            setComment,
-            navigate
+            navigate,
+            onOpenModal
         );
 
         // 떨어지는 물 draw.

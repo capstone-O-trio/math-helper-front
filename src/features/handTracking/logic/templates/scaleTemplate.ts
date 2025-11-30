@@ -32,7 +32,8 @@ export const useScaleTemplate = ({
   entityList, // "{ \"entityList\": [ { \"kind\": \"lion\", \"weight\": 190 }, { \"kind\": \"rabbit\", \"weight\": 1 }, { \"kind\": \"mouse\", \"weight\": 0.3 } ] }”
   canvasRef,
   camRatioRef,
-  navigate
+  navigate,
+  onOpenModal,
 }: any) => {
   /* 필요한 객체 */
   const { objectsInfo, objWeightInfo } = getScaleTemplateObjects(
@@ -209,7 +210,9 @@ export const useScaleTemplate = ({
       dispW,
       dispH,
       setObjects,
-      navigate
+      navigate,
+      objectsRef,
+      onOpenModal
     );
   }
 

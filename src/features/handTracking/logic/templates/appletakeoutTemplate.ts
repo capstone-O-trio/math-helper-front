@@ -31,6 +31,7 @@ export const useAppletakeoutTemplate = ({
   canvasRef,
   camRatioRef,
   navigate,
+  onOpenModal,
 }: any) => {
   /* 필요한 객체 */
   const baseObjects = getAppletakeoutTemplateObjects(
@@ -145,7 +146,9 @@ export const useAppletakeoutTemplate = ({
       dispW,
       dispH,
       setObjects,
-      navigate
+      navigate,
+      objectsRef,
+      onOpenModal
     );
   }
 
@@ -164,10 +167,8 @@ function getAppletakeoutTemplateObjects(
   ];
 
   let objImage1 = "/asset/사과.png"; // 객체로 넣을 이미지
-  if (entity_type === "apple")
-    objImage1 = "/asset/사과.png";
-  else if (entity_type !== null)
-    objImage1 = `/asset/${entity_type}.png`
+  if (entity_type === "apple") objImage1 = "/asset/사과.png";
+  else if (entity_type !== null) objImage1 = `/asset/${entity_type}.png`;
 
   // 나무
   objectsInfo.push({

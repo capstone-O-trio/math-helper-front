@@ -30,6 +30,7 @@ export const useAppleAdditionTemplate = ({
   canvasRef,
   camRatioRef,
   navigate,
+  onOpenModal,
 }: any) => {
   /* 필요한 객체 */
   // entityList에서 필요한 정보 추출 ({entity1: number, entity2: number, object_type: 'apple'})
@@ -104,7 +105,7 @@ export const useAppleAdditionTemplate = ({
 
     // 드롭존 다시 그리기
     // drawYardDropZone 등의 함수가 필요하다면 여기서 호출 (현재 주석처리됨)
-    
+
     // 드롭존 안 객체가 추가될 때 총합 숫자 변경
     let newTotalNum = 0; // 객체의 총 갯수
     objectsRef.current.forEach(({ x, y, isObj }) => {
@@ -125,7 +126,9 @@ export const useAppleAdditionTemplate = ({
       dispW,
       dispH,
       setObjects,
-      navigate
+      navigate,
+      objectsRef,
+      onOpenModal
     );
   }
 
@@ -142,7 +145,7 @@ function getAdditionTemplateObjects(
   const objectsInfo: Obj[] = [];
 
   // 갯수가 유효하지 않으면 빈 배열 반환 가능
-  // if (count1 === 0 && count2 === 0) return objectsInfo; 
+  // if (count1 === 0 && count2 === 0) return objectsInfo;
 
   let objImage1 = "/asset/apple2.png"; // 기본 이미지
   let objImage2 = "/asset/apple2.png"; // 기본 이미지

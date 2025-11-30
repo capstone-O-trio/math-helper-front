@@ -28,9 +28,9 @@ export const useCompareAppleTemplate = ({
   entityList, // {entity1: number, entity2: number, object_type: 'apple'}
   canvasRef,
   camRatioRef,
-  navigate
+  navigate,
+  onOpenModal,
 }: any) => {
-  
   /* 필요한 객체 */
   const baseObjects = getCompareAppleTemplateObjects(
     // 템플릿에 필요한 객체 가져오기
@@ -53,7 +53,6 @@ export const useCompareAppleTemplate = ({
 
   /* 초기 드롭존 표시 */
   useEffect(() => {
-
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -217,7 +216,17 @@ export const useCompareAppleTemplate = ({
     leftTotalNumRef.current = newLeftTotalNum;
     rightTotalNumRef.current = newRightTotalNum;
 
-    HandleHandActions(results, ctx, ratio, dispW, dispH, setObjects, navigate);
+    HandleHandActions(
+      results,
+      ctx,
+      ratio,
+      dispW,
+      dispH,
+      setObjects,
+      navigate,
+      objectsRef,
+      onOpenModal
+    );
   }
 
   return { objects, onResults };
