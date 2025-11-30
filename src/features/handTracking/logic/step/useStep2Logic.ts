@@ -4,9 +4,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Obj } from "../../types/objectTypes";
-import { isInDropZone, makeChoicesOptions } from "../../utils/solveProblem";
+import { isInDropZone } from "../../utils/solveProblem";
 import { HandleHandActions } from "../../utils/HandleHandActions";
-import { drawDropZone } from "../../utils/draw";
+// import { drawDropZone } from "../../utils/draw";
 import { useNavigate } from "react-router-dom";
 
 // 선택지 카드 크기
@@ -38,21 +38,25 @@ export const useStep2Logic = ({
   useEffect(() => {
     if (!probImage) return;
 
-    // 원래 10이 아니라 실제 정답이 들어가야하는데 지금 string값이라 임시로 10넣음
-    const choiceOptions: number[] = makeChoicesOptions(10);
+    // 선택지 추가
+    const choiceOptions: number[] = [];
+    choiceOptions.push(Number(answer));
+    for (const wrong of wrongList) {
+      choiceOptions.push(Number(wrong));
+    }
     setObjects(getStep2ObjectsInfo(probImage, choiceOptions));
-  }, [probImage]);
+  }, [answer, probImage, wrongList]);
 
   const objectsRef = useRef(objects);
 
-  /* 초기 드롭존 표시 */
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    drawDropZone(ctx, camRatioRef.current, dx, dy, dw, dh);
-  }, [camRatioRef, canvasRef]);
+  // /* 초기 드롭존 표시 */
+  // useEffect(() => {
+  //   const canvas = canvasRef.current;
+  //   if (!canvas) return;
+  //   const ctx = canvas.getContext("2d");
+  //   if (!ctx) return;
+  //   drawDropZone(ctx, camRatioRef.current, dx, dy, dw, dh);
+  // }, [camRatioRef, canvasRef]);
 
   /* 템플릿 로직 */
   // object 변경되면 업데이트
@@ -75,7 +79,7 @@ export const useStep2Logic = ({
         if (obj.id === "mention") {
           let mention_image = "/asset/check-answer/init-mention.png";
           if (selectAnswer) {
-            if (selectAnswer === answer)
+            if (selectAnswer === Number(answer))
               mention_image = "/asset/check-answer/correct-mention.png";
             else mention_image = "/asset/check-answer/incorrect-mention.png";
           }
@@ -89,7 +93,7 @@ export const useStep2Logic = ({
         if (obj.id === "bear") {
           let bear_image = "/asset/check-answer/init-bear.png";
           if (selectAnswer) {
-            if (selectAnswer === answer)
+            if (selectAnswer === Number(answer))
               bear_image = "/asset/check-answer/correct-bear.png";
             else bear_image = "/asset/check-answer/incorrect-bear.png";
           }
@@ -120,7 +124,7 @@ export const useStep2Logic = ({
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // 드롭존 다시 그리기
-    drawDropZone(ctx, camRatioRef.current, dx, dy, dw, dh);
+    // drawDropZone(ctx, camRatioRef.current, dx, dy, dw, dh);
 
     // 드롭존 안에 선택지가 있는지 확인
     setSelectAnswer(null);
@@ -149,10 +153,22 @@ export function getStep2ObjectsInfo(
     // 처음엔 아무것도 없음
   ];
 
+  // 되돌아가기 버튼
+  answerInfo.push({
+    id: "button-back-from-check",
+    x: 100,
+    y: 100,
+    src: "/asset/button/button-back.png",
+    isObj: false, // 객체 아님
+    value: 1, // 버튼
+    width: button_width,
+    height: button_height,
+  });
+
   // 다른 문제 풀러가기 버튼
   answerInfo.push({
     id: "button-home",
-    x: 100,
+    x: 1500,
     y: 100,
     src: "/asset/button/button-home.png",
     isObj: false, // 객체 아님
@@ -224,10 +240,14 @@ export function getStep2ObjectsInfo(
   const choices: number[] = choiceOptions;
   choices.sort(); // 오름차순으로 정렬
 
+  const start_x = 200;
+  let gap = 200;
+  if (choices.length < 3) gap = 400;
+
   // 선택지 1
   answerInfo.push({
     id: "choice1",
-    x: 200,
+    x: start_x,
     y: 650,
     src: `/asset/check-answer/card/${choices[0]}.png`,
     isObj: true, // 객체임
@@ -239,7 +259,7 @@ export function getStep2ObjectsInfo(
   // 선택지 2
   answerInfo.push({
     id: "choice2",
-    x: 400,
+    x: start_x + gap,
     y: 650,
     src: `/asset/check-answer/card/${choices[1]}.png`,
     isObj: true, // 객체임
@@ -249,16 +269,18 @@ export function getStep2ObjectsInfo(
   });
 
   // 선택지 3
-  answerInfo.push({
-    id: "choice3",
-    x: 600,
-    y: 650,
-    src: `/asset/check-answer/card/${choices[2]}.png`,
-    isObj: true, // 객체임
-    value: choices[2],
-    width: card_width,
-    height: card_height,
-  });
+  if (choices.length >= 3) {
+    answerInfo.push({
+      id: "choice3",
+      x: start_x + gap + gap,
+      y: 650,
+      src: `/asset/check-answer/card/${choices[2]}.png`,
+      isObj: true, // 객체임
+      value: choices[2],
+      width: card_width,
+      height: card_height,
+    });
+  }
 
   return answerInfo;
 }
