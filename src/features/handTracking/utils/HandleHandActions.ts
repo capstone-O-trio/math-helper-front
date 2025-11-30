@@ -191,20 +191,20 @@ export const HandleHandActions = (
               if (selectedButtonId === obj.id) {
                 // 원래 버튼을 누르고 있었다가 뗀 경우
                 if (selectedButtonId === "button-next") {
-                  // '정답 맞추러 가기 버튼'을 누른 경우
+                  // '정답 맞추러 가기 버튼'을 누르다가 뗀 경우
+                  //setStep(2); // 다음 단계로
                   navigate("/hands-tracker/check"); // 정답 맞추기 페이지로 이동
                 }
-                if (selectedButtonId === "button-back-from-solve") {
-                  // 문제 풀어보기 화면에서 '되돌아가기 버튼'을 누른 경우
+                if (selectedButtonId === "button-check-answer") {
+                  // '정답인지 확인하기 버튼'을 누르다가 뗀 경우
+                }
+                if (selectedButtonId === "button-back") {
+                  // '되돌아가기 버튼'을 누르다가 뗀 경우
                   navigate("/select-template"); // 이동
                 }
                 if (selectedButtonId === "button-home") {
-                  // '다른 문제 풀러 가기 버튼'을 누른 경우
+                  // '다른 문제 풀러 가기 버튼'을 누르다가 뗀 경우
                   navigate("/upload"); // 이동
-                }
-                if (selectedButtonId === "button-back-from-check") {
-                  // 정답 맞추기 화면에서 '되돌아가기 버튼'을 누른 경우
-                  navigate("/hands-tracker/solve");
                 }
                 console.log(selectedButtonId)
                 selectedButtonId = null;
