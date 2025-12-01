@@ -171,8 +171,6 @@ export function getStep2ObjectsInfo(
     // 처음엔 아무것도 없음
   ];
 
-  console.log(choiceOptions, choiceImages)
-
   // 되돌아가기 버튼
   answerInfo.push({
     id: "button-back-from-check",
