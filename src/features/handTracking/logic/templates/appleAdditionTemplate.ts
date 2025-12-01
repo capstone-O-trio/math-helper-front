@@ -147,14 +147,15 @@ function getAdditionTemplateObjects(
   // 갯수가 유효하지 않으면 빈 배열 반환 가능
   // if (count1 === 0 && count2 === 0) return objectsInfo;
 
-  let objImage1 = "/asset/apple2.png"; // 기본 이미지
-  let objImage2 = "/asset/apple2.png"; // 기본 이미지
+  let objImage1 = "/asset/apple2.png"; //기본값
 
   if (kind === "apple") {
-    objImage1 = "/asset/apple2.png";
-    objImage2 = "/asset/apple2.png";
+    objImage1 = "/asset/apple2.png"; //'apple'인 경우 기존 이미지 유지
+  } else if (kind) {
+    objImage1 = `/asset/${kind}.png`;
   }
-  // 다른 종류(kind)가 추가될 경우 여기서 분기 처리
+  
+  let objImage2 = objImage1;
 
   // 배치 기준 (화면 크기 가정)
   const baseY = 450; // 세로 중앙
