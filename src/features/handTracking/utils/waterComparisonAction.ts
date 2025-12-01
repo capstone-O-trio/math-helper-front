@@ -159,7 +159,7 @@ export function waterComparisonAction(
                                     //setStep(2); // 다음 단계로
                                     navigate("/hands-tracker/check"); // 정답 맞추기 페이지로 이동
                                 }
-                                if (selectedButtonId === "button-back") {
+                                if (selectedButtonId === "button-back-from-solve") {
                                     // '되돌아가기 버튼'을 누르다가 뗀 경우
                                     navigate("/select-template"); // 이동
                                 }
