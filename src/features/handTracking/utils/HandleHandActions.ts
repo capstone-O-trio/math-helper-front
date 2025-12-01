@@ -38,7 +38,8 @@ export const HandleHandActions = (
   dispH: number,
   setObjects: React.Dispatch<React.SetStateAction<any[]>>,
   navigate: (path: string) => void,
-  objectsRef?: React.RefObject<Obj[]>
+  objectsRef?: React.RefObject<Obj[]>,
+  onOpenModal?: () => void
 ) => {
   const hands = results.multiHandLandmarks || [];
   if (!hands.length) {
@@ -199,12 +200,19 @@ export const HandleHandActions = (
                   navigate("/select-template"); // 이동
                 }
                 if (selectedButtonId === "button-home") {
-                  // '다른 문제 풀러 가기 버튼'을 누른 경우
+                  // 'home 버튼'을 누르다가 뗀 경우
                   navigate("/upload"); // 이동
                 }
                 if (selectedButtonId === "button-back-from-check") {
                   // 정답 맞추기 화면에서 '되돌아가기 버튼'을 누른 경우
                   navigate("/hands-tracker/solve");
+                }
+                console.log(selectedButtonId)
+                if (selectedButtonId === "button-gesture-info") {
+                  // '제스처 알아보기 버튼'
+                  if (onOpenModal) {
+                    onOpenModal();
+                  }
                 }
                 selectedButtonId = null;
               }

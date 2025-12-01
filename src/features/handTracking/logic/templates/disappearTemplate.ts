@@ -13,6 +13,7 @@ interface UseDisappearTemplateProps {
   canvasRef: React.RefObject<HTMLCanvasElement>;
   camRatioRef: React.RefObject<number>;
   navigate: (path: string) => void;
+  onOpenModal?: () => void;
 }
 
 // 기본 객체 크기
@@ -29,6 +30,7 @@ export const useDisappearTemplate = ({
   canvasRef,
   camRatioRef,
   navigate,
+  onOpenModal
 }: UseDisappearTemplateProps) => {
   const buttonObjects = getButtonObjects(); // 버튼 불러오기
   /* 필요한 객체 */
@@ -168,7 +170,8 @@ export const useDisappearTemplate = ({
       dispH,
       setObjects,
       navigate,
-      objectsRef
+      objectsRef,
+      onOpenModal
     );
   }
 

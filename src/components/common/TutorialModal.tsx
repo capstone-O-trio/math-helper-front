@@ -1,13 +1,11 @@
 import { Button } from "components/common/Button";
-import { Heading } from "components/common/Heading";
 import { Text } from "components/common/Text";
 import Modal from "react-modal";
 
 type MODAL_PROPS = {
   isOpenModal: boolean;
-  contentString: string;
-  onTypeChecked: () => void;
-  onTypeWrong: () => void;
+  templateId: number;
+  onClose: () => void;
 };
 
 const customModalStyles: ReactModal.Styles = {
@@ -15,14 +13,14 @@ const customModalStyles: ReactModal.Styles = {
     backgroundColor: " rgba(0, 0, 0, 0.4)",
     width: "100%",
     height: "100vh",
-    zIndex: "10",
+    zIndex: "100",
     position: "fixed",
     top: "0",
     left: "0",
   },
   content: {
-    width: "360px",
-    height: "250px",
+    width: "750px", 
+    height: "500px",
     zIndex: "150",
     position: "absolute",
     top: "50%",
@@ -36,26 +34,24 @@ const customModalStyles: ReactModal.Styles = {
   },
 };
 
-export const TypeCheckModal = (modalProps: MODAL_PROPS) => (
+export const TutorialModal = (modalProps: MODAL_PROPS) => (
   <Modal
     isOpen={modalProps.isOpenModal}
-    contentLabel="Type Checking Modal"
-    onRequestClose={modalProps.onTypeChecked}
+    contentLabel="TutorialModal"
+    onRequestClose={modalProps.onClose}
     style={customModalStyles}
     appElement={document.getElementById("root")!}
     className=" p-4 flex flex-col gap-3"
   >
     <div className=" flex flex-col items-center justify-center">
-      <Text>{"이 문제가 "}</Text>
-      <Heading className=" font-normal">{modalProps.contentString}</Heading>
-      <Text>{" 유형이 맞나요? "}</Text>
+      <img src={`/asset/tutorial/tem${modalProps.templateId}.gif`} alt="tutorial" className="w-full"/>
     </div>
 
     <div className="flex justify-center items-center w-full gap-2">
-      <Button className=" font-normal text-lg" onClick={modalProps.onTypeChecked}>{"맞아요!"}</Button>
-      <Button className=" font-normal text-lg" onClick={modalProps.onTypeWrong}>{"아니요ㅠ"}</Button>
+      <Text>{"5초 후에 튜토리얼이 닫힙니다."}</Text>
+      <Button className=" font-normal text-lg w-20" onClick={modalProps.onClose}>{"닫기"}</Button>
     </div>
   </Modal>
 );
 
-export default TypeCheckModal;
+export default TutorialModal;

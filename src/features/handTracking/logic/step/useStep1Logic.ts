@@ -21,58 +21,38 @@ export const useStep1Logic = ({
   entityList,
   canvasRef,
   camRatioRef,
+  onOpenModal,
 }: any): OBJ_RESULT_TYPE => {
   const navigate = useNavigate();
 
   // 템플릿 결과
   let templatesResult: OBJ_RESULT_TYPE = {
     objects: [],
-    onResults: () => { },
+    onResults: () => {},
+  };
+
+  // 공통 props
+  const commonProps = {
+    entityList,
+    canvasRef,
+    camRatioRef,
+    navigate,
+    onOpenModal,
   };
 
   // 필요한 템플릿만 반환 (조건부 반환은 OK)
   if (templateId === 1) {
-    templatesResult = useAppleAdditionTemplate({
-      entityList,
-      canvasRef,
-      camRatioRef,
-      navigate,
-    });
+    templatesResult = useAppleAdditionTemplate(commonProps);
   } else if (templateId === 2) {
-    templatesResult = useCompareAppleTemplate({
-      entityList,
-      canvasRef,
-      camRatioRef,
-      navigate,
-    });
+    templatesResult = useCompareAppleTemplate(commonProps);
   } else if (templateId === 8) {
-    templatesResult = useAppletakeoutTemplate({
-      entityList,
-      canvasRef,
-      camRatioRef,
-      navigate,
-    });
-  } else if (templateId === 10) {
-    templatesResult = useScaleTemplate({
-      entityList,
-      canvasRef,
-      camRatioRef,
-      navigate,
-    });
+    templatesResult = useAppletakeoutTemplate(commonProps);
   } else if (templateId === 9) {
-    templatesResult = useDisappearTemplate({
-      entityList,
-      canvasRef,
-      camRatioRef,
-      navigate,
-    });
+    templatesResult = useDisappearTemplate(commonProps);
+  } else if (templateId === 10) {
+    templatesResult = useScaleTemplate(commonProps);
   } else if (templateId === 11) {
-    templatesResult = useWaterComparisonTemplate({
-      entityList,
-      canvasRef,
-      camRatioRef,
-      navigate,
-    });
+    templatesResult = useWaterComparisonTemplate(commonProps);
   }
 
   return {

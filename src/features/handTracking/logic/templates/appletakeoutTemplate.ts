@@ -31,6 +31,7 @@ export const useAppletakeoutTemplate = ({
   canvasRef,
   camRatioRef,
   navigate,
+  onOpenModal,
 }: any) => {
   /* 필요한 객체 */
   const baseObjects = getAppletakeoutTemplateObjects(
@@ -145,7 +146,9 @@ export const useAppletakeoutTemplate = ({
       dispW,
       dispH,
       setObjects,
-      navigate
+      navigate,
+      objectsRef,
+      onOpenModal
     );
   }
 

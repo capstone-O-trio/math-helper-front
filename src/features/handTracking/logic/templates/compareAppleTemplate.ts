@@ -29,6 +29,7 @@ export const useCompareAppleTemplate = ({
   canvasRef,
   camRatioRef,
   navigate,
+  onOpenModal,
 }: any) => {
   /* 필요한 객체 */
   const baseObjects = getCompareAppleTemplateObjects(
@@ -216,7 +217,17 @@ export const useCompareAppleTemplate = ({
     leftTotalNumRef.current = newLeftTotalNum;
     rightTotalNumRef.current = newRightTotalNum;
 
-    HandleHandActions(results, ctx, ratio, dispW, dispH, setObjects, navigate);
+    HandleHandActions(
+      results,
+      ctx,
+      ratio,
+      dispW,
+      dispH,
+      setObjects,
+      navigate,
+      objectsRef,
+      onOpenModal
+    );
   }
 
   return { objects, onResults };
