@@ -66,13 +66,6 @@ export const useStep1Logic = ({
       camRatioRef,
       navigate,
     });
-  } else if (templateId === 1) {
-    templatesResult = useAppleAdditionTemplate({
-      entityList,
-      canvasRef,
-      camRatioRef,
-      navigate,
-    });
   } else if (templateId === 11) {
     templatesResult = useWaterComparisonTemplate({
       entityList,
