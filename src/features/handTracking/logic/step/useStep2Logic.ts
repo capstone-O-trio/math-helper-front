@@ -46,6 +46,7 @@ export const useStep2Logic = ({
     const choiceOptions: number[] = [];
     choiceOptions.push(choiceAnswer);
     for (const wrong of wrongList) {
+      if (!wrong) break;
       count += 1;
       choiceOptions.push(
         isNaN(Number(wrong)) ? count : Number(wrong)
