@@ -46,7 +46,7 @@ export const useStep2Logic = ({
     const choiceOptions: number[] = [];
     choiceOptions.push(choiceAnswer);
     for (const wrong of wrongList) {
-      if (!wrong) break;
+      if (!wrong) continue;
       count += 1;
       choiceOptions.push(
         isNaN(Number(wrong)) ? count : Number(wrong)
@@ -57,6 +57,7 @@ export const useStep2Logic = ({
     const choiceImages: string[] = [];
     choiceImages.push(answer);
     for (const wrong of wrongList) {
+      if (!wrong) continue;
       choiceImages.push(wrong);
     }
 
@@ -169,6 +170,8 @@ export function getStep2ObjectsInfo(
     // 정답 맞추기 위한 객체
     // 처음엔 아무것도 없음
   ];
+
+  console.log(choiceOptions, choiceImages)
 
   // 되돌아가기 버튼
   answerInfo.push({
