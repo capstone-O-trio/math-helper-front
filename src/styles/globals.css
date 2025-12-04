@@ -2,17 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: "Pretendard Standard";
-  src: "url('/font/subset-PretendardVariable.woff2') format('woff2'), url('/font/subset-PretendardVariable.woff') format('woff')";
-  font-style: "normal";
-  font-display: "swap";
-}
-
 html, body, #root {
   @apply w-full h-full;
+  font-family: "BabyShark", sans-serif;
 }
 
 body {
-  @apply font-pretendard;
+  @apply font-baby;
+}
+
+body {
+  font-family: "BabyShark", sans-serif;
 }
