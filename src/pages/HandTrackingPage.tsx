@@ -8,10 +8,11 @@ import { getMathResult } from "api/upload";
 import { MathProbSolveType } from "features/handTracking/types/problemTypes";
 import { useRecoilValue } from "recoil";
 import { mathTemplateState } from "store/mathTemplateState";
-import { ClimbingBoxLoader } from "react-spinners";
+import { GridLoader } from "react-spinners";
 import { Text } from "components/common/Text";
 import { safeParse } from "utils/safeParser";
 import { Heading } from "components/common/Heading";
+import { TemplateCard } from "components/selectTemplate/TemplateCard";
 
 export const HandTrackingPage: React.FC = () => {
   const navigate = useNavigate();
@@ -39,7 +40,10 @@ export const HandTrackingPage: React.FC = () => {
     async function getParams() {
       if (type !== "solve") return;
       try {
-        const response = await postTemplateParam(mathId, templateInfo.templateId);
+        const response = await postTemplateParam(
+          mathId,
+          templateInfo.templateId
+        );
         let jsonResponse = safeParse(response.result.deploy);
         setEntityList(jsonResponse);
       } catch (error) {
@@ -72,13 +76,19 @@ export const HandTrackingPage: React.FC = () => {
   if (!entityList) {
     return (
       <div className="flex flex-col h-full items-center justify-center gap-4">
-        <ClimbingBoxLoader
+        <GridLoader
           color="#84E1BC"
           loading
           size={25}
           speedMultiplier={1.5}
         />
-        <Text className=" font-normal">{"놀이터를 불러오고 있어!"}</Text>
+        <Text className=" font-normal mb-4">{"풀이 생성 중..."}</Text>
+        <TemplateCard
+          key={templateInfo.templateId}
+          temInfo={templateInfo}
+          mathId={mathId}
+          forDisplay={true}
+        />
       </div>
     );
   }
@@ -86,8 +96,13 @@ export const HandTrackingPage: React.FC = () => {
   if (type === "solve") {
     return (
       <div className="flex flex-col w-full h-full items-center">
-        <Heading className="h-[6rem]">{"아래 풀이로 문제를 풀어보자!"}</Heading>
-        <SolveTemContent templateId={templateInfo.templateId} entityList={entityList} />
+        <Heading className="max-h-[6rem]">
+          {"아래 풀이로 문제를 풀어보자!"}
+        </Heading>
+        <SolveTemContent
+          templateId={templateInfo.templateId}
+          entityList={entityList}
+        />
       </div>
     );
   } else if (type === "check") {

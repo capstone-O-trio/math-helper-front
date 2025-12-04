@@ -47,7 +47,7 @@ export const SelectingTemplatePage = () => {
         <Heading>{"풀이를 선택해봐요!"}</Heading>
       </div>
       <div className="flex flex-col gap-2 justify-center items-center">
-        <Text className="font-light max-w-[60%]">{typeScript}</Text>
+        <Text className=" font-thin max-w-[50%] whitespace-break-spaces text-center">{typeScript}</Text>
         <TextButton onClick={goBack}>{"이 유형이 아닌 것 같나요?!"}</TextButton>
       </div>
       <div className="mt-10 h-[80%] max-h-[80%] flex flex-col items-center overflow-auto gap-5 p-5">

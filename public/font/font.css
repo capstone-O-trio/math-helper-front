@@ -14,7 +14,7 @@
   font-family: "BabyShark";
   src: url("/font/baby-light.woff2") format("woff2"),
     url("/font/baby-light.woff") format("woff");
-  font-weight: 300;
+  font-weight: 100;
   font-style: normal;
   font-display: swap;
 }

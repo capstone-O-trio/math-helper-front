@@ -8,7 +8,7 @@ export const Text: React.FC<TextProps> = ({
   className = "",
   ...rest
 }) => {
-  const textStyle = "text-black text-2xl font-normal whitespace-nowrap";
+  const textStyle = "text-black text-2xl font-normal";
   return (
     <p className={`${textStyle} ${className}`} {...rest}>
       {children}
