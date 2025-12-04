@@ -76,12 +76,7 @@ export const HandTrackingPage: React.FC = () => {
   if (!entityList) {
     return (
       <div className="flex flex-col h-full items-center justify-center gap-4">
-        <GridLoader
-          color="#84E1BC"
-          loading
-          size={25}
-          speedMultiplier={1.5}
-        />
+        <GridLoader color="#84E1BC" loading size={25} speedMultiplier={1.5} />
         <Text className=" font-normal mb-4">{"풀이 생성 중..."}</Text>
         <TemplateCard
           key={templateInfo.templateId}
@@ -108,7 +103,9 @@ export const HandTrackingPage: React.FC = () => {
   } else if (type === "check") {
     return (
       <div className="flex flex-col w-full h-full justify-center items-center">
-        <Heading>{"이전 풀이를 바탕으로 정답을 맞춰보자!"}</Heading>
+        <Heading className="max-h-[6rem]">
+          {"이전 풀이를 바탕으로 정답을 맞춰보자!"}
+        </Heading>
         <CheckTemContent
           probImage={answerProps?.probImage}
           answer={answerProps?.answer}
