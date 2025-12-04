@@ -29,14 +29,14 @@ export const TemplateCard = ({ temInfo, mathId }: TemplatePropsType) => {
               toast("준비중인 템플릿입니다!");
             }
       }
-      className="relative w-full max-w-3xl min-w-min h-72 rounded-3xl flex border border-[#78DCA5] overflow-hidden hover:shadow-lg transition-shadow duration-300"
+      className="relative w-full max-w-3xl min-w-min min-h-72 rounded-3xl flex border border-[#78DCA5] overflow-hidden hover:shadow-lg transition-shadow duration-300"
     >
       <div className="flex justify-center items-center bg-[#78DCA5] rounded-3xl w-1/2">
         <img src={temInfo.templateImage} alt="template img" className="w-[80%]" />
       </div>
       <div className="flex flex-col justify-center items-start gap-3 pl-10 bg-white rounded-r-3xl w-1/2">      
-        <Text className="font-baby font-normal text-3xl">{temInfo.templateName}</Text>
-        <Text className="font-baby font-light truncate max-w-[70%]">{temInfo.templateScript}</Text>
+        <Text className="font-normal text-3xl">{temInfo.templateName}</Text>
+        <Text className="font-light truncate max-w-[70%]">{temInfo.templateScript}</Text>
       </div>
       {!temInfo.isPossible && (
         <div className="absolute inset-0 bg-[#E9E8EE]/50 rounded-3xl backdrop-blur-[1px] flex justify-center items-center">
