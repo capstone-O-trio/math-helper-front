@@ -4,6 +4,7 @@ export type probInfoType = {
   mathTypeDto: {
     problem: string;
     type_name: string;
+    script: string;
     answer: string;
     extractedImage: string;
   };
