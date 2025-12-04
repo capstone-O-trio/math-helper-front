@@ -16,6 +16,7 @@ const defaultList: templateInfoType[] = [
     templateName: "풀이 불가능!",
     isPossible: false,
     templateImage: "/asset/temExample.png",
+    templateScript: "이 템플릿은 준비중입니다준비중입니다준비중입니다준비중입니다준비중입니다!",
   },
 ];
 
