@@ -81,7 +81,7 @@ export const UploadPage: React.FC = () => {
   const setMathType = useSetRecoilState(mathTypeState);
   const navigateToNextPage = () => {
     if (uploadedProbInfo) {
-      setMathType({mathId: uploadedProbInfo.mathId, typeName: uploadedProbInfo.mathTypeDto.type_name, typeScript: uploadedProbInfo.mathTypeDto.script});
+      setMathType({mathId: uploadedProbInfo.mathId, typeName: uploadedProbInfo.mathTypeDto.type_name, typeScript: uploadedProbInfo.typeScript});
       navigate("/select-template");
     }
   };

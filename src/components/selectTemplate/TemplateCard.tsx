@@ -16,7 +16,7 @@ export const TemplateCard = ({ temInfo, mathId }: TemplatePropsType) => {
 
   const handleClickTemplate = () => {
     // Recoil 전역변수 -  선택한 템플릿 정보 저장
-    setMathTemplate({ mathId: mathId, templateId: temInfo.templateId });
+    setMathTemplate({ mathId: mathId, templateInfo: temInfo  });
     navigate("/hands-tracker/solve");
   };
 
@@ -34,9 +34,9 @@ export const TemplateCard = ({ temInfo, mathId }: TemplatePropsType) => {
       <div className="flex justify-center items-center bg-[#78DCA5] rounded-3xl w-1/2">
         <img src={temInfo.templateImage} alt="template img" className="w-[80%]" />
       </div>
-      <div className="flex flex-col justify-center items-start gap-3 pl-10 bg-white rounded-r-3xl w-1/2">      
+      <div className="flex flex-col justify-center items-start gap-3 pl-10 bg-white rounded-r-3xl w-1/2 ">      
         <Text className="font-normal text-3xl">{temInfo.templateName}</Text>
-        <Text className="font-light truncate max-w-[70%]">{temInfo.templateScript}</Text>
+        <Text className="font-light line-clamp-3">{temInfo.templateScript}</Text>
       </div>
       {!temInfo.isPossible && (
         <div className="absolute inset-0 bg-[#E9E8EE]/50 rounded-3xl backdrop-blur-[1px] flex justify-center items-center">
