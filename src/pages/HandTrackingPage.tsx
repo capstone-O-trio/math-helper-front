@@ -8,14 +8,16 @@ import { getMathResult } from "api/upload";
 import { MathProbSolveType } from "features/handTracking/types/problemTypes";
 import { useRecoilValue } from "recoil";
 import { mathTemplateState } from "store/mathTemplateState";
-import { ClimbingBoxLoader } from "react-spinners";
+import { GridLoader } from "react-spinners";
 import { Text } from "components/common/Text";
 import { safeParse } from "utils/safeParser";
+import { Heading } from "components/common/Heading";
+import { TemplateCard } from "components/selectTemplate/TemplateCard";
 
 export const HandTrackingPage: React.FC = () => {
   const navigate = useNavigate();
 
-  const { mathId, templateId } = useRecoilValue(mathTemplateState);
+  const { mathId, templateInfo } = useRecoilValue(mathTemplateState);
 
   //type = solve or check
   const type = useParams().type;
@@ -28,7 +30,7 @@ export const HandTrackingPage: React.FC = () => {
   });
 
   useEffect(() => {
-    if (mathId === 0 || templateId === 0) {
+    if (mathId === 0 || templateInfo.templateId === 0) {
       toast.error("템플릿을 불러오는데 에러가 발생했습니다. 다시 시도해주세요");
       navigate("/upload");
       return;
@@ -38,7 +40,10 @@ export const HandTrackingPage: React.FC = () => {
     async function getParams() {
       if (type !== "solve") return;
       try {
-        const response = await postTemplateParam(mathId, templateId);
+        const response = await postTemplateParam(
+          mathId,
+          templateInfo.templateId
+        );
         let jsonResponse = safeParse(response.result.deploy);
         setEntityList(jsonResponse);
       } catch (error) {
@@ -66,31 +71,47 @@ export const HandTrackingPage: React.FC = () => {
       }
     }
     getAnswers();
-  }, [mathId, navigate, templateId, type]);
+  }, [mathId, navigate, templateInfo, type]);
 
   if (!entityList) {
     return (
       <div className="flex flex-col h-full items-center justify-center gap-4">
-        <ClimbingBoxLoader
-          color="#84E1BC"
-          loading
-          size={25}
-          speedMultiplier={1.5}
+        <GridLoader color="#84E1BC" loading size={25} speedMultiplier={1.5} />
+        <Text className=" font-normal mb-4">{"풀이 생성 중..."}</Text>
+        <TemplateCard
+          key={templateInfo.templateId}
+          temInfo={templateInfo}
+          mathId={mathId}
+          forDisplay={true}
         />
-        <Text className=" font-normal">{"놀이터를 불러오고 있어!"}</Text>
       </div>
     );
   }
 
   if (type === "solve") {
-    return <SolveTemContent templateId={templateId} entityList={entityList} />;
+    return (
+      <div className="flex flex-col w-full h-full items-center">
+        <Heading className="max-h-[6rem]">
+          {"아래 풀이로 문제를 풀어보자!"}
+        </Heading>
+        <SolveTemContent
+          templateId={templateInfo.templateId}
+          entityList={entityList}
+        />
+      </div>
+    );
   } else if (type === "check") {
     return (
-      <CheckTemContent
-        probImage={answerProps?.probImage}
-        answer={answerProps?.answer}
-        wrongList={answerProps?.wrongList}
-      />
+      <div className="flex flex-col w-full h-full justify-center items-center">
+        <Heading className="max-h-[6rem]">
+          {"이전 풀이를 바탕으로 정답을 맞춰보자!"}
+        </Heading>
+        <CheckTemContent
+          probImage={answerProps?.probImage}
+          answer={answerProps?.answer}
+          wrongList={answerProps?.wrongList}
+        />
+      </div>
     );
   } else {
     return <div>잘못된 접근입니다.</div>;

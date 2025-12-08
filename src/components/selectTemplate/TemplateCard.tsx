@@ -8,36 +8,58 @@ import { templateInfoType } from "type/type";
 type TemplatePropsType = {
   temInfo: templateInfoType;
   mathId: number;
+  forDisplay?: boolean;
 };
 
-export const TemplateCard = ({ temInfo, mathId }: TemplatePropsType) => {
+export const TemplateCard = ({
+  temInfo,
+  mathId,
+  forDisplay,
+}: TemplatePropsType) => {
   const navigate = useNavigate();
   const setMathTemplate = useSetRecoilState(mathTemplateState);
 
   const handleClickTemplate = () => {
     // Recoil 전역변수 -  선택한 템플릿 정보 저장
-    setMathTemplate({ mathId: mathId, templateId: temInfo.templateId });
+    setMathTemplate({ mathId: mathId, templateInfo: temInfo });
     navigate("/hands-tracker/solve");
   };
 
   return (
     <button
       onClick={
-        temInfo.isPossible
+        forDisplay
+          ? () => {}
+          : temInfo.isPossible
           ? handleClickTemplate
           : () => {
               toast("준비중인 템플릿입니다!");
             }
       }
-      className="relative w-full max-w-[32rem] min-w-min h-80 shadow-md rounded-3xl flex flex-col justify-center items-center gap-3"
+      className={`relative w-full max-w-4xl min-w-min min-h-72 rounded-3xl flex border border-[#78DCA5] overflow-hidden ${
+        forDisplay
+          ? " cursor-none"
+          : "hover:shadow-lg transition-shadow duration-300"
+      }`}
     >
-      <img src={temInfo.templateImage} alt="template img" className="w-[80%]" />
+      <div className="flex justify-center items-center bg-[#78DCA5] rounded-3xl w-1/2">
+        <img
+          src={temInfo.templateImage}
+          alt="template img"
+          className="w-[80%]"
+        />
+      </div>
+      <div className="flex flex-col justify-center items-start gap-3 pl-10 bg-white rounded-r-3xl w-1/2 ">
+        <Text className="font-normal text-3xl">{temInfo.templateName}</Text>
+        <Text className=" font-thin line-clamp-4 w-[90%] text-left">
+          {temInfo.templateScript}
+        </Text>
+      </div>
       {!temInfo.isPossible && (
         <div className="absolute inset-0 bg-[#E9E8EE]/50 rounded-3xl backdrop-blur-[1px] flex justify-center items-center">
           <img src="/asset/lock.png" alt="lock" className="w-16 opacity-100" />
         </div>
       )}
-      <Text className=" font-normal">{temInfo.templateName}</Text>
     </button>
   );
 };

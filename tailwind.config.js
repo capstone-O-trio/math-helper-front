@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        pretendard: ["Pretendard Standard", "sans-serif"],
+        baby: ['BabyShark', 'sans-serif'],
       },
       colors: {
         "green-d": "#31C48D",
@@ -13,5 +13,7 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require("@tailwindcss/line-clamp"),
+  ],
 };

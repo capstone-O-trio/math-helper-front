@@ -8,18 +8,19 @@ import { useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN_KEY } from "../utils/keys";
 import { useSetRecoilState } from "recoil";
 import { mathTypeState } from "store/mathTypeState";
+import { GridLoader } from "react-spinners";
 
 export const UploadPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-  const [isUpload, setIsUpload] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [uploadedProbInfo, setUploadedProbInfo] = useState<probInfoType | null>(
     null
   );
+  const setMathType = useSetRecoilState(mathTypeState);
 
   useEffect(() => {
     const interval = setInterval(async () => {
@@ -33,7 +34,6 @@ export const UploadPage: React.FC = () => {
         const response = await getNewMaths();
 
         if (selectedFile == null && response.result !== null) {
-          setIsUpload(true);
           setPreviewUrl(response.result.image);
 
           //new 문제 정보 저장
@@ -52,37 +52,54 @@ export const UploadPage: React.FC = () => {
 
       setPreviewUrl(imageUrl);
       setSelectedFile(file);
-      setIsUpload(false);
     }
   }, []);
 
-  const handleUpload = async () => {
-    const formdata = new FormData();
-    if (!selectedFile) {
-      alert("업로드할 사진을 선택해주세요.");
-      return;
-    }
-
-    if (selectedFile) {
-      formdata.append("imageFile", selectedFile);
-    }
-
+  const handleNext = async () => {
+    setIsLoading(true);
     try {
-      const response = await postImgGetType(formdata);
+      // 1) 새 파일을 사용자가 선택한 경우 → 업로드 먼저
+      if (selectedFile) {
+        const formdata = new FormData();
+        formdata.append("imageFile", selectedFile);
 
-      setUploadedProbInfo(response.result);
-      setIsUpload(true);
+        try {
+          const response = await postImgGetType(formdata);
+
+          // 업로드 성공 → recoil 저장하고 페이지 이동
+          if (response.result) {
+            setMathType({
+              mathId: response.result.mathId,
+              typeName: response.result.mathTypeDto.type_name,
+              typeScript: response.result.typeScript,
+            });
+            setIsLoading(false);
+            navigate("/select-template");
+            return;
+          }
+        } catch (err) {
+          alert("지원되지 않는 문제야!");
+          return;
+        }
+      }
+
+      // 2) 새 파일은 없지만 서버에 기존 이미지 있음 → 그대로 진행
+      if (uploadedProbInfo) {
+        setMathType({
+          mathId: uploadedProbInfo.mathId,
+          typeName: uploadedProbInfo.mathTypeDto.type_name,
+          typeScript: uploadedProbInfo.typeScript,
+        });
+        navigate("/select-template");
+        return;
+      }
+
+      alert("사진을 선택하거나 기존 문제가 올 때까지 기다려줘!");
     } catch (error) {
-      alert("지원되지 않는 수학 문제 유형이야. 히히 미안해!");
-      return;
-    }
-  };
-  
-  const setMathType = useSetRecoilState(mathTypeState);
-  const navigateToNextPage = () => {
-    if (uploadedProbInfo) {
-      setMathType({mathId: uploadedProbInfo.mathId, typeName: uploadedProbInfo.mathTypeDto.type_name});
-      navigate("/select-template");
+      alert("업로드 중 오류가 발생했어!");
+    } finally {
+      // 에러든 정상 종료든 무조건 로딩 OFF
+      setIsLoading(false);
     }
   };
 
@@ -117,24 +134,26 @@ export const UploadPage: React.FC = () => {
                 alt="captured"
                 className="max-w-[70%] max-h-[70%]"
               />
-              <Button
-                className="text-lg font-light"
-                disabled={isUpload}
-                onClick={handleUpload}
-              >
-                {isUpload ? "문제 업로드 완료!" : "이 문제 업로드하기"}
-              </Button>
             </div>
           )}
         </div>
+        <Button
+          className="text-lg font-light w-full mt-3"
+          disabled={previewUrl === null}
+          onClick={handleNext}
+        >
+          {"이 사진으로 문제 풀기"}
+        </Button>
       </div>
-      <Button
-        className="fixed bottom-16 right-10"
-        disabled={!isUpload}
-        onClick={navigateToNextPage}
-      >
-        풀이 선택 하기
-      </Button>
+      {isLoading && (
+        <GridLoader
+          color={"#057A55"}
+          loading
+          size={25}
+          speedMultiplier={1.5}
+          className="absolute left-1/2 top-[130px] z-20 transform -translate-x-1/2 -translate-y-1/2"
+        />
+      )}
     </div>
   );
 };

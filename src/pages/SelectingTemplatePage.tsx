@@ -13,9 +13,11 @@ import { templateInfoType } from "type/type";
 const defaultList: templateInfoType[] = [
   {
     templateId: 0,
-    templateName: "풀이 불가능!",
+    templateName: "준비중..",
     isPossible: false,
     templateImage: "/asset/temExample.png",
+    templateScript:
+      "이 풀이는 준비중입니다!",
   },
 ];
 
@@ -23,7 +25,7 @@ export const SelectingTemplatePage = () => {
   const navigate = useNavigate();
   const [temList, setTemList] = useState(defaultList);
 
-  const { mathId, typeName } = useRecoilValue(mathTypeState);
+  const { mathId, typeName, typeScript } = useRecoilValue(mathTypeState);
 
   useEffect(() => {
     async function fetch() {
@@ -44,34 +46,19 @@ export const SelectingTemplatePage = () => {
         <BackButton onClick={goBack} className="absolute left-8 top-5" />
         <Heading>{"풀이를 선택해봐요!"}</Heading>
       </div>
-      <div className="flex gap-2 justify-center items-center">
-        <Text>{"이 문제는"}</Text>
-        <Text className="font-bold">{typeName}</Text>
-        <Text>{"유형이에요."}</Text>
-        <TextButton onClick={goBack}>
-          {"이 유형이 아닌 것 같나요?!"}
-        </TextButton>
+      <div className="flex flex-col gap-2 justify-center items-center">
+        <Text className=" font-thin max-w-[50%] whitespace-break-spaces text-center">{typeScript}</Text>
+        <TextButton onClick={goBack}>{"이 유형이 아닌 것 같나요?!"}</TextButton>
       </div>
-      <div className="h-full flex flex-col justify-center items-center">
-        <div
-          className={`
-      w-[80%] max-w-[1100px] h-full overflow-auto p-5
-      ${
-        temList.length >= 2
-          ? "grid grid-cols-2 gap-3"
-          : "flex items-center gap-6 w-full justify-center"
-      }
-      `}
-        >
-          {temList.length === 0 && <div>{"가능한 풀이가 없습니다."}</div>}
-          {temList.map((template) => (
-            <TemplateCard
-              key={template.templateId}
-              temInfo={template}
-              mathId={mathId}
-            />
-          ))}
-        </div>
+      <div className="mt-10 h-[80%] max-h-[80%] flex flex-col items-center overflow-auto gap-5 p-5">
+        {temList.length === 0 && <div>{"가능한 풀이가 없습니다."}</div>}
+        {temList.map((template) => (
+          <TemplateCard
+            key={template.templateId}
+            temInfo={template}
+            mathId={mathId}
+          />
+        ))}
       </div>
     </div>
   );
