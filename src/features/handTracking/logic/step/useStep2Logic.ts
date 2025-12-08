@@ -49,9 +49,7 @@ export const useStep2Logic = ({
     for (const wrong of wrongList) {
       if (!wrong) continue;
       count += 1;
-      choiceOptions.push(
-        isNaN(Number(wrong)) ? count : Number(wrong)
-      );
+      choiceOptions.push(isNaN(Number(wrong)) ? count : Number(wrong));
     }
 
     // 선택지 이미지 추가
@@ -143,7 +141,17 @@ export const useStep2Logic = ({
       }
     });
 
-    HandleHandActions(results, ctx, ratio, dispW, dispH, setObjects, navigate);
+    HandleHandActions(
+      results,
+      ctx,
+      ratio,
+      dispW,
+      dispH,
+      setObjects,
+      navigate,
+      objectsRef,
+      onOpenModal
+    );
   }
 
   return { objects, onResults };
@@ -258,7 +266,7 @@ export function getStep2ObjectsInfo(
 
   const choices: number[] = choiceOptions;
   choices.sort(); // 오름차순으로 정렬
-  choiceImages.sort() // 오름차순으로 정렬
+  choiceImages.sort(); // 오름차순으로 정렬
 
   const start_x = 200;
   let gap = 200;

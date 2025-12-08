@@ -104,7 +104,7 @@ export const HandTrackingPage: React.FC = () => {
     );
   } else if (type === "check") {
     return (
-      <div className="flex flex-col w-full h-full justify-center items-center">
+      <div className="flex flex-col w-full h-full items-center">
         <Heading className="max-h-[6rem]">
           {"이전 풀이를 바탕으로 정답을 맞춰보자!"}
         </Heading>

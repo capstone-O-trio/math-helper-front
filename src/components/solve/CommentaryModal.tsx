@@ -37,19 +37,21 @@ const customModalStyles: ReactModal.Styles = {
 export const CommentaryModal = (modalProps: MODAL_PROPS) => (
   <Modal
     isOpen={modalProps.isOpenModal}
-    contentLabel="TutorialModal"
+    contentLabel="CommentaryModal"
     onRequestClose={modalProps.onClose}
     style={customModalStyles}
     appElement={document.getElementById("root")!}
-    className=" p-4 flex flex-col gap-3"
+    className=" p-4 h-[80%]"
   >
-    <div className=" flex flex-col items-center justify-center">
-        <Text>{modalProps.comment}</Text>   
-    </div>
+    <div className="flex flex-col gap-3 justify-center h-full">
+      <div className=" flex flex-col items-center justify-center">
+          <Text className=" font-extralight line-clamp-4 w-[60%] text-left">{modalProps.comment}</Text>   
+      </div>
 
-    <div className="flex justify-center items-center w-full gap-2">
-      <Text>{"10초 후에 해설이 닫힙니다."}</Text>
-      <Button className=" font-normal text-lg w-20" onClick={modalProps.onClose}>{"닫기"}</Button>
+      <div className="absolute bottom-7 flex justify-center items-center w-full gap-2">
+        <Text className=" font-thin">{"10초 후에 해설이 닫힙니다."}</Text>
+        <Button className=" font-normal text-lg w-20" onClick={modalProps.onClose}>{"닫기"}</Button>
+      </div>
     </div>
   </Modal>
 );
