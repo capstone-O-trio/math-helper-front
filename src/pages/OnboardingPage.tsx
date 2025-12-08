@@ -9,7 +9,7 @@ export const OnboardingPage: React.FC = () => {
   return (
     <div className="flex flex-col h-full items-center justify-center">
       <div className="flex flex-col gap-2 justify-center">
-        <img src="/asset/Logo/logo.png" alt="Logo"/>
+        <img src="/asset/Logo/logo.png" alt="Logo" />
         <Heading>쏙수학</Heading>
       </div>
       <div className="absolute bottom-8 right-10 flex flex-col gap-1 w-[12rem]">

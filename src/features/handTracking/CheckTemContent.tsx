@@ -4,16 +4,19 @@ import { WebCamera } from "features/webcam/WebCamera";
 import { HandRenderer } from "features/handTracking/components/HandRenderer";
 import { OBJ_RESULT_TYPE } from "features/handTracking/types/objectTypes";
 import { useStep2Logic } from "features/handTracking/logic/step/useStep2Logic";
+import CommentaryModal from "components/solve/CommentaryModal";
 
 interface CheckTemContentProps {
   probImage: string;
   answer: string;
+  answerScript: string;
   wrongList: string[];
 }
 
 export const CheckTemContent = ({
   probImage,
   answer,
+  answerScript,
   wrongList,
 }: CheckTemContentProps) => {
   const webcamRef = useRef<Webcam | null>(null);
@@ -21,6 +24,17 @@ export const CheckTemContent = ({
 
   const camRatioRef = useRef(1);
   const [camRatio, setCamRatio] = useState(1);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleOpenModal = useCallback(() => {
+    // 이미 열려있지 않을 때만 실행 (중복 실행 방지)
+    if (!isModalOpen) {
+      setIsModalOpen(true);
+      setTimeout(() => {
+        setIsModalOpen(false);
+      }, 10000);
+    }
+  }, [isModalOpen]);
 
   let objResults: OBJ_RESULT_TYPE = {
     objects: [],
@@ -32,6 +46,7 @@ export const CheckTemContent = ({
     wrongList, //string배열, [ wrongAnswer1, wrongAnswer2 ] 인데 wrongAnswer2은 optional
     canvasRef,
     camRatioRef,
+    onOpenModal: handleOpenModal,
   });
   objResults = step2Result;
 
@@ -72,6 +87,11 @@ export const CheckTemContent = ({
           canvasRef={canvasRef}
         />
       </div>
+      <CommentaryModal
+        isOpenModal={isModalOpen}
+        comment={answerScript}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };
