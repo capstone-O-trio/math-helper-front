@@ -207,8 +207,11 @@ export const HandleHandActions = (
                   // 정답 맞추기 화면에서 '되돌아가기 버튼'을 누른 경우
                   navigate("/hands-tracker/solve");
                 }
-                console.log(selectedButtonId)
-                if (selectedButtonId === "button-gesture-info") {
+                console.log(selectedButtonId);
+                if (
+                  selectedButtonId === "button-gesture-info" ||
+                  selectedButtonId === "button-commentary-info"
+                ) {
                   // '제스처 알아보기 버튼'
                   if (onOpenModal) {
                     onOpenModal();

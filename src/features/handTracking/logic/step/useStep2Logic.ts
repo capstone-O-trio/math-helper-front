@@ -29,6 +29,7 @@ export const useStep2Logic = ({
   wrongList,
   canvasRef,
   camRatioRef,
+  onOpenModal,
 }: any) => {
   const navigate = useNavigate();
   const selectAnswerRef = useRef<number | null>(null);
@@ -48,9 +49,7 @@ export const useStep2Logic = ({
     for (const wrong of wrongList) {
       if (!wrong) continue;
       count += 1;
-      choiceOptions.push(
-        isNaN(Number(wrong)) ? count : Number(wrong)
-      );
+      choiceOptions.push(isNaN(Number(wrong)) ? count : Number(wrong));
     }
 
     // 선택지 이미지 추가
@@ -65,15 +64,6 @@ export const useStep2Logic = ({
   }, [answer, choiceAnswer, probImage, wrongList]);
 
   const objectsRef = useRef(objects);
-
-  // /* 초기 드롭존 표시 */
-  // useEffect(() => {
-  //   const canvas = canvasRef.current;
-  //   if (!canvas) return;
-  //   const ctx = canvas.getContext("2d");
-  //   if (!ctx) return;
-  //   drawDropZone(ctx, camRatioRef.current, dx, dy, dw, dh);
-  // }, [camRatioRef, canvasRef]);
 
   /* 템플릿 로직 */
   // object 변경되면 업데이트
@@ -140,9 +130,6 @@ export const useStep2Logic = ({
     ctx.save();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // 드롭존 다시 그리기
-    // drawDropZone(ctx, camRatioRef.current, dx, dy, dw, dh);
-
     // 드롭존 안에 선택지가 있는지 확인
     setSelectAnswer(null);
     objectsRef.current.forEach(({ x, y, isObj, value }) => {
@@ -154,7 +141,17 @@ export const useStep2Logic = ({
       }
     });
 
-    HandleHandActions(results, ctx, ratio, dispW, dispH, setObjects, navigate);
+    HandleHandActions(
+      results,
+      ctx,
+      ratio,
+      dispW,
+      dispH,
+      setObjects,
+      navigate,
+      objectsRef,
+      onOpenModal
+    );
   }
 
   return { objects, onResults };
@@ -189,6 +186,18 @@ export function getStep2ObjectsInfo(
     x: 1500,
     y: 100,
     src: "/asset/button/button-home.png",
+    isObj: false, // 객체 아님
+    value: 1, // 버튼
+    width: button_width,
+    height: button_height,
+  });
+
+  // 알아보기 버튼
+  answerInfo.push({
+    id: "button-commentary-info",
+    x: 100,
+    y: 800,
+    src: `/asset/button/button-gesture-info.png`,
     isObj: false, // 객체 아님
     value: 1, // 버튼
     width: button_width,
@@ -257,7 +266,7 @@ export function getStep2ObjectsInfo(
 
   const choices: number[] = choiceOptions;
   choices.sort(); // 오름차순으로 정렬
-  choiceImages.sort() // 오름차순으로 정렬
+  choiceImages.sort(); // 오름차순으로 정렬
 
   const start_x = 200;
   let gap = 200;

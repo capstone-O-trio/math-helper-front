@@ -24,5 +24,6 @@ export type probEntityType = {
 export type MathProbSolveType = {
   probImage: string; // 문제 이미지 URL
   answer: string;
+  answerScript: string; // 정답 해설
   wrongList: string[]; // 오답 리스트
 };

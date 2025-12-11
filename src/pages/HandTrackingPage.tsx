@@ -26,6 +26,7 @@ export const HandTrackingPage: React.FC = () => {
   const [answerProps, setAnswerProps] = useState<MathProbSolveType>({
     probImage: "",
     answer: "",
+    answerScript: "",
     wrongList: [],
   });
 
@@ -61,6 +62,7 @@ export const HandTrackingPage: React.FC = () => {
         setAnswerProps({
           probImage: response.result.image,
           answer: response.result.answer,
+          answerScript: response.result.answerScript,
           wrongList: [
             response.result.wrongAnswer1,
             response.result.wrongAnswer2 || "",
@@ -102,13 +104,14 @@ export const HandTrackingPage: React.FC = () => {
     );
   } else if (type === "check") {
     return (
-      <div className="flex flex-col w-full h-full justify-center items-center">
+      <div className="flex flex-col w-full h-full items-center">
         <Heading className="max-h-[6rem]">
           {"이전 풀이를 바탕으로 정답을 맞춰보자!"}
         </Heading>
         <CheckTemContent
           probImage={answerProps?.probImage}
           answer={answerProps?.answer}
+          answerScript={answerProps?.answerScript}
           wrongList={answerProps?.wrongList}
         />
       </div>

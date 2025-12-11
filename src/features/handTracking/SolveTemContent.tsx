@@ -5,7 +5,7 @@ import { HandRenderer } from "features/handTracking/components/HandRenderer";
 import { OBJ_RESULT_TYPE } from "features/handTracking/types/objectTypes";
 import { useStep1Logic } from "features/handTracking/logic/step/useStep1Logic";
 import { WaterComparisonRenderer } from "features/handTracking/components/WaterComparisonRenderer";
-import TutorialModal from "components/common/TutorialModal";
+import TutorialModal from "components/solve/TutorialModal";
 
 interface SolveTemContentProps {
   templateId: number;
